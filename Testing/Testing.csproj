@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TowerSoft.Repository.MySql\TowerSoft.Repository.MySql.csproj" />
+    <ProjectReference Include="..\TowerSoft.Repository.Proxies\TowerSoft.Repository.Proxies.csproj" />
+  </ItemGroup>
+
+</Project>

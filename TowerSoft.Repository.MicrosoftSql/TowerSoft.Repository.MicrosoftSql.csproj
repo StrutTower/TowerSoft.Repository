@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>TowerSoft.Repository.MicrosoftSql</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.1.0</Version>
+    <Company>TowerSoft</Company>
+    <Authors>StrutTower</Authors>
+    <Product>TowerSoft.Repository</Product>
+    <Description>Microsoft SQL Server support for TowerSoft.Repository</Description>
+    <PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageLicenseFile>license.txt</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\license.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TowerSoft.Repository.MicrosoftSql\TowerSoft.Repository.MicrosoftSql.csproj" />
+    <ProjectReference Include="..\TowerSoft.Repository.MySql\TowerSoft.Repository.MySql.csproj" />
+    <ProjectReference Include="..\TowerSoft.Repository.Proxies\TowerSoft.Repository.Proxies.csproj" />
+    <ProjectReference Include="..\TowerSoft.Repository.SqlLite\TowerSoft.Repository.SQLite.csproj" />
+    <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MicrosoftSql\" />
+    <Folder Include="SQLite\" />
+  </ItemGroup>
+
+</Project>
