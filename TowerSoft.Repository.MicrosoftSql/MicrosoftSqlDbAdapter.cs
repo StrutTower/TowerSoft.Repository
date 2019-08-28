@@ -6,6 +6,8 @@ using System.Text;
 
 namespace TowerSoft.Repository.MicrosoftSql {
     public class MicrosoftSqlDbAdapter : IDbAdapter {
+        public bool LastInsertIdInSeparateQuery => false;
+
         public IDbConnection CreateNewDbConnection(string connectionString) {
             return new SqlConnection(connectionString);
         }
@@ -26,8 +28,12 @@ namespace TowerSoft.Repository.MicrosoftSql {
             return $"@{columnName}";
         }
 
-        public string GetSelectColumnCast(string tableName, string columnName) {
-            return $"@{tableName}.{columnName}";
+        public string GetParameterName(string columnName) {
+            return $"@{columnName}";
+        }
+
+        public string GetSelectColumnCast(Type type, string tableName, IMap map) {
+            return $"@{tableName}.{map.ColumnName} {map.PropertyName}";
         }
     }
 }

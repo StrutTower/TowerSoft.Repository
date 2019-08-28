@@ -11,7 +11,8 @@ namespace TowerSoft.Repository.Maps {
         /// <summary>
         /// Name of the database table
         /// </summary>
-        public  string TableName { get; private set; }
+        [Obsolete("Use the TableName property on the Repository class instead.")]
+        public string TableName { get; private set; }
 
         /// <summary>
         /// Autonumber map, if there is one

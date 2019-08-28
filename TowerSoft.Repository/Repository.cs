@@ -1,9 +1,11 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using TowerSoft.Repository.Maps;
 
 namespace TowerSoft.Repository {
@@ -19,6 +21,7 @@ namespace TowerSoft.Repository {
         public Repository(string connectionString, IDbAdapter dbAdapter) {
             ConnectionString = connectionString;
             DbAdapter = dbAdapter;
+            TableName = GetTableName();
             Mappings = new MappingModel<T>();
             IsUnitOfWorkPattern = false;
         }
@@ -34,6 +37,7 @@ namespace TowerSoft.Repository {
             DbTransaction = unitOfWork.DbTransaction;
             ConnectionString = unitOfWork.ConnectionString;
             DbAdapter = unitOfWork.DbAdapter;
+            TableName = GetTableName();
             Mappings = new MappingModel<T>();
             IsUnitOfWorkPattern = true;
         }
@@ -47,6 +51,7 @@ namespace TowerSoft.Repository {
         public Repository(string connectionString, IDbAdapter dbAdapter, EntityMap<T> entityMap) {
             ConnectionString = connectionString;
             DbAdapter = dbAdapter;
+            TableName = entityMap.TableName;
             Mappings = new MappingModel<T>(entityMap);
             IsUnitOfWorkPattern = false;
         }
@@ -61,6 +66,7 @@ namespace TowerSoft.Repository {
             DbTransaction = unitOfWork.DbTransaction;
             ConnectionString = unitOfWork.ConnectionString;
             DbAdapter = unitOfWork.DbAdapter;
+            TableName = entityMap.TableName;
             Mappings = new MappingModel<T>(entityMap);
             IsUnitOfWorkPattern = true;
         }
@@ -76,6 +82,11 @@ namespace TowerSoft.Repository {
         /// Connection string being used by this Repository
         /// </summary>
         protected string ConnectionString { get; private set; }
+
+        /// <summary>
+        /// Name of the database table
+        /// </summary>
+        protected string TableName { get; private set; }
 
         /// <summary>
         /// Mapping model object. Stores all of the database maps
@@ -135,8 +146,8 @@ namespace TowerSoft.Repository {
             if (whereConditions != null && whereConditions.Any()) {
                 List<string> whereStatements = new List<string>();
                 foreach (WhereCondition whereCondition in whereConditions) {
-                    whereStatements.Add(whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " @" + whereCondition.ColumnName);
-                    parameters.Add("@" + whereCondition.ColumnName, whereCondition.GetParameterValue());
+                    whereStatements.Add(whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName));
+                    parameters.Add(DbAdapter.GetParameterName(whereCondition.ColumnName), whereCondition.GetParameterValue());
                 }
                 query += "WHERE " + string.Join(" AND ", whereStatements);
             }
@@ -159,22 +170,31 @@ namespace TowerSoft.Repository {
             foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
                 columns.Add(map.ColumnName);
                 values.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName));
-                parameters.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName), map.GetValue(entity));
+                parameters.Add(DbAdapter.GetParameterName(map.ColumnName), map.GetValue(entity));
             }
+
+
 
             string query = string.Format(
                "INSERT INTO {0} " +
                "({1})" +
                "VALUES " +
-               "({2});",
+               "({2})",
               Mappings.TableName, string.Join(",", columns), string.Join(",", values));
 
             if (Mappings.AutonumberMap == null) {
                 GetDbConnection().Execute(query, parameters, DbTransaction);
             } else {
-                query += DbAdapter.GetLastInsertIdStatement();
-                int autonumberValue = GetDbConnection().QuerySingle<int>(query, parameters, DbTransaction);
-                Mappings.AutonumberMap.SetValue(entity, autonumberValue);
+                long autonumberValue = 0;
+                if (DbAdapter.LastInsertIdInSeparateQuery) {
+                    GetDbConnection().Execute(query, parameters, DbTransaction);
+                    autonumberValue = GetDbConnection().QuerySingle<long>(DbAdapter.GetLastInsertIdStatement(), null, DbTransaction);
+                } else {
+                    query += ";" + DbAdapter.GetLastInsertIdStatement();
+                    autonumberValue = GetDbConnection().QuerySingle<long>(query, parameters, DbTransaction);
+                }
+                PropertyInfo prop = entity.GetType().GetProperty(Mappings.AutonumberMap.PropertyName);
+                Mappings.AutonumberMap.SetValue(entity, Convert.ChangeType(autonumberValue, prop.PropertyType));
             }
 
             if (!IsUnitOfWorkPattern)
@@ -192,15 +212,15 @@ namespace TowerSoft.Repository {
 
             foreach (Map map in Mappings.StandardMaps) {
                 updateColumns.Add(map.ColumnName + "=" + DbAdapter.GetParameterPlaceholder(map.ColumnName));
-                parameters.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName), map.GetValue(entity));
+                parameters.Add(DbAdapter.GetParameterName(map.ColumnName), map.GetValue(entity));
             }
 
             foreach (Map map in Mappings.PrimaryKeyMaps) {
                 primaryKeyColumns.Add(map.ColumnName + "=" + DbAdapter.GetParameterPlaceholder(map.ColumnName));
-                parameters.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName), map.GetValue(entity));
+                parameters.Add(DbAdapter.GetParameterName(map.ColumnName), map.GetValue(entity));
             }
 
-            string query = string.Format("UPDATE {0} SET {1} WHERE {2};",
+            string query = string.Format("UPDATE {0} SET {1} WHERE {2}",
                 Mappings.TableName, string.Join(", ", updateColumns), string.Join(" AND ", primaryKeyColumns));
 
             GetDbConnection().Execute(query, parameters, DbTransaction);
@@ -219,10 +239,10 @@ namespace TowerSoft.Repository {
 
             foreach (Map map in Mappings.PrimaryKeyMaps) {
                 primaryKeyColumns.Add(map.ColumnName + "=" + DbAdapter.GetParameterPlaceholder(map.ColumnName));
-                parameters.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName), map.GetValue(entity));
+                parameters.Add(DbAdapter.GetParameterName(map.ColumnName), map.GetValue(entity));
             }
 
-            string query = string.Format("DELETE FROM {0} WHERE {1};",
+            string query = string.Format("DELETE FROM {0} WHERE {1}",
                 Mappings.TableName, string.Join(" AND ", primaryKeyColumns));
 
             GetDbConnection().Execute(query, parameters, DbTransaction);
@@ -281,8 +301,8 @@ namespace TowerSoft.Repository {
                 if (whereCondition.IsNullEqualsOrNotEquals()) {
                     whereStatements.Add(whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " NULL");
                 } else {
-                    whereStatements.Add(whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " @" + whereCondition.ColumnName);
-                    query.AddParameter("@" + whereCondition.ColumnName, whereCondition.GetParameterValue());
+                    whereStatements.Add(whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName));
+                    query.AddParameter(DbAdapter.GetParameterName(whereCondition.ColumnName), whereCondition.GetParameterValue());
                 }
             }
             query.SqlQuery += "WHERE " + string.Join(" AND ", whereStatements);
@@ -367,7 +387,7 @@ namespace TowerSoft.Repository {
             List<string> columns = new List<string>();
             List<string> joins = new List<string>();
             foreach (Map map in Mappings.AllMaps) {
-                columns.Add(DbAdapter.GetSelectColumnCast(Mappings.TableName, map.ColumnName) + " " + map.PropertyName);
+                columns.Add(DbAdapter.GetSelectColumnCast(typeof(T), Mappings.TableName, map));
             }
             if (Mappings.JoinedMaps.Any()) {
                 foreach (JoinedMap joinedMap in Mappings.JoinedMaps) {
@@ -381,6 +401,20 @@ namespace TowerSoft.Repository {
             if (joins.Any())
                 query += string.Join(" ", joins.Distinct()) + " ";
             return query;
+        }
+
+        private string GetTableName() {
+            Type domainType = typeof(T);
+
+            string tableName = domainType.Name;
+            if (domainType.IsDefined(typeof(TableAttribute))) {
+                TableAttribute tableAttr = (TableAttribute)domainType.GetCustomAttribute(typeof(TableAttribute));
+                if (!string.IsNullOrWhiteSpace(tableAttr.Name)) {
+                    tableName = tableAttr.Name;
+                }
+            }
+
+            return tableName;
         }
     }
 }

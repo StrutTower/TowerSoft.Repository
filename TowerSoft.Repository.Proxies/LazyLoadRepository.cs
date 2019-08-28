@@ -72,7 +72,7 @@ namespace TowerSoft.Repository.Proxies {
             LazyLoadMaps = new List<LazyLoadMap>();
             //TODO Add 
 
-            LazyLoadMaps = entityMap.GetLazyLoadMaps
+            //LazyLoadMaps = entityMap.GetLazyLoadMapsq
         }
     }
 }
