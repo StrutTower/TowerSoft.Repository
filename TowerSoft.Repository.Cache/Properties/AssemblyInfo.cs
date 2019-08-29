@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TowerSoft.Repository.Cache")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Intersystems Cache Support for TowerSoft.Repository")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TowerSoft.Repository.Cache")]
+[assembly: AssemblyCompany("TowerSoft")]
+[assembly: AssemblyProduct("TowerSoft.Repository")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

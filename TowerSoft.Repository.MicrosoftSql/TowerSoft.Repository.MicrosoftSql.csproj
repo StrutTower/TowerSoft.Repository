@@ -17,14 +17,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\license.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.6.1" />
+    <PackageReference Include="TowerSoft.Repository" Version="0.2.0" />
   </ItemGroup>
 
 </Project>

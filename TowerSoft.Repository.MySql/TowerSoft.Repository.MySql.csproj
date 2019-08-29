@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.17" />
+    <PackageReference Include="TowerSoft.Repository" Version="0.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,10 +25,6 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
   </ItemGroup>
 
 </Project>

@@ -142,7 +142,7 @@ namespace TowerSoft.Repository {
         /// <returns></returns>
         public virtual long GetCount(IEnumerable<WhereCondition> whereConditions) {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            string query = $"SELECT COUNT(*) FROM {Mappings.TableName} ";
+            string query = $"SELECT COUNT(*) FROM {TableName} ";
             if (whereConditions != null && whereConditions.Any()) {
                 List<string> whereStatements = new List<string>();
                 foreach (WhereCondition whereCondition in whereConditions) {
@@ -180,7 +180,7 @@ namespace TowerSoft.Repository {
                "({1})" +
                "VALUES " +
                "({2})",
-              Mappings.TableName, string.Join(",", columns), string.Join(",", values));
+              TableName, string.Join(",", columns), string.Join(",", values));
 
             if (Mappings.AutonumberMap == null) {
                 GetDbConnection().Execute(query, parameters, DbTransaction);
@@ -221,7 +221,7 @@ namespace TowerSoft.Repository {
             }
 
             string query = string.Format("UPDATE {0} SET {1} WHERE {2}",
-                Mappings.TableName, string.Join(", ", updateColumns), string.Join(" AND ", primaryKeyColumns));
+                TableName, string.Join(", ", updateColumns), string.Join(" AND ", primaryKeyColumns));
 
             GetDbConnection().Execute(query, parameters, DbTransaction);
 
@@ -243,7 +243,7 @@ namespace TowerSoft.Repository {
             }
 
             string query = string.Format("DELETE FROM {0} WHERE {1}",
-                Mappings.TableName, string.Join(" AND ", primaryKeyColumns));
+                TableName, string.Join(" AND ", primaryKeyColumns));
 
             GetDbConnection().Execute(query, parameters, DbTransaction);
 
@@ -328,7 +328,7 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <returns></returns>
         protected QueryBuilder GetQueryBuilder() {
-            return new QueryBuilder(Mappings.TableName, Mappings.AllMaps);
+            return new QueryBuilder(TableName, Mappings.AllMaps);
         }
 
         /// <summary>
@@ -344,7 +344,7 @@ namespace TowerSoft.Repository {
                 throw new Exception("Unable to find a map for the property '" + memberExpression.Member.Name + "'.");
             }
             string columnName = Mappings.AllMapsDictionary[memberExpression.Member.Name];
-            return new WhereCondition(Mappings.TableName + "." + columnName, value, Comparison.Equals);
+            return new WhereCondition(TableName + "." + columnName, value, Comparison.Equals);
         }
 
         /// <summary>
@@ -361,7 +361,7 @@ namespace TowerSoft.Repository {
                 throw new Exception("Unable to find a map for the property '" + memberExpression.Member.Name + "'.");
             }
             string columnName = Mappings.AllMapsDictionary[memberExpression.Member.Name];
-            return new WhereCondition(Mappings.TableName + "." + columnName, value, comparison);
+            return new WhereCondition(TableName + "." + columnName, value, comparison);
         }
         #endregion
 
@@ -387,7 +387,7 @@ namespace TowerSoft.Repository {
             List<string> columns = new List<string>();
             List<string> joins = new List<string>();
             foreach (Map map in Mappings.AllMaps) {
-                columns.Add(DbAdapter.GetSelectColumnCast(typeof(T), Mappings.TableName, map));
+                columns.Add(DbAdapter.GetSelectColumnCast(typeof(T), TableName, map));
             }
             if (Mappings.JoinedMaps.Any()) {
                 foreach (JoinedMap joinedMap in Mappings.JoinedMaps) {
@@ -397,7 +397,7 @@ namespace TowerSoft.Repository {
                 }
             }
 
-            string query = $"SELECT {string.Join(",", columns)} FROM {Mappings.TableName} ";
+            string query = $"SELECT {string.Join(",", columns)} FROM {TableName} ";
             if (joins.Any())
                 query += string.Join(" ", joins.Distinct()) + " ";
             return query;

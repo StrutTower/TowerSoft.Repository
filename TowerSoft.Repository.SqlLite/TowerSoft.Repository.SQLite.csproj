@@ -16,10 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.111" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
+    <PackageReference Include="TowerSoft.Repository" Version="0.2.0" />
   </ItemGroup>
 
   <ItemGroup>
