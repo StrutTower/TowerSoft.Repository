@@ -10,17 +10,8 @@ namespace Testing {
             using (IUnitOfWork uow = new UnitOfWorkFactory().UnitOfWork) {
 
                 PersonRepository personRepo = new PersonRepository(uow);
-                personRepo.GetCount();
-
-                TicketRepository repo = new TicketRepository(uow);
-                var test = repo.GetAll();
-
-                Ticket test2 = test.First();
-                var test3 = test2.Status_Object;
-
-                var test4 = repo.GetByID(1);
-
-                var test5 = repo.Test();
+                var test = personRepo.GetCount();
+                var test1 = personRepo.GetByID(1);
 
                 Console.WriteLine();
             }

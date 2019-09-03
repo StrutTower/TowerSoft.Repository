@@ -299,9 +299,9 @@ namespace TowerSoft.Repository {
             List<string> whereStatements = new List<string>();
             foreach (WhereCondition whereCondition in whereConditions) {
                 if (whereCondition.IsNullEqualsOrNotEquals()) {
-                    whereStatements.Add(whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " NULL");
+                    whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " NULL");
                 } else {
-                    whereStatements.Add(whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName));
+                    whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName));
                     query.AddParameter(DbAdapter.GetParameterName(whereCondition.ColumnName), whereCondition.GetParameterValue());
                 }
             }
@@ -344,7 +344,7 @@ namespace TowerSoft.Repository {
                 throw new Exception("Unable to find a map for the property '" + memberExpression.Member.Name + "'.");
             }
             string columnName = Mappings.AllMapsDictionary[memberExpression.Member.Name];
-            return new WhereCondition(TableName + "." + columnName, value, Comparison.Equals);
+            return new WhereCondition(columnName, value, Comparison.Equals);
         }
 
         /// <summary>
@@ -361,7 +361,7 @@ namespace TowerSoft.Repository {
                 throw new Exception("Unable to find a map for the property '" + memberExpression.Member.Name + "'.");
             }
             string columnName = Mappings.AllMapsDictionary[memberExpression.Member.Name];
-            return new WhereCondition(TableName + "." + columnName, value, comparison);
+            return new WhereCondition(columnName, value, comparison);
         }
         #endregion
 
