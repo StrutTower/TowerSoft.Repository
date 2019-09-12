@@ -146,8 +146,12 @@ namespace TowerSoft.Repository {
             if (whereConditions != null && whereConditions.Any()) {
                 List<string> whereStatements = new List<string>();
                 foreach (WhereCondition whereCondition in whereConditions) {
-                    whereStatements.Add(whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName));
-                    parameters.Add(DbAdapter.GetParameterName(whereCondition.ColumnName), whereCondition.GetParameterValue());
+                    if (whereCondition.IsNullEqualsOrNotEquals()) {
+                        whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " NULL");
+                    } else {
+                        whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName));
+                        parameters.Add(DbAdapter.GetParameterName(whereCondition.ColumnName), whereCondition.GetParameterValue());
+                    }
                 }
                 query += "WHERE " + string.Join(" AND ", whereStatements);
             }
