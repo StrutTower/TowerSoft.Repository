@@ -6,7 +6,42 @@ using System.Text;
 
 namespace TowerSoft.Repository.SQLite {
     public class SQLiteDbAdapter : IDbAdapter {
-        public bool LastInsertIdInSeparateQuery => false;
+        public SQLiteDbAdapter(string connectionString) {
+            ConnectionString = connectionString;
+        }
+
+        #region Unit of Work
+        public string ConnectionString { get; }
+
+        public bool IsDisposed { get; private set; }
+
+        public IDbConnection DbConnection { get; }
+
+        public IDbTransaction DbTransaction { get; private set; }
+
+        public void BeginTransaction() {
+            if (DbConnection.State != ConnectionState.Open)
+                DbConnection.Open();
+            DbTransaction = DbConnection.BeginTransaction();
+        }
+
+        public void CommitTransaction() {
+            DbTransaction.Commit();
+            DbTransaction.Dispose();
+        }
+        public void RollbackTransaction() {
+            DbTransaction.Rollback();
+            DbTransaction.Dispose();
+        }
+
+        public void Dispose() {
+            if (DbTransaction != null)
+                DbTransaction.Dispose();
+            if (DbConnection != null)
+                DbConnection.Dispose();
+            IsDisposed = true;
+        }
+        #endregion
 
         public IDbConnection CreateNewDbConnection(string connectionString) {
             return new SQLiteConnection(connectionString);
@@ -16,13 +51,7 @@ namespace TowerSoft.Repository.SQLite {
             return "SELECT last_insert_rowid();";
         }
 
-        public string GetLimitStatement() {
-            return " LIMIT @LimitRowCount ";
-        }
-
-        public string GetOffsetStatement() {
-            return " OFFSET @OffsetRowCount ";
-        }
+        public bool LastInsertIdInSeparateQuery => false;
 
         public string GetParameterPlaceholder(string columnName) {
             return $"@{columnName}";

@@ -9,12 +9,6 @@ using TowerSoft.Repository.Attributes;
 namespace TowerSoft.Repository.Maps {
     public class MappingModel<T> {
         /// <summary>
-        /// Name of the database table
-        /// </summary>
-        [Obsolete("Use the TableName property on the Repository class instead.")]
-        public string TableName { get; private set; }
-
-        /// <summary>
         /// Autonumber map, if there is one
         /// </summary>
         public IMap AutonumberMap { get; private set; }
@@ -33,7 +27,6 @@ namespace TowerSoft.Repository.Maps {
         /// All primary key maps. Includes autonumber maps
         /// </summary>
         public List<IMap> PrimaryKeyMaps { get; private set; }
-        public List<JoinedMap> JoinedMaps { get; private set; }
 
         /// <summary>
         /// Property name / Column name dictionary of all maps
@@ -41,15 +34,21 @@ namespace TowerSoft.Repository.Maps {
         public Dictionary<string, string> AllMapsDictionary { get; set; }
 
 
-        public MappingModel() {
+        internal MappingModel() {
             InitializeLists();
-            GetTableColumnMapping();
+            GetColumnMappingUsingReflection();
             FinalizeMapReading();
         }
 
-        public MappingModel(EntityMap<T> entityMap) {
+        internal MappingModel(EntityMap<T> entityMap) {
             InitializeLists();
-            GetTableColumnMappingFromEntityMap(entityMap);
+            GetColumnMappingFromEntityMap(entityMap);
+            FinalizeMapReading();
+        }
+
+        internal MappingModel(IEnumerable<IMap> maps) {
+            InitializeLists();
+            GetColumnMappingFromList(maps);
             FinalizeMapReading();
         }
 
@@ -57,20 +56,12 @@ namespace TowerSoft.Repository.Maps {
             AllMaps = new List<IMap>();
             StandardMaps = new List<IMap>();
             PrimaryKeyMaps = new List<IMap>();
-            JoinedMaps = new List<JoinedMap>();
             AllMapsDictionary = new Dictionary<string, string>();
         }
 
-        private void GetTableColumnMapping() {
+        #region Map Loaders
+        private void GetColumnMappingUsingReflection() {
             Type domainType = typeof(T);
-
-            TableName = domainType.Name;
-            if (domainType.IsDefined(typeof(TableAttribute))) {
-                TableAttribute tableAttr = (TableAttribute)domainType.GetCustomAttribute(typeof(TableAttribute));
-                if (!string.IsNullOrWhiteSpace(tableAttr.Name)) {
-                    TableName = tableAttr.Name;
-                }
-            }
 
             foreach (PropertyInfo prop in domainType.GetProperties()) {
                 if (prop.IsDefined(typeof(NotMappedAttribute))) continue;
@@ -100,11 +91,6 @@ namespace TowerSoft.Repository.Maps {
                         IDMap idMap = new IDMap(prop.Name, columnName);
                         PrimaryKeyMaps.Add(idMap);
 
-                    } else if (prop.IsDefined(typeof(JoinedMapAttribute))) {
-                        // Joined Maps
-                        JoinedMapAttribute attr = (JoinedMapAttribute)prop.GetCustomAttribute(typeof(JoinedMapAttribute));
-                        JoinedMap joinedMap = new JoinedMap(prop.Name, attr.TableAndColumnName, attr.JoinStatement);
-                        JoinedMaps.Add(joinedMap);
                     } else {
                         // Standard Maps
                         StandardMaps.Add(new Map(prop.Name, columnName));
@@ -113,8 +99,7 @@ namespace TowerSoft.Repository.Maps {
             }
         }
 
-        private void GetTableColumnMappingFromEntityMap(EntityMap<T> entityMap) {
-            TableName = entityMap.TableName;
+        private void GetColumnMappingFromEntityMap(EntityMap<T> entityMap) {
             List<IMap> maps = entityMap.GetMaps().ToList();
 
             IEnumerable<Map> defaultMaps = null;
@@ -129,7 +114,15 @@ namespace TowerSoft.Repository.Maps {
                     }
                 }
             }
+            ProcessMapList(maps);
+        }
 
+        private void GetColumnMappingFromList(IEnumerable<IMap> maps) {
+            ProcessMapList(maps);
+        }
+        #endregion
+
+        private void ProcessMapList(IEnumerable<IMap> maps) {
             foreach (IMap map in maps) {
                 if (map.ColumnName == null) continue;
 

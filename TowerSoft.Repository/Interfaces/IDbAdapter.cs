@@ -1,13 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 
 namespace TowerSoft.Repository {
-    public interface IDbAdapter {
+    public interface IDbAdapter : IDisposable {
+        #region Unit of Work
         /// <summary>
-        /// Specifies if the last insert ID query needs to be run separately from the insert statement.
+        /// Connection string used for the database connection
         /// </summary>
-        bool LastInsertIdInSeparateQuery { get; }
+        string ConnectionString { get; }
+
+        /// <summary>
+        /// ADO.NET DbConnection for the current database
+        /// </summary>
+        IDbConnection DbConnection { get; }
+
+        /// <summary>
+        /// ADO.NET DbTransaction for the current database
+        /// </summary>
+        IDbTransaction DbTransaction { get; }
+
+        /// <summary>
+        /// Begins a transaction
+        /// </summary>
+        void BeginTransaction();
+
+        /// <summary>
+        /// Commit the changes during the transaction to the database
+        /// </summary>
+        void CommitTransaction();
+
+        /// <summary>
+        /// Rolls back the changes to the database that were made during the transaction
+        /// </summary>
+        void RollbackTransaction();
+
+        bool IsDisposed { get; }
+        #endregion
 
         /// <summary>
         /// Returns the ADO.NET IDbCommand for this database.
@@ -31,7 +59,8 @@ namespace TowerSoft.Repository {
         string GetParameterName(string columnName);
 
         /// <summary>
-        /// Gets the SELECT statement for this table and column. Typically this is just TableName.ColumnName
+        /// Gets the SELECT statement for this table and column.
+        /// Typically this is just TableName.ColumnName but some databases require casting the column to s certain datatype
         /// </summary>
         /// <param name="type"></param>
         /// <param name="tableName"></param>
@@ -46,15 +75,8 @@ namespace TowerSoft.Repository {
         string GetLastInsertIdStatement();
 
         /// <summary>
-        /// SQL statement to limit the number of results for this database.
+        /// Specifies if the last insert ID query needs to be run separately from the insert statement.
         /// </summary>
-        /// <returns></returns>
-        string GetLimitStatement();
-
-        /// <summary>
-        /// SQL statement to offset the results by a number of rows for this database
-        /// </summary>
-        /// <returns></returns>
-        string GetOffsetStatement();
+        bool LastInsertIdInSeparateQuery { get; }
     }
 }

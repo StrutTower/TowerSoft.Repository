@@ -1,9 +1,10 @@
-﻿using TowerSoft.Repository;
+﻿using TestingLib.Domain;
+using TowerSoft.Repository;
 
-namespace Testing {
+namespace TestingLib.Repository {
     public class PersonRepository : Repository<Person> {
 
-        public PersonRepository(IUnitOfWork uow) : base(uow, new PersonMap()) { }
+        public PersonRepository(UnitOfWork uow) : base(uow.DbAdapter) { }
 
         public Person GetByID(int id) {
             return GetSingleEntity(WhereEqual(x => x.ID, id));

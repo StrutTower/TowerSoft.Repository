@@ -12,63 +12,53 @@ namespace TowerSoft.Repository {
     public partial class Repository<T> {
         #region Constructors
         /// <summary>
-        /// Create a new Repository using attributes to define the database mapping.
+        /// Creates a new Repository using attributes to define the database mapping.
         /// All non-virtual properties with public getters and setters will be mapped
         /// unless overridden with an attribute.
         /// </summary>
-        /// <param name="connectionString">Connection string to the database</param>
-        /// <param name="dbAdapter">DbAdapter for the database. These are found in separate packages for each database supported.</param>
-        public Repository(string connectionString, IDbAdapter dbAdapter) {
-            ConnectionString = connectionString;
+        /// <param name="dbAdapter">DbAdapter class for the database being used</param>
+        /// <param name="useUnitOfWorkPattern">Sets if the unit of work pattern will be used. Default = true</param>
+        public Repository(IDbAdapter dbAdapter, bool useUnitOfWorkPattern = true) {
             DbAdapter = dbAdapter;
+            DbConnection = dbAdapter.DbConnection;
+            DbTransaction = dbAdapter.DbTransaction;
+            ConnectionString = dbAdapter.ConnectionString;
             TableName = GetTableName();
             Mappings = new MappingModel<T>();
-            IsUnitOfWorkPattern = false;
+            IsUnitOfWorkPattern = useUnitOfWorkPattern;
         }
 
         /// <summary>
-        /// Creates a new Repository with the Unit of Work pattern and uses attributes to define the database mapping.
-        /// All non-virtual properties with public getters and setters will be mapped
-        /// unless overridden with an attribute.
+        /// Creates a new Repository using an EntityMap to define the database mapping.
         /// </summary>
-        /// <param name="unitOfWork">UnitOfWork class for the database being used</param>
-        public Repository(IUnitOfWork unitOfWork) {
-            DbConnection = unitOfWork.DbConnection;
-            DbTransaction = unitOfWork.DbTransaction;
-            ConnectionString = unitOfWork.ConnectionString;
-            DbAdapter = unitOfWork.DbAdapter;
-            TableName = GetTableName();
-            Mappings = new MappingModel<T>();
-            IsUnitOfWorkPattern = true;
-        }
-
-        /// <summary>
-        /// Creates a new repository using an EntityMap to define the database mapping.
-        /// </summary>
-        /// <param name="connectionString">Connection string to the database</param>
-        /// <param name="dbAdapter">DbAdapter for the database. These are found in separate packages for each database supported.</param>
+        /// <param name="dbAdapter">DbAdapter class for the database being used</param>
         /// <param name="entityMap">Entity map class used to define the mapping for this repository</param>
-        public Repository(string connectionString, IDbAdapter dbAdapter, EntityMap<T> entityMap) {
-            ConnectionString = connectionString;
+        /// <param name="useUnitOfWorkPattern">Sets if the unit of work pattern will be used. Default = true</param>
+        public Repository(IDbAdapter dbAdapter, EntityMap<T> entityMap, bool useUnitOfWorkPattern = true) {
             DbAdapter = dbAdapter;
+            DbConnection = dbAdapter.DbConnection;
+            DbTransaction = dbAdapter.DbTransaction;
+            ConnectionString = dbAdapter.ConnectionString;
             TableName = entityMap.TableName;
             Mappings = new MappingModel<T>(entityMap);
-            IsUnitOfWorkPattern = false;
+            IsUnitOfWorkPattern = useUnitOfWorkPattern;
         }
 
         /// <summary>
-        /// Creates a new Repository usongbthe Unit of Work pattern and an EntityMap to define the database mapping
+        /// Creates a new Repository with the table name and maps passed directly into the contructor.
         /// </summary>
-        /// <param name="unitOfWork">UnitOfWork class for the database being used</param>
-        /// <param name="entityMap">Entity map class used to define the mapping for this repository</param>
-        public Repository(IUnitOfWork unitOfWork, EntityMap<T> entityMap) {
-            DbConnection = unitOfWork.DbConnection;
-            DbTransaction = unitOfWork.DbTransaction;
-            ConnectionString = unitOfWork.ConnectionString;
-            DbAdapter = unitOfWork.DbAdapter;
-            TableName = entityMap.TableName;
-            Mappings = new MappingModel<T>(entityMap);
-            IsUnitOfWorkPattern = true;
+        /// <param name="dbAdapter">DbAdapter class for the database being used</param>
+        /// <param name="tableName">Name of the table</param>
+        /// <param name="maps">List of maps for this tabe</param>
+        /// <param name="useUnitOfWorkPattern">Sets if the unit of work pattern will be used. Default = true</param>
+        public Repository(IDbAdapter dbAdapter, string tableName, IEnumerable<IMap> maps, bool useUnitOfWorkPattern = true) {
+            DbAdapter = dbAdapter;
+            DbConnection = dbAdapter.DbConnection;
+            DbTransaction = dbAdapter.DbTransaction;
+            ConnectionString = dbAdapter.ConnectionString;
+            TableName = tableName;
+            Mappings = new MappingModel<T>(maps);
+            IsUnitOfWorkPattern = useUnitOfWorkPattern;
         }
         #endregion
 
@@ -374,6 +364,10 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <returns></returns>
         protected IDbConnection GetDbConnection() {
+            if (DbAdapter.IsDisposed)
+                throw new Exception("This DbAdapter has already been disposed. " +
+                    "Make sure you are calling the DbAdapter and your Unit of Work class in a using statement.");
+
             if (DbConnection == null)
                 DbConnection = DbAdapter.CreateNewDbConnection(ConnectionString);
 
@@ -393,14 +387,7 @@ namespace TowerSoft.Repository {
             foreach (Map map in Mappings.AllMaps) {
                 columns.Add(DbAdapter.GetSelectColumnCast(typeof(T), TableName, map));
             }
-            if (Mappings.JoinedMaps.Any()) {
-                foreach (JoinedMap joinedMap in Mappings.JoinedMaps) {
-                    columns.Add(joinedMap.TableAndColumnName + " " + joinedMap.PropertyName);
-                    if (!string.IsNullOrWhiteSpace(joinedMap.JoinStatement))
-                        joins.Add(joinedMap.JoinStatement);
-                }
-            }
-
+            
             string query = $"SELECT {string.Join(",", columns)} FROM {TableName} ";
             if (joins.Any())
                 query += string.Join(" ", joins.Distinct()) + " ";
