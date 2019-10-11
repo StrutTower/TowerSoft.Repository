@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace TowerSoft.Repository.Interfaces {
-    public interface IUnitOfWork : IDisposable {
+    public interface IRepositoryUnitOfWork : IDisposable {
         IDbAdapter DbAdapter { get; set; }
 
         void BeginTransaction();

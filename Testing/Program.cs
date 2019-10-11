@@ -7,7 +7,7 @@ using TestingLib.Repository;
 namespace Testing {
     class Program {
         static void Main(string[] args) {
-            using (UnitOfWork uow = new UnitOfWorkFactory().UnitOfWork) {
+            using (UnitOfWork uow = UnitOfWork.CreateNew()) {
 
                 PersonRepository personRepo = new PersonRepository(uow);
 
