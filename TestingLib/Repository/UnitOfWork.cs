@@ -8,11 +8,6 @@ namespace TestingLib.Repository {
             DbAdapter = new MySqlDbAdapter(connectionString);
         }
 
-        public static UnitOfWork CreateNew() {
-            string connectionString = "server=towerserver;uid=unittests;password=$1letmein;database=unittests";
-            return new UnitOfWork(connectionString);
-        }
-
         public IDbAdapter DbAdapter { get; private set; }
 
         public void BeginTransaction() {
@@ -29,6 +24,11 @@ namespace TestingLib.Repository {
 
         public void Dispose() {
             DbAdapter.Dispose();
+        }
+
+        public static UnitOfWork CreateNew() {
+            string connectionString = "server=towerserver;uid=unittests;password=$1letmein;database=unittests";
+            return new UnitOfWork(connectionString);
         }
     }
 }
