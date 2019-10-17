@@ -9,6 +9,7 @@ namespace TowerSoft.Repository.Cache {
     public class CacheDbAdapter : IDbAdapter {
         public CacheDbAdapter(string connectionString) {
             ConnectionString = connectionString;
+            DbConnection = new CacheConnection(ConnectionString);
         }
 
         #region Unit of Work

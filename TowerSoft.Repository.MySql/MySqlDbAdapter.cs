@@ -8,6 +8,7 @@ namespace TowerSoft.Repository.MySql {
     public class MySqlDbAdapter : IDbAdapter {
         public MySqlDbAdapter(string connectionString) {
             ConnectionString = connectionString;
+            DbConnection = new MySqlConnection(ConnectionString);
         }
 
         #region Unit of Work

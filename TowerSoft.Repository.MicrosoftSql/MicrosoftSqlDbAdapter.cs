@@ -8,6 +8,7 @@ namespace TowerSoft.Repository.MicrosoftSql {
     public class MicrosoftSqlDbAdapter : IDbAdapter {
         public MicrosoftSqlDbAdapter(string connectionString) {
             ConnectionString = connectionString;
+            DbConnection = new SqlConnection(ConnectionString);
         }
 
         #region Unit of Work

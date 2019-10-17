@@ -8,6 +8,7 @@ namespace TowerSoft.Repository.SQLite {
     public class SQLiteDbAdapter : IDbAdapter {
         public SQLiteDbAdapter(string connectionString) {
             ConnectionString = connectionString;
+            DbConnection = new SQLiteConnection(ConnectionString);
         }
 
         #region Unit of Work
