@@ -8,17 +8,22 @@ namespace Testing {
     class Program {
         static void Main(string[] args) {
             using (UnitOfWork uow = UnitOfWork.CreateNew()) {
+                uow.BeginTransaction();
 
-                PersonRepository personRepo = new PersonRepository(uow);
+                try {
+                    PersonRepository personRepo = new PersonRepository(uow);
 
-                List<Person> people = personRepo.GetAll();
+                    List<Person> people = personRepo.GetAll();
 
-                long test = personRepo.GetCount();
+                    long test = personRepo.GetCount();
 
-                Person test1 = personRepo.GetByID(1);
+                    Person test1 = personRepo.GetByID(1);
 
-                uow.DbAdapter.CommitTransaction();
-
+                    uow.CommitTransaction();
+                } catch {
+                    uow.RollbackTransaction();
+                    throw;
+                }
                 Console.WriteLine();
             }
         }
