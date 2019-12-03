@@ -51,7 +51,7 @@ namespace TowerSoft.Repository {
         /// <typeparam name="TProperty">Property of the entity to map</typeparam>
         /// <param name="expression">Expression for the property of the entity to map</param>
         /// <returns></returns>
-        protected PropertyMapBuilder MapPropery<TProperty>(Expression<Func<TSource, TProperty>> expression) {
+        protected PropertyMapBuilder MapProperty<TProperty>(Expression<Func<TSource, TProperty>> expression) {
             MemberExpression memberExpression = expression.Body as MemberExpression;
             return new PropertyMapBuilder(memberExpression.Member.Name);
         }

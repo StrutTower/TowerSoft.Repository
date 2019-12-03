@@ -9,10 +9,10 @@ namespace TowerSoft.RepositoryTests.TestObjects {
 
         public override IEnumerable<IMap> GetMaps() {
             return new[] {
-                MapPropery(x => x.ID).AsAutonumber().ToSameName(),
-                MapPropery(x => x.FirstName).ToSameName(),
-                MapPropery(x => x.LastName).To("Last_Name"),
-                MapPropery(x => x.NotMappedProperty).NotMapped()
+                MapProperty(x => x.ID).AsAutonumber().ToSameName(),
+                MapProperty(x => x.FirstName).ToSameName(),
+                MapProperty(x => x.LastName).To("Last_Name"),
+                MapProperty(x => x.NotMappedProperty).NotMapped()
             };
         }
     }
