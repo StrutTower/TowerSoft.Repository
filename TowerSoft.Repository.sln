@@ -9,15 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.Repository.MySql"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.RepositoryTests", "TowerSoft.RepositoryTests\TowerSoft.RepositoryTests.csproj", "{4881B0FE-895F-4D7F-8863-A3B5ECDF1A5E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{252A153B-0E3F-4583-A7A3-C3990C0AD1D2}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.Repository.SQLite", "TowerSoft.Repository.SqlLite\TowerSoft.Repository.SQLite.csproj", "{07373FEE-1ACC-4D99-9DA5-CED892684E1F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.Repository.MicrosoftSql", "TowerSoft.Repository.MicrosoftSql\TowerSoft.Repository.MicrosoftSql.csproj", "{5C6E9F02-801E-41B6-9A3A-D1ADCFB6F34B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TowerSoft.Repository.Cache", "TowerSoft.Repository.Cache\TowerSoft.Repository.Cache.csproj", "{93403903-956A-428C-AE30-7E7498FFC0FC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingLib", "TestingLib\TestingLib.csproj", "{21E41217-CA2E-4B42-AAD3-3BF0BCD30FD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +33,6 @@ Global
 		{4881B0FE-895F-4D7F-8863-A3B5ECDF1A5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4881B0FE-895F-4D7F-8863-A3B5ECDF1A5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4881B0FE-895F-4D7F-8863-A3B5ECDF1A5E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{252A153B-0E3F-4583-A7A3-C3990C0AD1D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{252A153B-0E3F-4583-A7A3-C3990C0AD1D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{252A153B-0E3F-4583-A7A3-C3990C0AD1D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{252A153B-0E3F-4583-A7A3-C3990C0AD1D2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{07373FEE-1ACC-4D99-9DA5-CED892684E1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{07373FEE-1ACC-4D99-9DA5-CED892684E1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07373FEE-1ACC-4D99-9DA5-CED892684E1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,10 +45,6 @@ Global
 		{93403903-956A-428C-AE30-7E7498FFC0FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93403903-956A-428C-AE30-7E7498FFC0FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93403903-956A-428C-AE30-7E7498FFC0FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{21E41217-CA2E-4B42-AAD3-3BF0BCD30FD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21E41217-CA2E-4B42-AAD3-3BF0BCD30FD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21E41217-CA2E-4B42-AAD3-3BF0BCD30FD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21E41217-CA2E-4B42-AAD3-3BF0BCD30FD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

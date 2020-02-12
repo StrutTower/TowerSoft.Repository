@@ -4,13 +4,16 @@ using System.Text;
 using TowerSoft.Repository.Maps;
 
 namespace TowerSoft.Repository.Builders {
+    /// <summary>
+    /// Fluent map builder used in the EntityMap class
+    /// </summary>
     public partial class PropertyMapBuilder : IEquatable<PropertyMapBuilder> {
         private string PropertyName { get; }
         private bool IsAutonumber { get; set; }
         private bool IsID { get; set; }
 
         /// <summary>
-        /// 
+        /// PropertyMapBuilder constructor
         /// </summary>
         /// <param name="propertyName"></param>
         public PropertyMapBuilder(string propertyName) {
@@ -68,10 +71,19 @@ namespace TowerSoft.Repository.Builders {
             return new Map(PropertyName, columnName ?? PropertyName);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode() {
             return PropertyName.ToLower().GetHashCode();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool Equals(PropertyMapBuilder other) {
             return other != null && PropertyName.Equals(other.PropertyName, StringComparison.InvariantCultureIgnoreCase);
         }

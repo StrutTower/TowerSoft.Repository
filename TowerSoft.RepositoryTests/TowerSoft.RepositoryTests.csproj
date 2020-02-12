@@ -20,8 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MicrosoftSql\" />
-    <Folder Include="SQLite\" />
+    <None Update="appsecrets - template.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="appsecrets.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

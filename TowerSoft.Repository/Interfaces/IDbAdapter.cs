@@ -2,6 +2,9 @@
 using System.Data;
 
 namespace TowerSoft.Repository {
+    /// <summary>
+    /// Interface for the DbAdapter classes that define the difference between different databases
+    /// </summary>
     public interface IDbAdapter : IDisposable {
         #region Unit of Work
         /// <summary>
@@ -10,9 +13,14 @@ namespace TowerSoft.Repository {
         string ConnectionString { get; }
 
         /// <summary>
+        /// Store if the DbConnection and DbTransaction has been disposed
+        /// </summary>
+        bool IsDisposed { get; }
+
+        /// <summary>
         /// ADO.NET DbConnection for the current database
         /// </summary>
-        IDbConnection DbConnection { get; }
+        IDbConnection DbConnection { get; set; }
 
         /// <summary>
         /// ADO.NET DbTransaction for the current database
@@ -33,21 +41,30 @@ namespace TowerSoft.Repository {
         /// Rolls back the changes to the database that were made during the transaction
         /// </summary>
         void RollbackTransaction();
-
-        bool IsDisposed { get; }
         #endregion
 
         /// <summary>
         /// Returns the ADO.NET IDbCommand for this database.
         /// </summary>
-        /// <param name="connectionString"></param>
+        /// <param name="connectionString">Database connection string</param>
         /// <returns></returns>
         IDbConnection CreateNewDbConnection(string connectionString);
 
         /// <summary>
+        /// SQL Statement to retrieve the last inserted ID for this database.
+        /// </summary>
+        /// <returns></returns>
+        string GetLastInsertIdStatement();
+
+        /// <summary>
+        /// Specifies if the last insert ID query needs to be run separately from the insert statement.
+        /// </summary>
+        bool LastInsertIdInSeparateQuery { get; }
+
+        /// <summary>
         /// Returns the parameter placeholder for the supplied column. This is used in the SQL query.
         /// </summary>
-        /// <param name="columnName"></param>
+        /// <param name="columnName">Name of the column</param>
         /// <returns></returns>
         string GetParameterPlaceholder(string columnName);
 
@@ -60,23 +77,12 @@ namespace TowerSoft.Repository {
 
         /// <summary>
         /// Gets the SELECT statement for this table and column.
-        /// Typically this is just TableName.ColumnName but some databases require casting the column to s certain datatype
+        /// Typically this is just TableName.ColumnName but some databases require casting the column to certain datatype
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="tableName"></param>
-        /// <param name="map"></param>
+        /// <param name="type">Object type</param>
+        /// <param name="tableName">Name of the database table</param>
+        /// <param name="map">Map for the property</param>
         /// <returns></returns>
         string GetSelectColumnCast(Type type, string tableName, IMap map);
-
-        /// <summary>
-        /// SQL Statement to retrieve the last inserted ID for this database.
-        /// </summary>
-        /// <returns></returns>
-        string GetLastInsertIdStatement();
-
-        /// <summary>
-        /// Specifies if the last insert ID query needs to be run separately from the insert statement.
-        /// </summary>
-        bool LastInsertIdInSeparateQuery { get; }
     }
 }

@@ -5,28 +5,32 @@ using System.Collections.Generic;
 using System.Linq;
 using TowerSoft.RepositoryTests.TestObjects;
 
-namespace TowerSoft.RepositoryTests.MySql {
+namespace TowerSoft.RepositoryTests.MicrosoftSql {
     [TestClass]
-    public class MySqlRepositoryTests {
+    public class MicrosoftSqlRepositoryTests {
         private static UnitOfWork _uow;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext) {
             _uow = new UnitOfWork();
-            _uow.DbAdapter.DbConnection.Execute("CREATE TABLE IF NOT EXISTS testobject (" +
-                "ID BIGINT(20) AUTO_INCREMENT PRIMARY KEY," +
-                "Title VARCHAR(45) NOT NULL UNIQUE," +
-                "Description MEDIUMTEXT," +
-                "StatusID INT NOT NULL," +
-                "InputOn DATETIME NOT NULL," +
-                "InputByID INT NOT NULL," +
-                "IsActive TINYINT(1) NOT NULL) " +
-                "ENGINE=InnoDB;");
+            _uow.DbAdapter.DbConnection.Execute("" +
+                "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='testobject' AND xtype='U')" +
+                    "CREATE TABLE testobject " +
+                    "(" +
+                    "ID BIGINT IDENTITY(1,1) PRIMARY KEY," +
+                    "Title NVARCHAR(45) NOT NULL UNIQUE," +
+                    "Description TEXT," +
+                    "StatusID INT NOT NULL," +
+                    "InputOn DATETIME NOT NULL," +
+                    "InputByID INT NOT NULL," +
+                    "IsActive TINYINT NOT NULL)");
             _uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE testobject");
-            _uow.DbAdapter.DbConnection.Execute("CREATE TABLE IF NOT EXISTS counttest (" +
-                "ID INT AUTO_INCREMENT PRIMARY KEY," +
-                "Name VARCHAR(45) NOT NULL UNIQUE) " +
-                "ENGINE=InnoDB;");
+            _uow.DbAdapter.DbConnection.Execute("" +
+                "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='counttest' AND xtype='U')" +
+                    "CREATE TABLE counttest " +
+                    "(" +
+                    "ID INT PRIMARY KEY," +
+                    "Name VARCHAR(45) NOT NULL UNIQUE)");
             _uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE counttest");
             CountTestRepository repo = _uow.GetRepo<CountTestRepository>();
             repo.Add(new CountTest { ID = 1, Name = "Object 1" });

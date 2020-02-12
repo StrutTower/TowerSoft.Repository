@@ -2,32 +2,36 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using TowerSoft.RepositoryTests.TestObjects;
 
-namespace TowerSoft.RepositoryTests.MySql {
+namespace TowerSoft.RepositoryTests.SQLite {
     [TestClass]
-    public class MySqlRepositoryTests {
+    public class SqliteRepositoryTests {
         private static UnitOfWork _uow;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext) {
-            _uow = new UnitOfWork();
+            string dbPath = $"{Environment.CurrentDirectory}\\unittest.db";
+            _uow = new UnitOfWork(dbPath);
+            if (!File.Exists(dbPath))
+                SQLiteConnection.CreateFile(dbPath);
+
             _uow.DbAdapter.DbConnection.Execute("CREATE TABLE IF NOT EXISTS testobject (" +
-                "ID BIGINT(20) AUTO_INCREMENT PRIMARY KEY," +
-                "Title VARCHAR(45) NOT NULL UNIQUE," +
-                "Description MEDIUMTEXT," +
-                "StatusID INT NOT NULL," +
-                "InputOn DATETIME NOT NULL," +
-                "InputByID INT NOT NULL," +
-                "IsActive TINYINT(1) NOT NULL) " +
-                "ENGINE=InnoDB;");
-            _uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE testobject");
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "Title TEXT NOT NULL UNIQUE," +
+                "Description TEXT," +
+                "StatusID INTEGER NOT NULL," +
+                "InputOn TEXT NOT NULL," +
+                "InputByID INTEGER NOT NULL," +
+                "IsActive INTEGER NOT NULL);");
+            _uow.DbAdapter.DbConnection.Execute("DELETE FROM testobject");
             _uow.DbAdapter.DbConnection.Execute("CREATE TABLE IF NOT EXISTS counttest (" +
-                "ID INT AUTO_INCREMENT PRIMARY KEY," +
-                "Name VARCHAR(45) NOT NULL UNIQUE) " +
-                "ENGINE=InnoDB;");
-            _uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE counttest");
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "Name TEXT NOT NULL UNIQUE);");
+            _uow.DbAdapter.DbConnection.Execute("DELETE FROM counttest");
             CountTestRepository repo = _uow.GetRepo<CountTestRepository>();
             repo.Add(new CountTest { ID = 1, Name = "Object 1" });
             repo.Add(new CountTest { ID = 2, Name = "Object 2" });

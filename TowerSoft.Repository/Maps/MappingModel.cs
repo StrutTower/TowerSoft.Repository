@@ -7,6 +7,10 @@ using System.Reflection;
 using TowerSoft.Repository.Attributes;
 
 namespace TowerSoft.Repository.Maps {
+    /// <summary>
+    /// Class that process and stores the mapping info for the repository
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class MappingModel<T> {
         /// <summary>
         /// Autonumber map, if there is one
@@ -33,8 +37,10 @@ namespace TowerSoft.Repository.Maps {
         /// </summary>
         public Dictionary<string, string> AllMapsDictionary { get; set; }
 
+        private bool IgnoreObjectMaps { get; set; }
 
-        internal MappingModel() {
+        internal MappingModel(bool ignoreObjectMaps) {
+            IgnoreObjectMaps = ignoreObjectMaps;
             InitializeLists();
             GetColumnMappingUsingReflection();
             FinalizeMapReading();
@@ -65,10 +71,10 @@ namespace TowerSoft.Repository.Maps {
 
             foreach (PropertyInfo prop in domainType.GetProperties()) {
                 if (prop.IsDefined(typeof(NotMappedAttribute))) continue;
+                if (IgnoreObjectMaps && (prop.Name.EndsWith("_Object") || prop.Name.EndsWith("_Objects"))) continue;
 
                 if (prop.GetMethod != null && prop.GetMethod.IsPublic &&
-                    prop.SetMethod != null && prop.SetMethod.IsPublic &&
-                    !prop.GetMethod.IsVirtual) {
+                prop.SetMethod != null && prop.SetMethod.IsPublic) {
 
                     // Column Name
                     string columnName = prop.Name;
@@ -79,7 +85,7 @@ namespace TowerSoft.Repository.Maps {
                         }
                     }
 
-                    if (prop.IsDefined(typeof(AutonumberAttribute))) {
+                    if (prop.IsDefined(typeof(AutonumberAttribute), true)) {
                         // Autonumber Map
                         if (AutonumberMap != null)
                             throw new Exception("Entity " + domainType.Name + " cannot have more than one autonumber map.");
@@ -103,8 +109,9 @@ namespace TowerSoft.Repository.Maps {
             List<IMap> maps = entityMap.GetMaps().ToList();
 
             IEnumerable<Map> defaultMaps = null;
-            if (entityMap.EntityMapOption == AutoMappingOption.UseDefaultPropertyMaps) {
-                defaultMaps = GetDefaultMaps();
+            if (entityMap.EntityMapOption == AutoMappingOption.UseDefaultPropertyMaps ||
+                entityMap.EntityMapOption == AutoMappingOption.UseNonObjectPropertyMaps) {
+                defaultMaps = GetDefaultMaps(entityMap.EntityMapOption);
 
                 if (defaultMaps != null) {
                     foreach (Map defaultMap in defaultMaps) {
@@ -161,12 +168,13 @@ namespace TowerSoft.Repository.Maps {
             }
         }
 
-        private IEnumerable<Map> GetDefaultMaps() {
+        private IEnumerable<Map> GetDefaultMaps(AutoMappingOption option) {
             List<Map> maps = new List<Map>();
             foreach (PropertyInfo prop in typeof(T).GetProperties()) {
+                if (prop.IsDefined(typeof(NotMappedAttribute))) continue;
+                if (option == AutoMappingOption.UseNonObjectPropertyMaps && (prop.Name.EndsWith("_Object") || prop.Name.EndsWith("_Objects"))) continue;
                 if (prop.GetMethod != null && prop.GetMethod.IsPublic &&
-                    prop.SetMethod != null && prop.SetMethod.IsPublic &&
-                    !prop.GetMethod.IsVirtual) {
+                    prop.SetMethod != null && prop.SetMethod.IsPublic) {
                     maps.Add(new Map(prop.Name));
                 }
             }

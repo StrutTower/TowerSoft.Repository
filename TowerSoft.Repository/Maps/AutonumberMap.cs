@@ -12,8 +12,8 @@
         /// <summary>
         /// Initialize a new autonumber map where the column and property names are different
         /// </summary>
-        /// <param name="propertyName"></param>
-        /// <param name="columnName"></param>
+        /// <param name="propertyName">Name of the property on the C# object</param>
+        /// <param name="columnName">Name of the column in the database</param>
         public AutonumberMap(string propertyName, string columnName) : base(propertyName, columnName) { }
     }
 }

@@ -8,53 +8,52 @@ using TowerSoft.RepositoryTests.MySql;
 namespace TowerSoft.RepositoryTests {
     [TestClass]
     public class RepositoryTests {
+        [TestMethod]
+        public void PropertyDataAttributeMapping_TestObject_ShouldReturnCorrectMaps() {
+            FauxRepository repo = new FauxRepository();
+            ValidateMaps(repo);
+        }
 
-        //[TestMethod]
-        //public void PropertyDataAttributeMapping_PersonTestObject_ShouldReturnCorrectMaps() {
-        //    PersonRepository personRepo;
-        //    using (IUnitOfWork uow = new MySqlUnitOfWork("")) {
-        //        personRepo = new PersonRepository(uow);
-        //    }
+        [TestMethod]
+        public void EntityMapMapping_TestObject_ShouldReturnCorrectMaps() {
+            FauxRepository repo = new FauxRepository(new TestObjectEntityMap());
+            ValidateMaps(repo);
+        }
 
-        //    IMap expectedAutonumberMap = new AutonumberMap("ID");
-        //    Assert.AreEqual(expectedAutonumberMap.PropertyName, personRepo.GetAutonumberMap().PropertyName);
-        //    Assert.AreEqual(expectedAutonumberMap.ColumnName, personRepo.GetAutonumberMap().ColumnName);
+        [TestMethod]
+        public void ExplicitMapping_TestObject_ShouldReturnCorrectMaps() {
+            FauxRepository repo = new FauxRepository(true);
+            ValidateMaps(repo);
+        }
 
-        //    Assert.AreEqual(1, personRepo.GetPrimaryKeyMaps().Count());
-        //    Assert.AreEqual(expectedAutonumberMap.PropertyName, personRepo.GetPrimaryKeyMaps().First().PropertyName);
-        //    Assert.AreEqual(expectedAutonumberMap.ColumnName, personRepo.GetPrimaryKeyMaps().First().ColumnName);
+        private void ValidateMaps(FauxRepository repo) {
+            IMap expectedAutonumberMap = new AutonumberMap("ID");
+            Assert.AreEqual(expectedAutonumberMap.PropertyName, repo.GetAutonumberMap().PropertyName);
+            Assert.AreEqual(expectedAutonumberMap.ColumnName, repo.GetAutonumberMap().ColumnName);
 
-        //    Assert.AreEqual(3, personRepo.GetAllMaps().Count());
+            Assert.AreEqual(1, repo.GetPrimaryKeyMaps().Count());
+            Assert.AreEqual(expectedAutonumberMap.PropertyName, repo.GetPrimaryKeyMaps().First().PropertyName);
+            Assert.AreEqual(expectedAutonumberMap.ColumnName, repo.GetPrimaryKeyMaps().First().ColumnName);
 
-        //    IMap firstNameMap = personRepo.GetAllMaps().SingleOrDefault(x => x.PropertyName == "FirstName");
-        //    Assert.AreEqual("FirstName", firstNameMap.ColumnName);
+            Assert.AreEqual(7, repo.GetAllMaps().Count());
 
-        //    IMap lastNameMap = personRepo.GetAllMaps().SingleOrDefault(x => x.PropertyName == "LastName");
-        //    Assert.AreEqual("Last_Name", lastNameMap.ColumnName);
-        //}
+            IMap firstNameMap = repo.GetAllMaps().SingleOrDefault(x => x.PropertyName == "Title");
+            Assert.AreEqual("Title", firstNameMap.ColumnName);
 
-        //[TestMethod]
-        //public void EntityMapMapping_PersonTestObject_ShouldReturnCorrectMaps() {
-        //    PersonRepository personRepo;
-        //    using (IUnitOfWork uow = new MySqlUnitOfWork("")) {
-        //        personRepo = new PersonRepository("");
-        //    }
+            IMap lastNameMap = repo.GetAllMaps().SingleOrDefault(x => x.PropertyName == "Description");
+            Assert.AreEqual("Description", lastNameMap.ColumnName);
 
-        //    AutonumberMap expectedAutonumberMap = new AutonumberMap("ID");
-        //    Assert.AreEqual(expectedAutonumberMap.PropertyName, personRepo.GetAutonumberMap().PropertyName);
-        //    Assert.AreEqual(expectedAutonumberMap.ColumnName, personRepo.GetAutonumberMap().ColumnName);
+            IMap statusMap = repo.GetAllMaps().SingleOrDefault(x => x.PropertyName == "StatusID");
+            Assert.AreEqual("StatusID", statusMap.ColumnName);
 
-        //    Assert.AreEqual(1, personRepo.GetPrimaryKeyMaps().Count());
-        //    Assert.AreEqual(expectedAutonumberMap.PropertyName, personRepo.GetPrimaryKeyMaps().First().PropertyName);
-        //    Assert.AreEqual(expectedAutonumberMap.ColumnName, personRepo.GetPrimaryKeyMaps().First().ColumnName);
+            IMap inputOnMap = repo.GetAllMaps().SingleOrDefault(x => x.PropertyName == "InputOn");
+            Assert.AreEqual("InputOn", inputOnMap.ColumnName);
 
-        //    Assert.AreEqual(3, personRepo.GetAllMaps().Count());
+            IMap inputByIDMap = repo.GetAllMaps().SingleOrDefault(x => x.PropertyName == "InputByID");
+            Assert.AreEqual("InputByID", inputByIDMap.ColumnName);
 
-        //    IMap firstNameMap = personRepo.GetAllMaps().SingleOrDefault(x => x.PropertyName == "FirstName");
-        //    Assert.AreEqual("FirstName", firstNameMap.ColumnName);
-
-        //    IMap lastNameMap = personRepo.GetAllMaps().SingleOrDefault(x => x.PropertyName == "LastName");
-        //    Assert.AreEqual("Last_Name", lastNameMap.ColumnName);
-        //}
+            IMap isActiveMap = repo.GetAllMaps().SingleOrDefault(x => x.PropertyName == "IsActive");
+            Assert.AreEqual("IsActive", isActiveMap.ColumnName);
+        }
     }
 }

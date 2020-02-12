@@ -9,6 +9,10 @@ using System.Reflection;
 using TowerSoft.Repository.Maps;
 
 namespace TowerSoft.Repository {
+    /// <summary>
+    /// Repository wrapper for Dapper
+    /// </summary>
+    /// <typeparam name="T">Object type</typeparam>
     public partial class Repository<T> {
         #region Constructors
         /// <summary>
@@ -18,13 +22,12 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <param name="dbAdapter">DbAdapter class for the database being used</param>
         /// <param name="useUnitOfWorkPattern">Sets if the unit of work pattern will be used. Default = true</param>
-        public Repository(IDbAdapter dbAdapter, bool useUnitOfWorkPattern = true) {
+        /// <param name="ignoreObjectMaps">Sets if properties that end with _Object or _Objects will be ignored by the automatic mapping</param>
+        public Repository(IDbAdapter dbAdapter, bool useUnitOfWorkPattern = true, bool ignoreObjectMaps = true) {
             DbAdapter = dbAdapter;
-            DbConnection = dbAdapter.DbConnection;
-            DbTransaction = dbAdapter.DbTransaction;
             ConnectionString = dbAdapter.ConnectionString;
             TableName = GetTableName();
-            Mappings = new MappingModel<T>();
+            Mappings = new MappingModel<T>(ignoreObjectMaps);
             IsUnitOfWorkPattern = useUnitOfWorkPattern;
         }
 
@@ -36,8 +39,6 @@ namespace TowerSoft.Repository {
         /// <param name="useUnitOfWorkPattern">Sets if the unit of work pattern will be used. Default = true</param>
         public Repository(IDbAdapter dbAdapter, EntityMap<T> entityMap, bool useUnitOfWorkPattern = true) {
             DbAdapter = dbAdapter;
-            DbConnection = dbAdapter.DbConnection;
-            DbTransaction = dbAdapter.DbTransaction;
             ConnectionString = dbAdapter.ConnectionString;
             TableName = entityMap.TableName;
             Mappings = new MappingModel<T>(entityMap);
@@ -53,8 +54,6 @@ namespace TowerSoft.Repository {
         /// <param name="useUnitOfWorkPattern">Sets if the unit of work pattern will be used. Default = true</param>
         public Repository(IDbAdapter dbAdapter, string tableName, IEnumerable<IMap> maps, bool useUnitOfWorkPattern = true) {
             DbAdapter = dbAdapter;
-            DbConnection = dbAdapter.DbConnection;
-            DbTransaction = dbAdapter.DbTransaction;
             ConnectionString = dbAdapter.ConnectionString;
             TableName = tableName;
             Mappings = new MappingModel<T>(maps);
@@ -87,16 +86,6 @@ namespace TowerSoft.Repository {
         /// Stores if the Repository was created using the Unir of Work pattern
         /// </summary>
         protected bool IsUnitOfWorkPattern { get; private set; }
-
-        /// <summary>
-        /// Current ADO.NET connection used by this Repository
-        /// </summary>
-        protected IDbConnection DbConnection { get; private set; }
-
-        /// <summary>
-        /// Current ADO.NET transaction used by this Repository
-        /// </summary>
-        protected IDbTransaction DbTransaction { get; }
         #endregion
 
         #region Operations
@@ -145,7 +134,7 @@ namespace TowerSoft.Repository {
                 }
                 query += "WHERE " + string.Join(" AND ", whereStatements);
             }
-            long count = GetDbConnection().QuerySingle<long>(query, parameters, DbTransaction);
+            long count = GetDbConnection().QuerySingle<long>(query, parameters, DbAdapter.DbTransaction);
             if (!IsUnitOfWorkPattern)
                 GetDbConnection().Close();
 
@@ -177,15 +166,15 @@ namespace TowerSoft.Repository {
               TableName, string.Join(",", columns), string.Join(",", values));
 
             if (Mappings.AutonumberMap == null) {
-                GetDbConnection().Execute(query, parameters, DbTransaction);
+                GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
             } else {
                 long autonumberValue = 0;
                 if (DbAdapter.LastInsertIdInSeparateQuery) {
-                    GetDbConnection().Execute(query, parameters, DbTransaction);
-                    autonumberValue = GetDbConnection().QuerySingle<long>(DbAdapter.GetLastInsertIdStatement(), null, DbTransaction);
+                    GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
+                    autonumberValue = GetDbConnection().QuerySingle<long>(DbAdapter.GetLastInsertIdStatement(), null, DbAdapter.DbTransaction);
                 } else {
                     query += ";" + DbAdapter.GetLastInsertIdStatement();
-                    autonumberValue = GetDbConnection().QuerySingle<long>(query, parameters, DbTransaction);
+                    autonumberValue = GetDbConnection().QuerySingle<long>(query, parameters, DbAdapter.DbTransaction);
                 }
                 PropertyInfo prop = entity.GetType().GetProperty(Mappings.AutonumberMap.PropertyName);
                 Mappings.AutonumberMap.SetValue(entity, Convert.ChangeType(autonumberValue, prop.PropertyType));
@@ -217,7 +206,7 @@ namespace TowerSoft.Repository {
             string query = string.Format("UPDATE {0} SET {1} WHERE {2}",
                 TableName, string.Join(", ", updateColumns), string.Join(" AND ", primaryKeyColumns));
 
-            GetDbConnection().Execute(query, parameters, DbTransaction);
+            GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
 
             if (!IsUnitOfWorkPattern)
                 GetDbConnection().Close();
@@ -239,7 +228,7 @@ namespace TowerSoft.Repository {
             string query = string.Format("DELETE FROM {0} WHERE {1}",
                 TableName, string.Join(" AND ", primaryKeyColumns));
 
-            GetDbConnection().Execute(query, parameters, DbTransaction);
+            GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
 
             if (!IsUnitOfWorkPattern)
                 GetDbConnection().Close();
@@ -309,7 +298,7 @@ namespace TowerSoft.Repository {
         /// <param name="queryBuilder">QueryBuilder</param>
         /// <returns></returns>
         protected virtual List<T> GetEntities(QueryBuilder queryBuilder) {
-            List<T> entities = GetDbConnection().Query<T>(queryBuilder.SqlQuery, queryBuilder.Parameters, DbTransaction).ToList();
+            List<T> entities = GetDbConnection().Query<T>(queryBuilder.SqlQuery, queryBuilder.Parameters, DbAdapter.DbTransaction).ToList();
 
             if (!IsUnitOfWorkPattern)
                 GetDbConnection().Close();
@@ -368,13 +357,13 @@ namespace TowerSoft.Repository {
                 throw new Exception("This DbAdapter has already been disposed. " +
                     "Make sure you are calling the DbAdapter and your Unit of Work class in a using statement.");
 
-            if (DbConnection == null)
-                DbConnection = DbAdapter.CreateNewDbConnection(ConnectionString);
+            if (DbAdapter.DbConnection == null)
+                DbAdapter.DbConnection = DbAdapter.CreateNewDbConnection(ConnectionString);
 
-            if (DbConnection.State != ConnectionState.Open)
-                DbConnection.Open();
+            if (DbAdapter.DbConnection.State != ConnectionState.Open)
+                DbAdapter.DbConnection.Open();
 
-            return DbConnection;
+            return DbAdapter.DbConnection;
         }
 
         /// <summary>

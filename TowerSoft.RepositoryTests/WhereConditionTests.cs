@@ -5,10 +5,6 @@ using TowerSoft.Repository;
 namespace TowerSoft.RepositoryTests {
     [TestClass]
     public class WhereConditionTests {
-        public WhereConditionTests() {
-            Console.WriteLine("!!!!!!!!!!!!");
-        }
-
         #region GetComparisonString
         [TestMethod]
         public void GetComparisonString_Equals_ShouldReturnEquals() {
