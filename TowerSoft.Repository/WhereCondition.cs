@@ -95,7 +95,7 @@
         /// </summary>
         /// <returns></returns>
         public bool IsNullEqualsOrNotEquals() {
-            return Value == null && Comparison == Comparison.Equals || Comparison == Comparison.NotEquals;
+            return Value == null && (Comparison == Comparison.Equals || Comparison == Comparison.NotEquals);
         }
     }
 }

@@ -315,7 +315,7 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-        /// Creates a new WhereCondition using a strongly-typed property name
+        /// Creates a new WhereCondition with the equal comparison using a strongly-typed property name
         /// </summary>
         /// <typeparam name="TProperty"></typeparam>
         /// <param name="propertyExpression">Entity property</param>
@@ -331,7 +331,7 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-        /// Creates a new WhereCondition usinf a strongly-typed property name
+        /// Creates a new WhereCondition using a strongly-typed property name
         /// </summary>
         /// <typeparam name="TProperty"></typeparam>
         /// <param name="propertyExpression">Entity property</param>
