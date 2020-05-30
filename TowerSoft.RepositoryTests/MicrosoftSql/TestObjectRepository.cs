@@ -15,5 +15,9 @@ namespace TowerSoft.RepositoryTests.MicrosoftSql {
         public TestObject GetByTitle(string title) {
             return GetSingleEntity(WhereEqual(x => x.Title, title));
         }
+
+        public List<TestObject> GetByDescription(string description) {
+            return GetEntities(Where(x => x.Description, Comparison.LikeRightSideWildcard, description));
+        }
     }
 }

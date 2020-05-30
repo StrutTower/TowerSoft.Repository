@@ -156,8 +156,6 @@ namespace TowerSoft.Repository {
                 parameters.Add(DbAdapter.GetParameterName(map.ColumnName), map.GetValue(entity));
             }
 
-
-
             string query = string.Format(
                "INSERT INTO {0} " +
                "({1})" +
@@ -178,6 +176,36 @@ namespace TowerSoft.Repository {
                 }
                 PropertyInfo prop = entity.GetType().GetProperty(Mappings.AutonumberMap.PropertyName);
                 Mappings.AutonumberMap.SetValue(entity, Convert.ChangeType(autonumberValue, prop.PropertyType));
+            }
+
+            if (!IsUnitOfWorkPattern)
+                GetDbConnection().Close();
+        }
+
+        public virtual void Add(IEnumerable<T> entities) {
+            List<string> columns = new List<string>();
+
+            foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
+                columns.Add(map.ColumnName);
+            }
+
+            foreach (List<T> group in entities.Select((x, i) => new { Index = i, Value = x }).GroupBy(x => x.Index / 100).Select(x => x.Select(y => y.Value).ToList())) {
+                string query = $"INSERT INTO {TableName} ({string.Join(",", columns)}) VALUES ";
+
+                List<string> values = new List<string>();
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                int counter = 1;
+                foreach (T entity in entities) {
+                    List<string> vals = new List<string>();
+                    foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
+                        vals.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName) + counter);
+                        parameters.Add(DbAdapter.GetParameterName(map.ColumnName) + counter, map.GetValue(entity));
+                    }
+                    values.Add($"({string.Join(",", vals)})");
+                    counter++;
+                }
+                query += string.Join(",", values);
+                GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
             }
 
             if (!IsUnitOfWorkPattern)

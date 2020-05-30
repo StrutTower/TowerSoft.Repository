@@ -15,5 +15,9 @@ namespace TowerSoft.RepositoryTests.SQLite {
         public TestObject GetByTitle(string title) {
             return GetSingleEntity(WhereEqual(x => x.Title, title));
         }
+
+        public List<TestObject> GetByDescription(string description) {
+            return GetEntities(WhereEqual(x => x.Description, description));
+        }
     }
 }

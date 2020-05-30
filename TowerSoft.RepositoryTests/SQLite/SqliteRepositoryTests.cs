@@ -61,6 +61,45 @@ namespace TowerSoft.RepositoryTests.SQLite {
         }
 
         [TestMethod]
+        public void Add_MultipleTestObjects_ShouldAdd() {
+            TestObjectRepository repo = _uow.GetRepo<TestObjectRepository>();
+            List<TestObject> objects = new List<TestObject>();
+            objects.Add(new TestObject {
+                Title = "Add Multiple Test",
+                Description = "Multiple Insert Test",
+                StatusID = Status.Active,
+                InputOn = DateTime.Now,
+                InputByID = 1,
+                IsActive = true
+            });
+            objects.Add(new TestObject {
+                Title = "Add Multiple Test2",
+                Description = "Multiple Insert Test",
+                StatusID = Status.Closed,
+                InputOn = DateTime.Now,
+                InputByID = 2,
+                IsActive = true
+            });
+            objects.Add(new TestObject {
+                Title = "Add Multiple Test3",
+                Description = "Multiple Insert Test",
+                StatusID = Status.Pending,
+                InputOn = DateTime.Now,
+                InputByID = 3,
+                IsActive = true
+            });
+
+            repo.Add(objects);
+
+            List<TestObject> testObjects = repo.GetByDescription("Multiple Insert Test");
+
+            Assert.AreEqual(objects.Count, testObjects.Count); // Make sure the same number of objects are returns
+            foreach(TestObject testObject in testObjects) {
+                Assert.AreEqual("Multiple Insert Test", testObject.Description);
+            }
+        }
+
+        [TestMethod]
         public void Update_TestObject_ShouldUpdate() {
             TestObjectRepository repo = _uow.GetRepo<TestObjectRepository>();
             TestObject newObj = new TestObject {
