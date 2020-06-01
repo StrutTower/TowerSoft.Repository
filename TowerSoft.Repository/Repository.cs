@@ -182,6 +182,10 @@ namespace TowerSoft.Repository {
                 GetDbConnection().Close();
         }
 
+        /// <summary>
+        /// Add multiple values to the database. Inserts are done in batches of 100 entities
+        /// </summary>
+        /// <param name="entities">Entities to add to the database</param>
         public virtual void Add(IEnumerable<T> entities) {
             List<string> columns = new List<string>();
 
@@ -189,6 +193,7 @@ namespace TowerSoft.Repository {
                 columns.Add(map.ColumnName);
             }
 
+            // Split entities into batches
             foreach (List<T> group in entities.Select((x, i) => new { Index = i, Value = x }).GroupBy(x => x.Index / 100).Select(x => x.Select(y => y.Value).ToList())) {
                 string query = $"INSERT INTO {TableName} ({string.Join(",", columns)}) VALUES ";
 

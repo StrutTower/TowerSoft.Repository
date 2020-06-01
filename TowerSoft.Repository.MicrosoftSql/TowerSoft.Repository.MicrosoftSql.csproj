@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TowerSoft.Repository.MicrosoftSql</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.3.3</Version>
+    <Version>0.4.0</Version>
     <Company>TowerSoft</Company>
     <Authors>StrutTower</Authors>
     <Product>TowerSoft.Repository</Product>
@@ -12,12 +12,13 @@
     <PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
-    <AssemblyVersion>0.3.3.0</AssemblyVersion>
-    <FileVersion>0.3.3.0</FileVersion>
+    <AssemblyVersion>0.4.0.0</AssemblyVersion>
+    <FileVersion>0.4.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>C:\Users\tilleao\Source\Repos\_Github\Repository\TowerSoft.Repository.MicrosoftSql\TowerSoft.Repository.MicrosoftSql.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\TowerSoft.Repository.MicrosoftSql.xml</DocumentationFile>
+    <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
