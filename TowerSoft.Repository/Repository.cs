@@ -21,14 +21,12 @@ namespace TowerSoft.Repository {
         /// unless overridden with an attribute.
         /// </summary>
         /// <param name="dbAdapter">DbAdapter class for the database being used</param>
-        /// <param name="useUnitOfWorkPattern">Sets if the unit of work pattern will be used. Default = true</param>
         /// <param name="ignoreObjectMaps">Sets if properties that end with _Object or _Objects will be ignored by the automatic mapping</param>
-        public Repository(IDbAdapter dbAdapter, bool useUnitOfWorkPattern = true, bool ignoreObjectMaps = true) {
+        public Repository(IDbAdapter dbAdapter, bool ignoreObjectMaps = true) {
             DbAdapter = dbAdapter;
             ConnectionString = dbAdapter.ConnectionString;
             TableName = GetTableName();
             Mappings = new MappingModel<T>(ignoreObjectMaps);
-            IsUnitOfWorkPattern = useUnitOfWorkPattern;
         }
 
         /// <summary>
@@ -36,13 +34,11 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <param name="dbAdapter">DbAdapter class for the database being used</param>
         /// <param name="entityMap">Entity map class used to define the mapping for this repository</param>
-        /// <param name="useUnitOfWorkPattern">Sets if the unit of work pattern will be used. Default = true</param>
-        public Repository(IDbAdapter dbAdapter, EntityMap<T> entityMap, bool useUnitOfWorkPattern = true) {
+        public Repository(IDbAdapter dbAdapter, EntityMap<T> entityMap) {
             DbAdapter = dbAdapter;
             ConnectionString = dbAdapter.ConnectionString;
             TableName = entityMap.TableName;
             Mappings = new MappingModel<T>(entityMap);
-            IsUnitOfWorkPattern = useUnitOfWorkPattern;
         }
 
         /// <summary>
@@ -51,13 +47,11 @@ namespace TowerSoft.Repository {
         /// <param name="dbAdapter">DbAdapter class for the database being used</param>
         /// <param name="tableName">Name of the table</param>
         /// <param name="maps">List of maps for this tabe</param>
-        /// <param name="useUnitOfWorkPattern">Sets if the unit of work pattern will be used. Default = true</param>
-        public Repository(IDbAdapter dbAdapter, string tableName, IEnumerable<IMap> maps, bool useUnitOfWorkPattern = true) {
+        public Repository(IDbAdapter dbAdapter, string tableName, IEnumerable<IMap> maps) {
             DbAdapter = dbAdapter;
             ConnectionString = dbAdapter.ConnectionString;
             TableName = tableName;
             Mappings = new MappingModel<T>(maps);
-            IsUnitOfWorkPattern = useUnitOfWorkPattern;
         }
         #endregion
 
@@ -81,11 +75,6 @@ namespace TowerSoft.Repository {
         /// Mapping model object. Stores all of the database maps
         /// </summary>
         protected MappingModel<T> Mappings { get; private set; }
-
-        /// <summary>
-        /// Stores if the Repository was created using the Unir of Work pattern
-        /// </summary>
-        protected bool IsUnitOfWorkPattern { get; private set; }
         #endregion
 
         #region Operations
@@ -134,11 +123,7 @@ namespace TowerSoft.Repository {
                 }
                 query += "WHERE " + string.Join(" AND ", whereStatements);
             }
-            long count = GetDbConnection().QuerySingle<long>(query, parameters, DbAdapter.DbTransaction);
-            if (!IsUnitOfWorkPattern)
-                GetDbConnection().Close();
-
-            return count;
+            return GetDbConnection().QuerySingle<long>(query, parameters, DbAdapter.DbTransaction);
         }
 
         /// <summary>
@@ -177,9 +162,6 @@ namespace TowerSoft.Repository {
                 PropertyInfo prop = entity.GetType().GetProperty(Mappings.AutonumberMap.PropertyName);
                 Mappings.AutonumberMap.SetValue(entity, Convert.ChangeType(autonumberValue, prop.PropertyType));
             }
-
-            if (!IsUnitOfWorkPattern)
-                GetDbConnection().Close();
         }
 
         /// <summary>
@@ -193,14 +175,18 @@ namespace TowerSoft.Repository {
                 columns.Add(map.ColumnName);
             }
 
+            // Caculate the batch size based on the number of parameters that will be generated in the SQL statements.
+            // SQLite has a parameter limit of 999
+            int batchSize = 900 / columns.Count;
+
             // Split entities into batches
-            foreach (List<T> group in entities.Select((x, i) => new { Index = i, Value = x }).GroupBy(x => x.Index / 100).Select(x => x.Select(y => y.Value).ToList())) {
+            foreach (List<T> batchGroup in entities.Select((x, i) => new { Value = x, Index = i }).GroupBy(x => x.Index / batchSize).Select(x => x.Select(y => y.Value).ToList())) {
                 string query = $"INSERT INTO {TableName} ({string.Join(",", columns)}) VALUES ";
 
                 List<string> values = new List<string>();
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 int counter = 1;
-                foreach (T entity in entities) {
+                foreach (T entity in batchGroup) {
                     List<string> vals = new List<string>();
                     foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
                         vals.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName) + counter);
@@ -212,9 +198,6 @@ namespace TowerSoft.Repository {
                 query += string.Join(",", values);
                 GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
             }
-
-            if (!IsUnitOfWorkPattern)
-                GetDbConnection().Close();
         }
 
         /// <summary>
@@ -240,9 +223,6 @@ namespace TowerSoft.Repository {
                 TableName, string.Join(", ", updateColumns), string.Join(" AND ", primaryKeyColumns));
 
             GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
-
-            if (!IsUnitOfWorkPattern)
-                GetDbConnection().Close();
         }
 
         /// <summary>
@@ -262,9 +242,6 @@ namespace TowerSoft.Repository {
                 TableName, string.Join(" AND ", primaryKeyColumns));
 
             GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
-
-            if (!IsUnitOfWorkPattern)
-                GetDbConnection().Close();
         }
         #endregion
 
@@ -331,12 +308,7 @@ namespace TowerSoft.Repository {
         /// <param name="queryBuilder">QueryBuilder</param>
         /// <returns></returns>
         protected virtual List<T> GetEntities(QueryBuilder queryBuilder) {
-            List<T> entities = GetDbConnection().Query<T>(queryBuilder.SqlQuery, queryBuilder.Parameters, DbAdapter.DbTransaction).ToList();
-
-            if (!IsUnitOfWorkPattern)
-                GetDbConnection().Close();
-
-            return entities;
+            return GetDbConnection().Query<T>(queryBuilder.SqlQuery, queryBuilder.Parameters, DbAdapter.DbTransaction).ToList();
         }
 
         /// <summary>

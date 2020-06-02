@@ -64,30 +64,16 @@ namespace TowerSoft.RepositoryTests.SQLite {
         public void Add_MultipleTestObjects_ShouldAdd() {
             TestObjectRepository repo = _uow.GetRepo<TestObjectRepository>();
             List<TestObject> objects = new List<TestObject>();
-            objects.Add(new TestObject {
-                Title = "Add Multiple Test",
-                Description = "Multiple Insert Test",
-                StatusID = Status.Active,
-                InputOn = DateTime.Now,
-                InputByID = 1,
-                IsActive = true
-            });
-            objects.Add(new TestObject {
-                Title = "Add Multiple Test2",
-                Description = "Multiple Insert Test",
-                StatusID = Status.Closed,
-                InputOn = DateTime.Now,
-                InputByID = 2,
-                IsActive = true
-            });
-            objects.Add(new TestObject {
-                Title = "Add Multiple Test3",
-                Description = "Multiple Insert Test",
-                StatusID = Status.Pending,
-                InputOn = DateTime.Now,
-                InputByID = 3,
-                IsActive = true
-            });
+            for (int i = 0; i < 5000; i++) {
+                objects.Add(new TestObject {
+                    Title = "Add Multiple Test " + i,
+                    Description = "Multiple Insert Test",
+                    StatusID = Status.Active,
+                    InputOn = DateTime.Now,
+                    InputByID = 1,
+                    IsActive = true
+                });
+            }
 
             repo.Add(objects);
 
