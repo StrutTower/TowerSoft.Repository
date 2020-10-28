@@ -42,7 +42,7 @@ namespace TowerSoft.RepositoryTests.MicrosoftSql {
         public TRepo GetRepo<TRepo>() {
             Type type = typeof(TRepo);
 
-            if (!IsAssignableFromGeneric(type, typeof(Repository<>))) {
+            if (!IsAssignableFromGeneric(type, typeof(DbRepository<>))) {
                 throw new Exception($"The type {type.Name} does not extend TowerSoft.Repository.Repository<T> and cannot be loaded by this method.");
             }
 

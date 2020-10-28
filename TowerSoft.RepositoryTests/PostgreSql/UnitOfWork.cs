@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TowerSoft.Repository;
+using TowerSoft.Repository.PostgreSql;
 using TowerSoft.Repository.Interfaces;
-using TowerSoft.Repository.MySql;
 
-namespace TowerSoft.RepositoryTests.MySql {
+namespace TowerSoft.RepositoryTests.PostgreSql {
     public class UnitOfWork : IRepositoryUnitOfWork {
         public UnitOfWork() {
-            string line = System.IO.File.ReadAllLines("appsecrets.txt").Single(x => x.StartsWith("mysql =="));
-            DbAdapter = new MySqlDbAdapter(line.Split(" == ")[1]);
+            string line = System.IO.File.ReadAllLines("appsecrets.txt").Single(x => x.StartsWith("postgresql =="));
+            DbAdapter = new PostgreSqlDbAdapter(line.Split(" == ")[1]);
         }
 
-        public IDbAdapter DbAdapter { get; }
+        public IDbAdapter DbAdapter { get; } 
 
         public void BeginTransaction() {
             DbAdapter.BeginTransaction();

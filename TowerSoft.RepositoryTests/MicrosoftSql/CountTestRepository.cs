@@ -5,7 +5,7 @@ using TowerSoft.Repository;
 using TowerSoft.RepositoryTests.TestObjects;
 
 namespace TowerSoft.RepositoryTests.MicrosoftSql {
-    public class CountTestRepository : Repository<CountTest> {
+    public class CountTestRepository : DbRepository<CountTest> {
         public CountTestRepository(UnitOfWork uow) : base(uow.DbAdapter) { }
 
         public CountTest GetByID(int id) {

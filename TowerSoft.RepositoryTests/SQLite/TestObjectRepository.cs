@@ -5,7 +5,7 @@ using TowerSoft.Repository;
 using TowerSoft.RepositoryTests.TestObjects;
 
 namespace TowerSoft.RepositoryTests.SQLite {
-    public class TestObjectRepository : Repository<TestObject> {
+    public class TestObjectRepository : DbRepository<TestObject> {
         public TestObjectRepository(UnitOfWork uow) : base(uow.DbAdapter) { }
 
         public TestObject GetByID(long id) {

@@ -11,12 +11,14 @@ namespace TowerSoft.RepositoryTests {
     /// <summary>
     /// Fake repository for unit tests
     /// </summary>
-    public class FauxRepository : Repository<TestObject> {
+    public class FauxRepository : DbRepository<TestObject> {
         public FauxRepository() : base(new MySqlDbAdapter("")) { }
+
+        public FauxRepository(string overrideTableName) : base(new MySqlDbAdapter(""), overrideTableName) { }
 
         public FauxRepository(EntityMap<TestObject> entityMap) : base(new MySqlDbAdapter(""), entityMap) { }
 
-        public FauxRepository(bool useMaps) : base(new MySqlDbAdapter(""), "", GetMaps()) { }
+        public FauxRepository(bool useManualMaps) : base(new MySqlDbAdapter(""), "", GetMaps()) { }
 
         private static ICollection<IMap> GetMaps() {
             return new[] {
@@ -28,6 +30,10 @@ namespace TowerSoft.RepositoryTests {
                 new Map("InputByID"),
                 new Map("IsActive")
             };
+        }
+
+        public string GetTableName() {
+            return TableName;
         }
 
         public IMap GetAutonumberMap() {

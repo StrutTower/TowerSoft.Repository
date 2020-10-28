@@ -4,7 +4,7 @@ using System.Text;
 using TowerSoft.Repository;
 using TowerSoft.RepositoryTests.TestObjects;
 
-namespace TowerSoft.RepositoryTests.SQLite {
+namespace TowerSoft.RepositoryTests.PostgreSql {
     public class CountTestRepository : DbRepository<CountTest> {
         public CountTestRepository(UnitOfWork uow) : base(uow.DbAdapter) { }
 

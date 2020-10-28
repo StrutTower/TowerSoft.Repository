@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.Repository.Micros
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TowerSoft.Repository.Cache", "TowerSoft.Repository.Cache\TowerSoft.Repository.Cache.csproj", "{93403903-956A-428C-AE30-7E7498FFC0FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TowerSoft.Repository.PostgreSql", "TowerSoft.Repository.PostgreSql\TowerSoft.Repository.PostgreSql.csproj", "{8F6E6E5E-4963-4649-BA6D-5EEAE196B125}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{93403903-956A-428C-AE30-7E7498FFC0FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93403903-956A-428C-AE30-7E7498FFC0FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93403903-956A-428C-AE30-7E7498FFC0FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F6E6E5E-4963-4649-BA6D-5EEAE196B125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F6E6E5E-4963-4649-BA6D-5EEAE196B125}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F6E6E5E-4963-4649-BA6D-5EEAE196B125}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F6E6E5E-4963-4649-BA6D-5EEAE196B125}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

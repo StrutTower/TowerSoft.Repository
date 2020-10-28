@@ -2,12 +2,17 @@
 using System.Linq;
 using TowerSoft.Repository;
 using TowerSoft.Repository.Maps;
-using TowerSoft.Repository.MySql;
-using TowerSoft.RepositoryTests.MySql;
 
 namespace TowerSoft.RepositoryTests {
     [TestClass]
     public class RepositoryTests {
+        [TestMethod]
+        public void OverrideTableName_FauxRepository_ShouldReturnOverriddenTableName() {
+            string tableName = "overriddenTableName";
+            FauxRepository repo = new FauxRepository(tableName);
+            Assert.AreEqual(tableName, repo.GetTableName());
+        }
+
         [TestMethod]
         public void PropertyDataAttributeMapping_TestObject_ShouldReturnCorrectMaps() {
             FauxRepository repo = new FauxRepository();

@@ -4,7 +4,7 @@ using System.Text;
 using TowerSoft.Repository;
 using TowerSoft.RepositoryTests.TestObjects;
 
-namespace TowerSoft.RepositoryTests.MySql {
+namespace TowerSoft.RepositoryTests.PostgreSql {
     public class TestObjectRepository : DbRepository<TestObject> {
         public TestObjectRepository(UnitOfWork uow) : base(uow.DbAdapter) { }
 
