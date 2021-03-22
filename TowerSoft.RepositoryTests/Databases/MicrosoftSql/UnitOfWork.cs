@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using TowerSoft.Repository;
 using TowerSoft.Repository.Interfaces;
-using TowerSoft.Repository.MySql;
+using TowerSoft.Repository.MicrosoftSql;
+using TowerSoft.RepositoryTests.Interfaces;
 
-namespace TowerSoft.RepositoryTests.MySql {
-    public class UnitOfWork : IRepositoryUnitOfWork {
+namespace TowerSoft.RepositoryTests.MicrosoftSql {
+    public class UnitOfWork : IRepositoryUnitOfWork, IUnitOfWork {
         public UnitOfWork() {
-            string line = System.IO.File.ReadAllLines("appsecrets.txt").Single(x => x.StartsWith("mysql =="));
-            DbAdapter = new MySqlDbAdapter(line.Split(" == ")[1]);
+            string line = System.IO.File.ReadAllLines("appsecrets.txt").Single(x => x.StartsWith("microsoftsql =="));
+            DbAdapter = new MicrosoftSqlDbAdapter(line.Split(" == ")[1]);
         }
 
         public IDbAdapter DbAdapter { get; }

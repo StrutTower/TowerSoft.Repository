@@ -312,7 +312,9 @@ namespace TowerSoft.Repository {
         /// <param name="queryBuilder">QueryBuilder</param>
         /// <returns></returns>
         protected virtual List<T> GetEntities(QueryBuilder queryBuilder) {
-            return GetDbConnection().Query<T>(queryBuilder.SqlQuery, queryBuilder.Parameters, DbAdapter.DbTransaction).ToList();
+            List<T> entities = GetDbConnection().Query<T>(queryBuilder.SqlQuery, queryBuilder.Parameters, DbAdapter.DbTransaction).ToList();
+            PostProcessEntities(entities);
+            return entities;
         }
 
         /// <summary>
@@ -391,6 +393,12 @@ namespace TowerSoft.Repository {
                 query += string.Join(" ", joins.Distinct()) + " ";
             return query;
         }
+
+        /// <summary>
+        /// Can be overriden to run code on entities after GetEntities or GetSingleEntity. This method does nothing unless overriden.
+        /// </summary>
+        /// <param name="entities">Entities retrieved from the database</param>
+        protected virtual void PostProcessEntities(List<T> entities) { }
 
         private string GetTableName() {
             Type domainType = typeof(T);

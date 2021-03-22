@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TowerSoft.Repository;
 using TowerSoft.Repository.Interfaces;
-using TowerSoft.Repository.SQLite;
+using TowerSoft.Repository.MySql;
+using TowerSoft.RepositoryTests.Interfaces;
 
-namespace TowerSoft.RepositoryTests.SQLite {
-    public class UnitOfWork : IRepositoryUnitOfWork {
-        public UnitOfWork(string path) {
-            DbAdapter = new SQLiteDbAdapter($"Data Source={path};Version=3;");
+namespace TowerSoft.RepositoryTests.MySql {
+    public class UnitOfWork : IRepositoryUnitOfWork, IUnitOfWork {
+        public UnitOfWork() {
+            string line = System.IO.File.ReadAllLines("appsecrets.txt").Single(x => x.StartsWith("mysql =="));
+            DbAdapter = new MySqlDbAdapter(line.Split(" == ")[1]);
         }
 
         public IDbAdapter DbAdapter { get; }

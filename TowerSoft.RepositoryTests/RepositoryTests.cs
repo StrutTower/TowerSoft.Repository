@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Dapper;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using TowerSoft.Repository;
 using TowerSoft.Repository.Maps;

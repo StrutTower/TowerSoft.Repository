@@ -3,12 +3,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TowerSoft.RepositoryTests.Interfaces;
+using TowerSoft.RepositoryTests.MySql;
 using TowerSoft.RepositoryTests.TestObjects;
 
-namespace TowerSoft.RepositoryTests.PostgreSql {
+namespace TowerSoft.RepositoryTests.DbRepository {
     [TestClass]
-    public class PostgreSqlRepositoryTests {
-        private static UnitOfWork uow;
+    public class MySqlRepositoryTests : DbRepositoryTests {
+        private static IUnitOfWork uow;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext) {
@@ -33,6 +35,14 @@ namespace TowerSoft.RepositoryTests.PostgreSql {
             repo.Add(new CountTest { ID = 2, Name = "Object 2" });
             repo.Add(new CountTest { ID = 3, Name = "Object 3" });
             repo.Add(new CountTest { ID = 4, Name = "Object 4" });
+        }
+
+        protected override ICountTestRepository GetCountTestRepository() { 
+            return uow.GetRepo<CountTestRepository>();
+        }
+
+        protected override ITestObjectRepository GetTestObjectRepository() {
+            return uow.GetRepo<TestObjectRepository>();
         }
     }
 }

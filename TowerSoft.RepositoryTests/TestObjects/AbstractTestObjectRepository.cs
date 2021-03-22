@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using TowerSoft.Repository;
+using TowerSoft.RepositoryTests.Interfaces;
 using TowerSoft.RepositoryTests.TestObjects;
 
-namespace TowerSoft.RepositoryTests.MySql {
-    public class TestObjectRepository : DbRepository<TestObject> {
-        public TestObjectRepository(UnitOfWork uow) : base(uow.DbAdapter) { }
+namespace TowerSoft.RepositoryTests.TestObjects {
+    public class AbstractTestObjectRepository : DbRepository<TestObject> {
+        public AbstractTestObjectRepository(IUnitOfWork uow) : base(uow.DbAdapter) { }
 
         public TestObject GetByID(long id) {
             return GetSingleEntity(WhereEqual(x => x.ID, id));

@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TowerSoft.Repository;
-using TowerSoft.Repository.PostgreSql;
 using TowerSoft.Repository.Interfaces;
+using TowerSoft.Repository.SQLite;
+using TowerSoft.RepositoryTests.Interfaces;
 
-namespace TowerSoft.RepositoryTests.PostgreSql {
-    public class UnitOfWork : IRepositoryUnitOfWork {
-        public UnitOfWork() {
-            string line = System.IO.File.ReadAllLines("appsecrets.txt").Single(x => x.StartsWith("postgresql =="));
-            DbAdapter = new PostgreSqlDbAdapter(line.Split(" == ")[1]);
+namespace TowerSoft.RepositoryTests.SQLite {
+    public class UnitOfWork : IUnitOfWork, IRepositoryUnitOfWork {
+        public UnitOfWork(string path) {
+            DbAdapter = new SQLiteDbAdapter($"Data Source={path};Version=3;");
         }
 
-        public IDbAdapter DbAdapter { get; } 
+        public IDbAdapter DbAdapter { get; }
 
         public void BeginTransaction() {
             DbAdapter.BeginTransaction();
