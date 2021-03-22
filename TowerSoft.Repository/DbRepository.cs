@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using TowerSoft.Repository.Interfaces;
 using TowerSoft.Repository.Maps;
 
 namespace TowerSoft.Repository {
@@ -13,7 +14,7 @@ namespace TowerSoft.Repository {
     /// Repository wrapper for Dapper
     /// </summary>
     /// <typeparam name="T">Object type</typeparam>
-    public partial class DbRepository<T> {
+    public partial class DbRepository<T> : IDbRepository {
         #region Constructors
         /// <summary>
         /// Creates a new Repository using attributes to define the database mapping.
