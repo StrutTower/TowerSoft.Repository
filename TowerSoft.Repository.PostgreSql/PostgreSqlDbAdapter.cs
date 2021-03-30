@@ -3,12 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using TowerSoft.Repository.Maps;
 
 namespace TowerSoft.Repository.PostgreSql {
+    /// <summary>
+    /// DbAdapter for PostgreSQL
+    /// </summary>
     public class PostgreSqlDbAdapter : IDbAdapter {
+        /// <summary>
+        /// Create a new DbAdapter for PostgreSQL
+        /// </summary>
+        /// <param name="connectionString">Connection string to the database</param>
         public PostgreSqlDbAdapter(string connectionString) {
             ConnectionString = connectionString;
-            DbConnection = new NpgsqlConnection(ConnectionString);
+            DbConnection = CreateNewDbConnection(ConnectionString);
         }
 
         #region Unit of Work
@@ -79,6 +87,11 @@ namespace TowerSoft.Repository.PostgreSql {
         }
 
         /// <summary>
+        /// Runs configuration settings on the DbConnection
+        /// </summary>
+        public void ConfigureDbConnection() { }
+
+        /// <summary>
         /// SQL Statement to retrieve the last inserted ID for this database.
         /// </summary>
         /// <returns></returns>
@@ -92,21 +105,28 @@ namespace TowerSoft.Repository.PostgreSql {
         public bool LastInsertIdInSeparateQuery => false;
 
         /// <summary>
+        /// Specifies if the database allows multiple entities to be inserted in a single statement.
+        /// </summary>
+        public bool ListInsertSupported => false;
+
+        /// <summary>
         /// Returns the parameter placeholder for the supplied column. This is used in the SQL query.
         /// </summary>
         /// <param name="columnName">Name of the column</param>
+        /// <param name="parameterIndex">Index of the parameter for the query query</param>
         /// <returns></returns>
-        public string GetParameterPlaceholder(string columnName) {
-            return $"@{columnName}";
+        public string GetParameterPlaceholder(string columnName, int parameterIndex) {
+            return $"@{columnName}{parameterIndex}";
         }
 
         /// <summary>
         /// Returns the parameter name for the supplied column. This is used in the parameter dictionary.
         /// </summary>
         /// <param name="columnName">Name of the column</param>
+        /// <param name="parameterIndex">Index of the parameter for the query query</param>
         /// <returns></returns>
-        public string GetParameterName(string columnName) {
-            return $"@{columnName}";
+        public string GetParameterName(string columnName, int parameterIndex) {
+            return $"@{columnName}{parameterIndex}";
         }
 
         /// <summary>

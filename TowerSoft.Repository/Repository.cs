@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace TowerSoft.Repository {
+    /// <summary>
+    /// Obsolete version of DbRepository
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Obsolete("This classes is being renamed to DbRepository so it's named different than the namespace. Please switch to using DbRepository.")]
     public class Repository<T> : DbRepository<T> {
         /// <summary>

@@ -17,8 +17,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             uow = new UnitOfWork();
             uow.DbAdapter.DbConnection.Execute("" +
                 "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='testobject' AND xtype='U')" +
-                    "CREATE TABLE testobject " +
-                    "(" +
+                    "CREATE TABLE testobject (" +
                     "ID BIGINT IDENTITY(1,1) PRIMARY KEY," +
                     "Title NVARCHAR(45) NOT NULL UNIQUE," +
                     "Description NVARCHAR(MAX)," +
@@ -31,14 +30,14 @@ namespace TowerSoft.RepositoryTests.DbRepository {
                 "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='counttest' AND xtype='U')" +
                     "CREATE TABLE counttest " +
                     "(" +
-                    "ID INT PRIMARY KEY," +
+                    "Number INT PRIMARY KEY," +
                     "Name VARCHAR(45) NOT NULL UNIQUE)");
             uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE counttest");
             CountTestRepository repo = uow.GetRepo<CountTestRepository>();
-            repo.Add(new CountTest { ID = 1, Name = "Object 1" });
-            repo.Add(new CountTest { ID = 2, Name = "Object 2" });
-            repo.Add(new CountTest { ID = 3, Name = "Object 3" });
-            repo.Add(new CountTest { ID = 4, Name = "Object 4" });
+            repo.Add(new CountTest { Number = 1, Name = "Object 1" });
+            repo.Add(new CountTest { Number = 2, Name = "Object 2" });
+            repo.Add(new CountTest { Number = 3, Name = "Object 3" });
+            repo.Add(new CountTest { Number = 4, Name = "Object 4" });
         }
 
         protected override ITestObjectRepository GetTestObjectRepository() {

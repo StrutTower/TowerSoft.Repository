@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TowerSoft.Repository.Maps {
+﻿namespace TowerSoft.Repository.Maps {
     /// <summary>
     /// Primary key map used to map a property to a column that is a primary key but does not autoincrement
     /// </summary>

@@ -7,7 +7,7 @@ namespace TowerSoft.RepositoryTests.TestObjects {
         public AbstractCountTestRepository(IUnitOfWork uow) : base(uow.DbAdapter) { }
 
         public CountTest GetByID(int id) {
-            return GetSingleEntity(WhereEqual(x => x.ID, id));
+            return GetSingleEntity(WhereEqual(x => x.Number, id));
         }
 
         public CountTest GetByName(string name) {

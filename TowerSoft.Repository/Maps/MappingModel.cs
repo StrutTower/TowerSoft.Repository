@@ -96,7 +96,14 @@ namespace TowerSoft.Repository.Maps {
                         // ID Maps
                         IDMap idMap = new IDMap(prop.Name, columnName);
                         PrimaryKeyMaps.Add(idMap);
-
+                    } else if (prop.IsDefined(typeof(CacheFilemanDateAttribute))) {
+                        // Cache Fileman Date
+                        CacheFilemanDateMap filemanDateMap = new CacheFilemanDateMap(prop.Name, columnName);
+                        StandardMaps.Add(filemanDateMap);
+                    } else if (prop.IsDefined(typeof(CacheHorologDateAttribute))) {
+                        // Cache Horolog Date
+                        CacheHorologDateMap horologDateMap = new CacheHorologDateMap(prop.Name, columnName);
+                        StandardMaps.Add(horologDateMap);
                     } else {
                         // Standard Maps
                         StandardMaps.Add(new Map(prop.Name, columnName));

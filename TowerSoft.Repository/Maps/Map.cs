@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 
 namespace TowerSoft.Repository.Maps {
     /// <summary>
@@ -11,12 +8,12 @@ namespace TowerSoft.Repository.Maps {
         /// <summary>
         /// Name of the property of the C# object
         /// </summary>
-        public string PropertyName { get; private set; }
+        public string PropertyName { get; }
 
         /// <summary>
         /// Name of the column in the database
         /// </summary>
-        public string ColumnName { get; private set; }
+        public string ColumnName { get; }
 
         /// <summary>
         /// Initialize a new Map where the property name and column name are the same.
@@ -42,7 +39,7 @@ namespace TowerSoft.Repository.Maps {
         /// </summary>
         /// <param name="entity">Entity to retrieve the value from</param>
         /// <returns></returns>
-        public object GetValue(object entity) {
+        public virtual object GetValue(object entity) {
             PropertyInfo prop = entity.GetType().GetProperty(PropertyName);
             return prop.GetValue(entity);
         }

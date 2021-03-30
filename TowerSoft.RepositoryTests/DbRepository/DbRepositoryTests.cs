@@ -14,7 +14,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         [TestMethod]
         public void Add_TestObject_ShouldAdd() {
             ITestObjectRepository repo = GetTestObjectRepository();
-            TestObject newObj = new TestObject {
+            TestObject expected = new TestObject {
                 Title = "Add Test",
                 Description = "Add Test Description",
                 StatusID = Status.Active,
@@ -23,13 +23,13 @@ namespace TowerSoft.RepositoryTests.DbRepository {
                 IsActive = true
             };
 
-            repo.Add(newObj);
+            repo.Add(expected);
 
-            TestObject fromDB = repo.GetByTitle(newObj.Title);
+            TestObject actual = repo.GetByTitle(expected.Title);
 
-            Assert.IsNotNull(fromDB); // Make sure object was returned
-            Assert.AreNotEqual(0, fromDB); // Make sure autonumber was assigned
-            Assert.IsTrue(newObj.AllPropsEqual(fromDB), "The object returned from the database does not match the original");
+            Assert.IsNotNull(actual); // Make sure object was returned
+            Assert.AreNotEqual(0, actual); // Make sure autonumber was assigned
+            Assert.IsTrue(expected.AllPropsEqual(actual), "The object returned from the database does not match the original");
         }
 
         [TestMethod]
@@ -106,7 +106,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             List<CountTest> all = repo.GetAll();
 
             Assert.AreEqual(4, all.Count);
-            Assert.AreEqual("Object 2", all.SingleOrDefault(x => x.ID == 2).Name);
+            Assert.AreEqual("Object 2", all.SingleOrDefault(x => x.Number == 2).Name);
         }
 
         [TestMethod]
@@ -114,6 +114,42 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             ICountTestRepository repo = GetCountTestRepository();
             long count = repo.GetCount();
             Assert.AreEqual(4, count);
+        }
+
+        [TestMethod]
+        public void GetBetweenDates_ShouldReturnValidResults() {
+            ITestObjectRepository repo = GetTestObjectRepository();
+            TestObject newObj1 = new TestObject {
+                Title = "Date Range Test 1",
+                Description = "Remove Test Description",
+                StatusID = Status.Active,
+                InputOn = new DateTime(1999, 1, 4, 12, 34, 20),
+                InputByID = 1,
+                IsActive = true
+            };
+            TestObject newObj2 = new TestObject {
+                Title = "Date Range Test 2",
+                Description = "Remove Test Description",
+                StatusID = Status.Active,
+                InputOn = new DateTime(1999, 1, 6, 8, 4, 56),
+                InputByID = 1,
+                IsActive = true
+            }; 
+            TestObject newObj3 = new TestObject {
+                Title = "Date Range Test 3",
+                Description = "Remove Test Description",
+                StatusID = Status.Active,
+                InputOn = new DateTime(1999, 1, 9, 18, 14, 0),
+                InputByID = 1,
+                IsActive = true
+            };
+            repo.Add(newObj1);
+            repo.Add(newObj2);
+            repo.Add(newObj3);
+
+            List<TestObject> actual = repo.GetByInputOnDateRange(new DateTime(1999, 1, 2), new DateTime(1999, 1, 7));
+
+            Assert.AreEqual(2, actual.Count);
         }
     }
 }

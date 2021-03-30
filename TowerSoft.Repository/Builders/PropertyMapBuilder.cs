@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using TowerSoft.Repository.Maps;
 
 namespace TowerSoft.Repository.Builders {
@@ -11,6 +9,8 @@ namespace TowerSoft.Repository.Builders {
         private string PropertyName { get; }
         private bool IsAutonumber { get; set; }
         private bool IsID { get; set; }
+        private bool IsFilemanDateMap { get; set; }
+        private bool IsHorologDateMap { get; set; }
 
         /// <summary>
         /// PropertyMapBuilder constructor
@@ -55,11 +55,29 @@ namespace TowerSoft.Repository.Builders {
         }
 
         /// <summary>
-        /// Marls the map as an ID map. Use this for primary keys that do not auto increment
+        /// Marks the map as an ID map. Use this for primary keys that do not auto increment
         /// </summary>
         /// <returns></returns>
         public PropertyMapBuilder AsID() {
             IsID = true;
+            return this;
+        }
+
+        /// <summary>
+        /// Marks the map as a Fileman date map. Only use this on Intersystems Caché databases.
+        /// </summary>
+        /// <returns></returns>
+        public PropertyMapBuilder AsFilemanDateMap() {
+            IsFilemanDateMap = true;
+            return this;
+        }
+
+        /// <summary>
+        /// Marks the map as a $HOROLOG date map. Only use this on Intersystems Caché databases
+        /// </summary>
+        /// <returns></returns>
+        public PropertyMapBuilder AsHorologDateMap() {
+            IsHorologDateMap = true;
             return this;
         }
 
@@ -68,6 +86,10 @@ namespace TowerSoft.Repository.Builders {
                 return new AutonumberMap(PropertyName, columnName ?? PropertyName);
             else if (IsID)
                 return new IDMap(PropertyName, columnName ?? PropertyName);
+            else if (IsFilemanDateMap)
+                return new CacheFilemanDateMap(PropertyName, columnName ?? PropertyName);
+            else if (IsHorologDateMap)
+                return new CacheHorologDateMap(PropertyName, columnName ?? PropertyName);
             return new Map(PropertyName, columnName ?? PropertyName);
         }
 

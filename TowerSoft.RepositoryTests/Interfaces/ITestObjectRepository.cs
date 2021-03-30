@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TowerSoft.RepositoryTests.TestObjects;
 
 namespace TowerSoft.RepositoryTests.Interfaces {
@@ -12,5 +13,6 @@ namespace TowerSoft.RepositoryTests.Interfaces {
         TestObject GetByID(long id);
         TestObject GetByTitle(string title);
         List<TestObject> GetByDescription(string description);
+        List<TestObject> GetByInputOnDateRange(DateTime dateTime1, DateTime dateTime2);
     }
 }

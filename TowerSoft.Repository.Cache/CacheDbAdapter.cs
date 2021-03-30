@@ -1,22 +1,21 @@
 ﻿using InterSystems.Data.CacheClient;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using System.Text;
+using TowerSoft.Repository.Maps;
 
 namespace TowerSoft.Repository.Cache {
     /// <summary>
-    /// DbAdapter for Intersystem's Cache Server
+    /// DbAdapter for Intersystem's Caché Server
     /// </summary>
     public class CacheDbAdapter : IDbAdapter {
         /// <summary>
-        /// 
+        /// Create a new DbAdapter for Intersystem's Caché Server
         /// </summary>
-        /// <param name="connectionString"></param>
+        /// <param name="connectionString">Database connection string</param>
         public CacheDbAdapter(string connectionString) {
             ConnectionString = connectionString;
-            DbConnection = new CacheConnection(ConnectionString);
+            DbConnection = CreateNewDbConnection(ConnectionString);
         }
 
         #region Unit of Work
@@ -83,7 +82,17 @@ namespace TowerSoft.Repository.Cache {
         /// <param name="connectionString">Database connection string</param>
         /// <returns></returns>
         public IDbConnection CreateNewDbConnection(string connectionString) {
-            return new CacheConnection(connectionString);
+            var con = new CacheConnection(connectionString);
+            con.Open();
+            con.SetQueryRuntimeMode(InterSystems.Data.CacheTypes.QueryRuntimeMode.LOGICAL);
+            return con;
+        }
+
+        /// <summary>
+        /// Forces the DbConnection to use logical mode
+        /// </summary>
+        public void ConfigureDbConnection() {
+            ((CacheConnection)DbConnection).SetQueryRuntimeMode(InterSystems.Data.CacheTypes.QueryRuntimeMode.LOGICAL);
         }
 
         /// <summary>
@@ -100,11 +109,17 @@ namespace TowerSoft.Repository.Cache {
         public bool LastInsertIdInSeparateQuery => true;
 
         /// <summary>
+        /// Specifies if the database allows multiple entities to be inserted in a single statement.
+        /// </summary>
+        public bool ListInsertSupported => false;
+
+        /// <summary>
         /// Returns the parameter placeholder for the supplied column. This is used in the SQL query.
         /// </summary>
         /// <param name="columnName">Name of the column</param>
+        /// <param name="parameterIndex">Index of the parameter for the query query</param>
         /// <returns></returns>
-        public string GetParameterPlaceholder(string columnName) {
+        public string GetParameterPlaceholder(string columnName, int parameterIndex) {
             return "?";
         }
 
@@ -112,9 +127,10 @@ namespace TowerSoft.Repository.Cache {
         /// Returns the parameter name for the supplied column. This is used in the parameter dictionary.
         /// </summary>
         /// <param name="columnName">Name of the column</param>
+        /// <param name="parameterIndex">Index of the parameter for the query query</param>
         /// <returns></returns>
-        public string GetParameterName(string columnName) {
-            return $"?{columnName}";
+        public string GetParameterName(string columnName, int parameterIndex) {
+            return $"?{columnName}{parameterIndex}";
         }
 
         /// <summary>
@@ -154,7 +170,7 @@ namespace TowerSoft.Repository.Cache {
             if (string.IsNullOrEmpty(cast)) {
                 return tableName + "." + map.ColumnName;
             } else {
-                return "CAST(" + tableName + "." + map.ColumnName + " AS " + cast + ") " + map.ColumnName;
+                return "CAST(" + tableName + "." + map.ColumnName + " AS " + cast + ") " + map.PropertyName;
             }
         }
     }

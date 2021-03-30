@@ -18,6 +18,10 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\tilleao\source\repos\_GitHub\Towersoft.Repository\TowerSoft.Repository.SqlLite\TowerSoft.Repository.SQLite.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="..\license.txt">
       <Pack>True</Pack>

@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TowerSoft.Repository {
     /// <summary>
     /// Object to create complex SQL statements
     /// </summary>
     public class QueryBuilder {
-        internal QueryBuilder(string tableName, IEnumerable<IMap> maps) {
+        internal QueryBuilder(string tableName, IEnumerable<IMap> maps, IDbAdapter dbAdapter, Type domainType) {
             TableName = tableName;
             Parameters = new Dictionary<string, object>();
 
             List<string> columns = new List<string>();
             foreach (IMap map in maps) {
-                columns.Add(TableName + "." + map.ColumnName + " " + map.PropertyName);
+                columns.Add(dbAdapter.GetSelectColumnCast(domainType, tableName, map));
             }
             SqlQuery = "SELECT " + string.Join(",", columns) + " FROM " + TableName + " ";
         }
@@ -27,7 +28,7 @@ namespace TowerSoft.Repository {
         public string SqlQuery { get; set; }
 
         /// <summary>
-        /// List of parameters for thenSQL statement
+        /// List of parameters for the SQL statement
         /// </summary>
         public Dictionary<string, object> Parameters { get; private set; }
 

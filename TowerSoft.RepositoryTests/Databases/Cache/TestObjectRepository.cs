@@ -5,9 +5,9 @@ using TowerSoft.Repository;
 using TowerSoft.RepositoryTests.Interfaces;
 using TowerSoft.RepositoryTests.TestObjects;
 
-namespace TowerSoft.RepositoryTests.SQLite {
+namespace TowerSoft.RepositoryTests.Cache {
     public class TestObjectRepository : AbstractTestObjectRepository, ITestObjectRepository {
-        public TestObjectRepository(UnitOfWork uow) : base(uow) { }
+        public TestObjectRepository(IUnitOfWork uow) : base(uow) { }
 
         public List<TestObject> GetByInputOnDateRange(DateTime dateTime1, DateTime dateTime2) {
             return GetEntities(new[] {
@@ -16,4 +16,4 @@ namespace TowerSoft.RepositoryTests.SQLite {
             });
         }
     }
-    }
+}

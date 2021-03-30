@@ -29,14 +29,14 @@ namespace TowerSoft.RepositoryTests.DbRepository {
                 "IsActive INTEGER NOT NULL);");
             uow.DbAdapter.DbConnection.Execute("DELETE FROM testobject");
             uow.DbAdapter.DbConnection.Execute("CREATE TABLE IF NOT EXISTS counttest (" +
-                "ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "Number INTEGER PRIMARY KEY," +
                 "Name TEXT NOT NULL UNIQUE);");
             uow.DbAdapter.DbConnection.Execute("DELETE FROM counttest");
             CountTestRepository repo = uow.GetRepo<CountTestRepository>();
-            repo.Add(new CountTest { ID = 1, Name = "Object 1" });
-            repo.Add(new CountTest { ID = 2, Name = "Object 2" });
-            repo.Add(new CountTest { ID = 3, Name = "Object 3" });
-            repo.Add(new CountTest { ID = 4, Name = "Object 4" });
+            repo.Add(new CountTest { Number = 1, Name = "Object 1" });
+            repo.Add(new CountTest { Number = 2, Name = "Object 2" });
+            repo.Add(new CountTest { Number = 3, Name = "Object 3" });
+            repo.Add(new CountTest { Number = 4, Name = "Object 4" });
         }
 
         protected override ITestObjectRepository GetTestObjectRepository() {

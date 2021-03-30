@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using TowerSoft.Repository;
+using TowerSoft.Repository.Cache;
 using TowerSoft.Repository.Interfaces;
-using TowerSoft.Repository.SQLite;
 using TowerSoft.RepositoryTests.Interfaces;
 
-namespace TowerSoft.RepositoryTests.SQLite {
-    public class UnitOfWork : IUnitOfWork, IRepositoryUnitOfWork {
-        public UnitOfWork(string path) {
-            DbAdapter = new SQLiteDbAdapter($"Data Source={path};Version=3;");
+namespace TowerSoft.RepositoryTests.Cache {
+    public class UnitOfWork : IRepositoryUnitOfWork, IUnitOfWork {
+        public UnitOfWork() {
+            string line = System.IO.File.ReadAllLines("appsecrets.txt").Single(x => x.StartsWith("cache =="));
+            DbAdapter = new CacheDbAdapter(line.Split(" == ")[1]);
         }
 
         public IDbAdapter DbAdapter { get; }

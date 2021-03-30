@@ -26,15 +26,15 @@ namespace TowerSoft.RepositoryTests.DbRepository {
                 "ENGINE=InnoDB;");
             uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE testobject");
             uow.DbAdapter.DbConnection.Execute("CREATE TABLE IF NOT EXISTS counttest (" +
-                "ID INT AUTO_INCREMENT PRIMARY KEY," +
+                "Number INT PRIMARY KEY," +
                 "Name VARCHAR(45) NOT NULL UNIQUE) " +
                 "ENGINE=InnoDB;");
             uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE counttest");
             CountTestRepository repo = uow.GetRepo<CountTestRepository>();
-            repo.Add(new CountTest { ID = 1, Name = "Object 1" });
-            repo.Add(new CountTest { ID = 2, Name = "Object 2" });
-            repo.Add(new CountTest { ID = 3, Name = "Object 3" });
-            repo.Add(new CountTest { ID = 4, Name = "Object 4" });
+            repo.Add(new CountTest { Number = 1, Name = "Object 1" });
+            repo.Add(new CountTest { Number = 2, Name = "Object 2" });
+            repo.Add(new CountTest { Number = 3, Name = "Object 3" });
+            repo.Add(new CountTest { Number = 4, Name = "Object 4" });
         }
 
         protected override ICountTestRepository GetCountTestRepository() { 

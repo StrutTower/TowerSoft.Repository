@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TowerSoft.Repository.Interfaces {
+﻿namespace TowerSoft.Repository.Interfaces {
+    /// <summary>
+    /// Interface for the DbRepository
+    /// </summary>
     public interface IDbRepository { }
 }

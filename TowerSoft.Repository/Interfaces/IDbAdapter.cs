@@ -51,6 +51,11 @@ namespace TowerSoft.Repository {
         IDbConnection CreateNewDbConnection(string connectionString);
 
         /// <summary>
+        /// Runs configuration settings on the DbConnection
+        /// </summary>
+        void ConfigureDbConnection();
+
+        /// <summary>
         /// SQL Statement to retrieve the last inserted ID for this database.
         /// </summary>
         /// <returns></returns>
@@ -62,18 +67,25 @@ namespace TowerSoft.Repository {
         bool LastInsertIdInSeparateQuery { get; }
 
         /// <summary>
+        /// Specifies if the database allows multiple entities to be inserted in a single statement.
+        /// </summary>
+        bool ListInsertSupported { get; }
+
+        /// <summary>
         /// Returns the parameter placeholder for the supplied column. This is used in the SQL query.
         /// </summary>
         /// <param name="columnName">Name of the column</param>
+        /// <param name="parameterIndex">The index of the parameter in the query</param>
         /// <returns></returns>
-        string GetParameterPlaceholder(string columnName);
+        string GetParameterPlaceholder(string columnName, int parameterIndex);
 
         /// <summary>
         /// Returns the parameter name for the supplied column. This is used in the parameter dictionary.
         /// </summary>
         /// <param name="columnName">Name of the column</param>
+        /// <param name="parameterIndex">The index of the parameter in the query</param>
         /// <returns></returns>
-        string GetParameterName(string columnName);
+        string GetParameterName(string columnName, int parameterIndex);
 
         /// <summary>
         /// Gets the SELECT statement for this table and column.

@@ -118,13 +118,15 @@ namespace TowerSoft.Repository {
             string query = $"SELECT COUNT(*) FROM {TableName} ";
             if (whereConditions != null && whereConditions.Any()) {
                 List<string> whereStatements = new List<string>();
+                int index = 1;
                 foreach (WhereCondition whereCondition in whereConditions) {
                     if (whereCondition.IsNullEqualsOrNotEquals()) {
                         whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " NULL");
                     } else {
-                        whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName));
-                        parameters.Add(DbAdapter.GetParameterName(whereCondition.ColumnName), whereCondition.GetParameterValue());
+                        whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName, index));
+                        parameters.Add(DbAdapter.GetParameterName(whereCondition.ColumnName, index), whereCondition.GetParameterValue());
                     }
+                    index++;
                 }
                 query += "WHERE " + string.Join(" AND ", whereStatements);
             }
@@ -140,18 +142,16 @@ namespace TowerSoft.Repository {
             List<string> values = new List<string>();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
+            int index = 1;
             foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
                 columns.Add(map.ColumnName);
-                values.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName));
-                parameters.Add(DbAdapter.GetParameterName(map.ColumnName), map.GetValue(entity));
+                values.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName, index));
+                parameters.Add(DbAdapter.GetParameterName(map.ColumnName, index), map.GetValue(entity));
+                index++;
             }
 
-            string query = string.Format(
-               "INSERT INTO {0} " +
-               "({1})" +
-               "VALUES " +
-               "({2})",
-              TableName, string.Join(",", columns), string.Join(",", values));
+            string query = $"INSERT INTO {TableName} " +
+                $"({string.Join(",", columns)}) VALUES ({string.Join(",", values)})";
 
             if (Mappings.AutonumberMap == null) {
                 GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
@@ -170,38 +170,46 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-        /// Add multiple values to the database. Inserts are done in batches of 100 entities
+        /// Add multiple values to the database. Inserts are done in batches. Cache does not support this method of inserting multiple entities and will instead add them separately.
         /// </summary>
         /// <param name="entities">Entities to add to the database</param>
         public virtual void Add(IEnumerable<T> entities) {
-            List<string> columns = new List<string>();
+            if (DbAdapter.ListInsertSupported) {
+                List<string> columns = new List<string>();
 
-            foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
-                columns.Add(map.ColumnName);
-            }
-
-            // Caculate the batch size based on the number of parameters that will be generated in the SQL statements.
-            // SQLite has a parameter limit of 999
-            int batchSize = 900 / columns.Count;
-
-            // Split entities into batches
-            foreach (List<T> batchGroup in entities.Select((x, i) => new { Value = x, Index = i }).GroupBy(x => x.Index / batchSize).Select(x => x.Select(y => y.Value).ToList())) {
-                string query = $"INSERT INTO {TableName} ({string.Join(",", columns)}) VALUES ";
-
-                List<string> values = new List<string>();
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                int counter = 1;
-                foreach (T entity in batchGroup) {
-                    List<string> vals = new List<string>();
-                    foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
-                        vals.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName) + counter);
-                        parameters.Add(DbAdapter.GetParameterName(map.ColumnName) + counter, map.GetValue(entity));
-                    }
-                    values.Add($"({string.Join(",", vals)})");
-                    counter++;
+                foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
+                    columns.Add(map.ColumnName);
                 }
-                query += string.Join(",", values);
-                GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
+
+                // Caculate the batch size based on the number of parameters that will be generated in the SQL statements.
+                // SQLite has a parameter limit of 999
+                int batchSize = 900 / columns.Count;
+
+                // Split entities into batches
+                foreach (List<T> batchGroup in entities.Select((x, i) => new { Value = x, Index = i }).GroupBy(x => x.Index / batchSize).Select(x => x.Select(y => y.Value).ToList())) {
+                    string query = $"INSERT INTO {TableName} ({string.Join(",", columns)}) VALUES ";
+
+                    List<string> values = new List<string>();
+                    Dictionary<string, object> parameters = new Dictionary<string, object>();
+                    int counter = 1;
+                    foreach (T entity in batchGroup) {
+                        List<string> vals = new List<string>();
+                        int index = 1;
+                        foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
+                            vals.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName, index) + counter);
+                            parameters.Add(DbAdapter.GetParameterName(map.ColumnName, index) + counter, map.GetValue(entity));
+                            index++;
+                        }
+                        values.Add($"({string.Join(",", vals)})");
+                        counter++;
+                    }
+                    query += string.Join(",", values);
+                    GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
+                }
+            } else {
+                foreach (T entity in entities) {
+                    Add(entity);
+                }
             }
         }
 
@@ -214,18 +222,22 @@ namespace TowerSoft.Repository {
             List<string> primaryKeyColumns = new List<string>();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
+            int index = 1;
             foreach (Map map in Mappings.StandardMaps) {
-                updateColumns.Add(map.ColumnName + "=" + DbAdapter.GetParameterPlaceholder(map.ColumnName));
-                parameters.Add(DbAdapter.GetParameterName(map.ColumnName), map.GetValue(entity));
+                updateColumns.Add(map.ColumnName + "=" + DbAdapter.GetParameterPlaceholder(map.ColumnName, index));
+                parameters.Add(DbAdapter.GetParameterName(map.ColumnName, index), map.GetValue(entity));
+                index++;
             }
 
             foreach (Map map in Mappings.PrimaryKeyMaps) {
-                primaryKeyColumns.Add(map.ColumnName + "=" + DbAdapter.GetParameterPlaceholder(map.ColumnName));
-                parameters.Add(DbAdapter.GetParameterName(map.ColumnName), map.GetValue(entity));
+                primaryKeyColumns.Add(map.ColumnName + "=" + DbAdapter.GetParameterPlaceholder(map.ColumnName, index));
+                parameters.Add(DbAdapter.GetParameterName(map.ColumnName, index), map.GetValue(entity));
+                index++;
             }
 
-            string query = string.Format("UPDATE {0} SET {1} WHERE {2}",
-                TableName, string.Join(", ", updateColumns), string.Join(" AND ", primaryKeyColumns));
+            string query = $"UPDATE {TableName} " +
+                $"SET {string.Join(",", updateColumns)} " +
+                $"WHERE {string.Join(" AND ", primaryKeyColumns)} ";
 
             GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
         }
@@ -238,13 +250,14 @@ namespace TowerSoft.Repository {
             List<string> primaryKeyColumns = new List<string>();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
+            int index = 1;
             foreach (Map map in Mappings.PrimaryKeyMaps) {
-                primaryKeyColumns.Add(map.ColumnName + "=" + DbAdapter.GetParameterPlaceholder(map.ColumnName));
-                parameters.Add(DbAdapter.GetParameterName(map.ColumnName), map.GetValue(entity));
+                primaryKeyColumns.Add(map.ColumnName + "=" + DbAdapter.GetParameterPlaceholder(map.ColumnName, index));
+                parameters.Add(DbAdapter.GetParameterName(map.ColumnName, index), map.GetValue(entity));
+                index++;
             }
 
-            string query = string.Format("DELETE FROM {0} WHERE {1}",
-                TableName, string.Join(" AND ", primaryKeyColumns));
+            string query = $"DELETE FROM {TableName} WHERE {string.Join(" AND ", primaryKeyColumns)}";
 
             GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
         }
@@ -295,13 +308,15 @@ namespace TowerSoft.Repository {
         protected List<T> GetEntities(IEnumerable<WhereCondition> whereConditions) {
             QueryBuilder query = GetQueryBuilder();
             List<string> whereStatements = new List<string>();
+            int index = 1;
             foreach (WhereCondition whereCondition in whereConditions) {
                 if (whereCondition.IsNullEqualsOrNotEquals()) {
                     whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " NULL");
                 } else {
-                    whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName));
-                    query.AddParameter(DbAdapter.GetParameterName(whereCondition.ColumnName), whereCondition.GetParameterValue());
+                    whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName, index));
+                    query.AddParameter(DbAdapter.GetParameterName(whereCondition.ColumnName, index), whereCondition.GetParameterValue());
                 }
+                index++;
             }
             query.SqlQuery += "WHERE " + string.Join(" AND ", whereStatements);
             return GetEntities(query);
@@ -323,7 +338,7 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <returns></returns>
         protected QueryBuilder GetQueryBuilder() {
-            return new QueryBuilder(TableName, Mappings.AllMaps);
+            return new QueryBuilder(TableName, Mappings.AllMaps, DbAdapter, typeof(T));
         }
 
         /// <summary>
@@ -374,6 +389,8 @@ namespace TowerSoft.Repository {
 
             if (DbAdapter.DbConnection.State != ConnectionState.Open)
                 DbAdapter.DbConnection.Open();
+
+            DbAdapter.ConfigureDbConnection();
 
             return DbAdapter.DbConnection;
         }

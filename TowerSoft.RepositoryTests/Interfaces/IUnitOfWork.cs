@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TowerSoft.Repository;
+using TowerSoft.Repository.Interfaces;
 
 namespace TowerSoft.RepositoryTests.Interfaces {
     public interface IUnitOfWork {
@@ -10,7 +11,7 @@ namespace TowerSoft.RepositoryTests.Interfaces {
         void BeginTransaction();
         void CommitTransaction();
         void Dispose();
-        TRepo GetRepo<TRepo>();
+        TRepo GetRepo<TRepo>() where TRepo : IDbRepository;
         void RollbackTransaction();
     }
 }
