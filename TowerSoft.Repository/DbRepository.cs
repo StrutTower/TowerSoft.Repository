@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -130,6 +131,10 @@ namespace TowerSoft.Repository {
                 }
                 query += "WHERE " + string.Join(" AND ", whereStatements);
             }
+
+            if (DbAdapter.DebugLogger != null)
+                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
+
             return GetDbConnection().QuerySingle<long>(query, parameters, DbAdapter.DbTransaction);
         }
 
@@ -152,6 +157,9 @@ namespace TowerSoft.Repository {
 
             string query = $"INSERT INTO {TableName} " +
                 $"({string.Join(",", columns)}) VALUES ({string.Join(",", values)})";
+
+            if (DbAdapter.DebugLogger != null)
+                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
 
             if (Mappings.AutonumberMap == null) {
                 GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
@@ -204,6 +212,10 @@ namespace TowerSoft.Repository {
                         counter++;
                     }
                     query += string.Join(",", values);
+
+                    if (DbAdapter.DebugLogger != null)
+                        DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
+
                     GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
                 }
             } else {
@@ -239,6 +251,9 @@ namespace TowerSoft.Repository {
                 $"SET {string.Join(",", updateColumns)} " +
                 $"WHERE {string.Join(" AND ", primaryKeyColumns)} ";
 
+            if (DbAdapter.DebugLogger != null)
+                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
+
             GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
         }
 
@@ -258,6 +273,9 @@ namespace TowerSoft.Repository {
             }
 
             string query = $"DELETE FROM {TableName} WHERE {string.Join(" AND ", primaryKeyColumns)}";
+
+            if (DbAdapter.DebugLogger != null)
+                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
 
             GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
         }
@@ -328,6 +346,8 @@ namespace TowerSoft.Repository {
         /// <param name="queryBuilder">QueryBuilder</param>
         /// <returns></returns>
         protected virtual List<T> GetEntities(QueryBuilder queryBuilder) {
+            if (DbAdapter.DebugLogger != null)
+                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {queryBuilder.SqlQuery} /Parameters/ {string.Join(", ", queryBuilder.Parameters.Select(x => x.Key + ":" + x.Value))}");
             List<T> entities = GetDbConnection().Query<T>(queryBuilder.SqlQuery, queryBuilder.Parameters, DbAdapter.DbTransaction).ToList();
             PostProcessEntities(entities);
             return entities;

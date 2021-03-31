@@ -55,6 +55,11 @@
             Disposes the DbConnection and DbTransaction
             </summary>
         </member>
+        <member name="P:TowerSoft.Repository.SQLite.SQLiteDbAdapter.DebugOutputEnabled">
+            <summary>
+            Enables writing debugging info to the console output
+            </summary>
+        </member>
         <member name="M:TowerSoft.Repository.SQLite.SQLiteDbAdapter.CreateNewDbConnection(System.String)">
             <summary>
             Returns the ADO.NET IDbCommand for this database.

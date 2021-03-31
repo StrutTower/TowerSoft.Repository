@@ -2,86 +2,24 @@
 using System;
 using System.Data;
 using System.Reflection;
-using TowerSoft.Repository.Maps;
 
 namespace TowerSoft.Repository.Cache {
     /// <summary>
     /// DbAdapter for Intersystem's Caché Server
     /// </summary>
-    public class CacheDbAdapter : IDbAdapter {
+    public class CacheDbAdapter : DbAdapter, IDbAdapter {
         /// <summary>
         /// Create a new DbAdapter for Intersystem's Caché Server
         /// </summary>
         /// <param name="connectionString">Database connection string</param>
-        public CacheDbAdapter(string connectionString) {
-            ConnectionString = connectionString;
-            DbConnection = CreateNewDbConnection(ConnectionString);
-        }
-
-        #region Unit of Work
-        /// <summary>
-        /// Connection string used for the database connection
-        /// </summary>
-        public string ConnectionString { get; }
-
-        /// <summary>
-        /// Store if the DbConnection and DbTransaction has been disposed
-        /// </summary>
-        public bool IsDisposed { get; private set; }
-
-        /// <summary>
-        /// ADO.NET DbConnection for the current database
-        /// </summary>
-        public IDbConnection DbConnection { get; set; }
-
-        /// <summary>
-        /// ADO.NET DbTransaction for the current database
-        /// </summary>
-        public IDbTransaction DbTransaction { get; private set; }
-
-        /// <summary>
-        /// Begins a transaction
-        /// </summary>
-        public void BeginTransaction() {
-            if (DbConnection.State != ConnectionState.Open)
-                DbConnection.Open();
-            DbTransaction = DbConnection.BeginTransaction();
-        }
-
-        /// <summary>
-        /// Commit the changes during the transaction to the database
-        /// </summary>
-        public void CommitTransaction() {
-            DbTransaction.Commit();
-            DbTransaction.Dispose();
-        }
-
-        /// <summary>
-        /// Rolls back the changes to the database that were made during the transaction
-        /// </summary>
-        public void RollbackTransaction() {
-            DbTransaction.Rollback();
-            DbTransaction.Dispose();
-        }
-
-        /// <summary>
-        /// Disposes the DbConnection and DbTransaction
-        /// </summary>
-        public void Dispose() {
-            if (DbTransaction != null)
-                DbTransaction.Dispose();
-            if (DbConnection != null)
-                DbConnection.Dispose();
-            IsDisposed = true;
-        }
-        #endregion
+        public CacheDbAdapter(string connectionString) : base(connectionString) { }
 
         /// <summary>
         /// Returns the ADO.NET IDbCommand for this database.
         /// </summary>
         /// <param name="connectionString">Database connection string</param>
         /// <returns></returns>
-        public IDbConnection CreateNewDbConnection(string connectionString) {
+        public override IDbConnection CreateNewDbConnection(string connectionString) {
             var con = new CacheConnection(connectionString);
             con.Open();
             con.SetQueryRuntimeMode(InterSystems.Data.CacheTypes.QueryRuntimeMode.LOGICAL);
@@ -91,7 +29,7 @@ namespace TowerSoft.Repository.Cache {
         /// <summary>
         /// Forces the DbConnection to use logical mode
         /// </summary>
-        public void ConfigureDbConnection() {
+        public override void ConfigureDbConnection() {
             ((CacheConnection)DbConnection).SetQueryRuntimeMode(InterSystems.Data.CacheTypes.QueryRuntimeMode.LOGICAL);
         }
 
@@ -119,7 +57,7 @@ namespace TowerSoft.Repository.Cache {
         /// <param name="columnName">Name of the column</param>
         /// <param name="parameterIndex">Index of the parameter for the query query</param>
         /// <returns></returns>
-        public string GetParameterPlaceholder(string columnName, int parameterIndex) {
+        public override string GetParameterPlaceholder(string columnName, int parameterIndex) {
             return "?";
         }
 
@@ -129,7 +67,7 @@ namespace TowerSoft.Repository.Cache {
         /// <param name="columnName">Name of the column</param>
         /// <param name="parameterIndex">Index of the parameter for the query query</param>
         /// <returns></returns>
-        public string GetParameterName(string columnName, int parameterIndex) {
+        public override string GetParameterName(string columnName, int parameterIndex) {
             return $"?{columnName}{parameterIndex}";
         }
 
@@ -141,7 +79,7 @@ namespace TowerSoft.Repository.Cache {
         /// <param name="tableName">Name of the database table</param>
         /// <param name="map">Map for the property</param>
         /// <returns></returns>
-        public string GetSelectColumnCast(Type type, string tableName, IMap map) {
+        public override string GetSelectColumnCast(Type type, string tableName, IMap map) {
             PropertyInfo pi = type.GetProperty(map.PropertyName);
 
             Type propertyType = pi.PropertyType;
@@ -153,24 +91,24 @@ namespace TowerSoft.Repository.Cache {
 
             string cast = "";
 
-            if (Type.Equals(propertyType, typeof(short))) {
+            if (Equals(propertyType, typeof(short))) {
                 cast = "SMALLINT";
-            } else if (Type.Equals(propertyType, typeof(int))
-                  || Type.Equals(propertyType, typeof(int))
-                  || Type.Equals(propertyType.BaseType, typeof(Enum))) {
+            } else if (Equals(propertyType, typeof(int))
+                  || Equals(propertyType, typeof(int))
+                  || Equals(propertyType.BaseType, typeof(Enum))) {
                 cast = "INT";
-            } else if (Type.Equals(propertyType, typeof(long))) {
+            } else if (Equals(propertyType, typeof(long))) {
                 cast = "BIGINT";
-            } else if (Type.Equals(propertyType, typeof(bool))) {
+            } else if (Equals(propertyType, typeof(bool))) {
                 cast = "INT";
-            } else if (Type.Equals(propertyType, typeof(DateTime))) {
+            } else if (Equals(propertyType, typeof(DateTime))) {
                 cast = "DATETIME";
             }
 
             if (string.IsNullOrEmpty(cast)) {
-                return tableName + "." + map.ColumnName;
+                return $"{tableName}.{map.ColumnName} {map.PropertyName}";
             } else {
-                return "CAST(" + tableName + "." + map.ColumnName + " AS " + cast + ") " + map.PropertyName;
+                return $"CAST({tableName}.{map.ColumnName} AS {cast}) {map.PropertyName}";
             }
         }
     }

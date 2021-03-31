@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Data;
 
 namespace TowerSoft.Repository {
@@ -70,6 +71,17 @@ namespace TowerSoft.Repository {
         /// Specifies if the database allows multiple entities to be inserted in a single statement.
         /// </summary>
         bool ListInsertSupported { get; }
+
+        /// <summary>
+        /// ILogger used for outputing debugging info
+        /// </summary>
+        ILogger DebugLogger { get; }
+
+        /// <summary>
+        /// ILogger can be supplied to enable outputing debug info from the ORM
+        /// </summary>
+        /// <param name="logger">ILogger</param>
+        void AddLogger(ILogger logger);
 
         /// <summary>
         /// Returns the parameter placeholder for the supplied column. This is used in the SQL query.
