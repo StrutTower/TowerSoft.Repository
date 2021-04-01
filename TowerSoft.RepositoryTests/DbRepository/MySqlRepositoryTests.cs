@@ -15,6 +15,8 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext) {
             uow = new UnitOfWork();
+            //uow.DbAdapter.DbConnection.Execute("DROP TABLE testobject;");
+            //uow.DbAdapter.DbConnection.Execute("DROP TABLE counttest;");
             uow.DbAdapter.DbConnection.Execute("CREATE TABLE IF NOT EXISTS testobject (" +
                 "ID BIGINT(20) AUTO_INCREMENT PRIMARY KEY," +
                 "Title VARCHAR(45) NOT NULL UNIQUE," +
