@@ -41,11 +41,21 @@ namespace TowerSoft.Repository.Builders {
             return this;
         }
 
+        /// <summary>
+        /// LIMIT and OFFSET are not supported in Caché
+        /// </summary>
+        /// <param name="limit"></param>
+        /// <returns></returns>
         public FluentQueryBuilder<T> LimitTo(int limit) {
             Limit = limit;
             return this;
         }
 
+        /// <summary>
+        /// LIMIT and OFFSET are not supported in Caché
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <returns></returns>
         public FluentQueryBuilder<T> OffsetBy(int offset) {
             Offset = offset;
             return this;
