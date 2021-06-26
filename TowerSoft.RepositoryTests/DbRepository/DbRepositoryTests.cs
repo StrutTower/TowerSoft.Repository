@@ -134,7 +134,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
                 InputOn = new DateTime(1999, 1, 6, 8, 4, 56),
                 InputByID = 1,
                 IsActive = true
-            }; 
+            };
             TestObject newObj3 = new TestObject {
                 Title = "Date Range Test 3",
                 Description = "Remove Test Description",
@@ -150,6 +150,89 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             List<TestObject> actual = repo.GetByInputOnDateRange(new DateTime(1999, 1, 2), new DateTime(1999, 1, 7));
 
             Assert.AreEqual(2, actual.Count);
+        }
+
+        [TestMethod]
+        public void OrderBy_ShouldOrderAscending() {
+            ITestObjectRepository repo = GetTestObjectRepository();
+            string description = "OrderBy Test";
+            List<TestObject> expected = GetLimitTestObject(description, 5);
+            repo.Add(expected);
+
+            List<TestObject> actual = repo.GetByDescriptionWithInputOnOrderAsc(description);
+            Assert.AreEqual(expected.Count, actual.Count);
+
+            expected = expected.OrderBy(x => x.InputOn).ToList();
+
+            for(int i= 0; i < actual.Count; i++) {
+                Assert.AreEqual(actual[i].InputOn, expected[i].InputOn);
+            }
+        }
+
+        [TestMethod]
+        public void OrderBy_ShouldOrderDescending() {
+            ITestObjectRepository repo = GetTestObjectRepository();
+            string description = "OrderByDescending Test";
+            List<TestObject> expected = GetLimitTestObject(description, 5);
+            repo.Add(expected);
+
+            List<TestObject> actual = repo.GetByDescriptionWithInputOnOrderDesc(description);
+            Assert.AreEqual(expected.Count, actual.Count);
+
+            expected = expected.OrderByDescending(x => x.InputOn).ToList();
+
+            for (int i = 0; i < actual.Count; i++) {
+                Assert.AreEqual(actual[i].InputOn, expected[i].InputOn);
+            }
+        }
+
+        [TestMethod]
+        public void Limit_ShouldLimitResults() {
+            ITestObjectRepository repo = GetTestObjectRepository();
+            string description = "Limit Test";
+
+            List<TestObject> expected = GetLimitTestObject(description, 10);
+            expected.ForEach(x => repo.Add(x));
+
+            List<TestObject> actual1 = repo.GetByDescriptionWithLimit(description, 4);
+            Assert.AreEqual(4, actual1.Count);
+        }
+
+        [TestMethod]
+        public void LimitOffset_ShouldLimitAndOffsetResults() {
+            ITestObjectRepository repo = GetTestObjectRepository();
+            string description = "Limit and Offset Test";
+            List<TestObject> expected = GetLimitTestObject(description, 10);
+            expected.ForEach(x => repo.Add(x));
+
+            List<TestObject> actual1 = repo.GetByDescriptionWithLimitAndOffset(description, 4, 0);
+            Assert.AreEqual(4, actual1.Count);
+
+
+            List<TestObject> actual2 = repo.GetByDescriptionWithLimitAndOffset(description, 4, 4);
+            Assert.AreEqual(4, actual2.Count);
+
+            foreach (TestObject testObject1 in actual1) {
+                foreach (TestObject testObject2 in actual2) {
+                    Assert.AreNotEqual(testObject1.ID, testObject2.ID);
+                }
+            }
+        }
+
+        private List<TestObject> GetLimitTestObject(string description, int itemCount) {
+            List<TestObject> output = new List<TestObject>();
+            Random r = new Random();
+            for (int i = 0; i < itemCount; i++) {
+                output.Add(new TestObject {
+                    Title = description + " " + i,
+                    Description = description,
+                    StatusID = Status.Active,
+                    InputOn = new DateTime(2021, r.Next(1, 12), r.Next(1, 28), r.Next(1, 23), r.Next(0, 59), r.Next(0, 59)),
+                    InputByID = i,
+                    IsActive = true
+                });
+            }
+            return output;
         }
     }
 }

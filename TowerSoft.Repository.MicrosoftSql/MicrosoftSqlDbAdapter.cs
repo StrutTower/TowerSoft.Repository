@@ -38,5 +38,25 @@ namespace TowerSoft.Repository.MicrosoftSql {
         /// Specifies if the database allows multiple entities to be inserted in a single statement.
         /// </summary>
         public bool ListInsertSupported => true;
+
+        /// <summary>
+        /// Returns a limit and offset statement for the current database type
+        /// </summary>
+        /// <param name="limit">How many rows to return</param>
+        /// <param name="offset">How many rows to skip</param>
+        /// <param name="query">Current query builder</param>
+        /// <returns></returns>
+        public override string GetLimitOffsetStatement(int? limit, int? offset, QueryBuilder query) {
+            if (!query.SqlQuery.ToUpper().Contains("ORDER BY"))
+                throw new System.Exception("Microsoft's SQL server requires and ORDER BY when using LIMIT/FETCH.");
+
+            if (limit.HasValue && offset.HasValue)
+                return $"OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY ";
+
+            if (limit.HasValue)
+                return $"OFFSET 0 ROWS FETCH NEXT {limit} ROWS ONLY ";
+
+            return "";
+        }
     }
 }

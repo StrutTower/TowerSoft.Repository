@@ -57,6 +57,15 @@ namespace TowerSoft.Repository {
         void ConfigureDbConnection();
 
         /// <summary>
+        /// Returns a limit and offset statement for the current database type
+        /// </summary>
+        /// <param name="limit">How many rows to return</param>
+        /// <param name="offset">How many rows to skip</param>
+        /// <param name="query">Current query builder</param>
+        /// <returns></returns>
+        string GetLimitOffsetStatement(int? limit, int? offset, QueryBuilder query);
+
+        /// <summary>
         /// SQL Statement to retrieve the last inserted ID for this database.
         /// </summary>
         /// <returns></returns>

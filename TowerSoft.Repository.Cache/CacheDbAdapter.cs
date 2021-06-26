@@ -111,5 +111,29 @@ namespace TowerSoft.Repository.Cache {
                 return $"CAST({tableName}.{map.ColumnName} AS {cast}) {map.PropertyName}";
             }
         }
+
+        /// <summary>
+        /// Returns a limit and offset statement for the current database type
+        /// </summary>
+        /// <param name="limit">How many rows to return</param>
+        /// <param name="offset">How many rows to skip</param>
+        /// <param name="query">Current query builder</param>
+        /// <returns></returns>
+        public override string GetLimitOffsetStatement(int? limit, int? offset, QueryBuilder query) {
+            if (limit.HasValue)
+                query.SqlQuery = query.SqlQuery.Replace(" FROM ", ", %vid FROM ");
+
+            if (limit.HasValue && offset.HasValue) {
+                string replacement = $" WHERE %vid BETWEEN {offset} AND {offset + limit} AND ";
+                query.SqlQuery = query.SqlQuery.Replace(" WHERE ", replacement);
+            }
+
+            if (limit.HasValue) {
+                string replacement = $" WHERE %vid BETWEEN 0 AND {offset ?? 0 + limit} AND ";
+                query.SqlQuery = query.SqlQuery.Replace(" WHERE ", replacement);
+            }
+
+            return string.Empty;
+        }
     }
 }

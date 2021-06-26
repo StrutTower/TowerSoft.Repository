@@ -27,10 +27,9 @@ namespace TowerSoft.RepositoryTests.Databases.Cache {
         public List<DateTest> GetByFilemanDateTimeBetweenDates(DateTime dateTime1, DateTime dateTime2) {
             var date1logical = CacheDateUtilities.DateTimeToLogicalDate(dateTime1);
             var date2logical = CacheDateUtilities.DateTimeToLogicalDate(dateTime2);
-            return GetEntities(new[] {
-                Where(x => x.FilemanDateTime, Comparison.GreaterThanOrEqual, date1logical),
-                Where(x => x.FilemanDateTime, Comparison.LessThan, date2logical)
-            });
+            return GetEntities(QueryBuilder
+                .Where(x => x.FilemanDateTime, Comparison.GreaterThanOrEqual, date1logical)
+                .Where(x => x.FilemanDateTime, Comparison.LessThan, date2logical));
         }
     }
 }

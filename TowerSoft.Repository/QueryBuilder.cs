@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 
 namespace TowerSoft.Repository {
+    //TODO Rename file
     /// <summary>
-    /// Object to create complex SQL statements
+    /// Object to create complex SQL statements. Will rename in the future to avoid confusion with FluentQueryBuilder
     /// </summary>
     public class QueryBuilder {
         internal QueryBuilder(string tableName, IEnumerable<IMap> maps, IDbAdapter dbAdapter, Type domainType) {

@@ -58,6 +58,16 @@ namespace TowerSoft.Repository.Builders {
         /// Marks the map as an ID map. Use this for primary keys that do not auto increment
         /// </summary>
         /// <returns></returns>
+        public PropertyMapBuilder AsPrimaryKey() {
+            IsID = true;
+            return this;
+        }
+
+        /// <summary>
+        /// Marks the map as an ID map. Use this for primary keys that do not auto increment
+        /// </summary>
+        /// <returns></returns>
+        [Obsolete("Use AsPrimaryKey instead")]
         public PropertyMapBuilder AsID() {
             IsID = true;
             return this;

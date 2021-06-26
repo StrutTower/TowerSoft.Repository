@@ -13,6 +13,11 @@ namespace TowerSoft.RepositoryTests.Interfaces {
         TestObject GetByID(long id);
         TestObject GetByTitle(string title);
         List<TestObject> GetByDescription(string description);
+        List<TestObject> GetByDescriptionWithInputOnOrderAsc(string description);
+        List<TestObject> GetByDescriptionWithInputOnOrderDesc(string description);
+        List<TestObject> GetByDescriptionWithLimit(string description, int limit);
+        List<TestObject> GetByDescriptionWithLimitAndOffset(string description, int limit, int offset);
+        List<TestObject> GetByDescriptionWithLimitOffsetAndSort(string description, int limit, int offset);
         List<TestObject> GetByInputOnDateRange(DateTime dateTime1, DateTime dateTime2);
     }
 }

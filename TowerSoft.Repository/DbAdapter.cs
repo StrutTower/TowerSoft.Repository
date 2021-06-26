@@ -100,6 +100,23 @@ namespace TowerSoft.Repository {
         public virtual void ConfigureDbConnection() { }
 
         /// <summary>
+        /// Returns a limit and offset statement for the current database type
+        /// </summary>
+        /// <param name="limit">How many rows to return</param>
+        /// <param name="offset">How many rows to skip</param>
+        /// <param name="query">Current query builder</param>
+        /// <returns></returns>
+        public virtual string GetLimitOffsetStatement(int? limit, int? offset, QueryBuilder query) {
+            if (limit.HasValue && offset.HasValue)
+                return $"LIMIT {limit} OFFSET {offset} ";
+
+            if (limit.HasValue)
+                return $"LIMIT {limit} ";
+
+            return "";
+        }
+
+        /// <summary>
         /// Returns the parameter placeholder for the supplied column. This is used in the SQL query.
         /// </summary>
         /// <param name="columnName">Name of the column</param>

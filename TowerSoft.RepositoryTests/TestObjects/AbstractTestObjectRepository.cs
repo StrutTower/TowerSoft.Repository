@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using TowerSoft.Repository;
 using TowerSoft.RepositoryTests.Interfaces;
-using TowerSoft.RepositoryTests.TestObjects;
 
 namespace TowerSoft.RepositoryTests.TestObjects {
     public class AbstractTestObjectRepository : DbRepository<TestObject> {
@@ -16,7 +15,48 @@ namespace TowerSoft.RepositoryTests.TestObjects {
         }
 
         public List<TestObject> GetByDescription(string description) {
-            return GetEntities(WhereEqual(x => x.Description, description));
+            return GetEntities(QueryBuilder
+                .WhereEqual(x => x.Description, description)
+                .WhereEqual(x => x.StatusID, Status.Active)
+                .OrderBy(x => x.Title));
+        }
+
+
+        public List<TestObject> GetByDescriptionWithInputOnOrderAsc(string description) {
+            return GetEntities(QueryBuilder
+                .WhereEqual(x => x.Description, description)
+                .WhereEqual(x => x.StatusID, Status.Active)
+                .OrderBy(x => x.InputOn));
+        }
+
+        public List<TestObject> GetByDescriptionWithInputOnOrderDesc(string description) {
+            return GetEntities(QueryBuilder
+                .WhereEqual(x => x.Description, description)
+                .WhereEqual(x => x.StatusID, Status.Active)
+                .OrderByDescending(x => x.InputOn));
+        }
+
+        public List<TestObject> GetByDescriptionWithLimit(string description, int limit) {
+            return GetEntities(QueryBuilder
+                .WhereEqual(x => x.Description, description)
+                .OrderByDescending(x => x.ID)
+                .LimitTo(limit));
+        }
+
+        public List<TestObject> GetByDescriptionWithLimitAndOffset(string description, int limit, int offset) {
+            return GetEntities(QueryBuilder
+                .WhereEqual(x => x.Description, description)
+                .OrderBy(x => x.ID)
+                .LimitTo(limit)
+                .OffsetBy(offset));
+        }
+
+        public List<TestObject> GetByDescriptionWithLimitOffsetAndSort(string description, int limit, int offset) {
+            return GetEntities(QueryBuilder
+                .WhereEqual(x => x.Description, description)
+                .OrderBy(x => x.InputOn)
+                .LimitTo(limit)
+                .OffsetBy(offset));
         }
     }
 }

@@ -10,10 +10,9 @@ namespace TowerSoft.RepositoryTests.SQLite {
         public TestObjectRepository(UnitOfWork uow) : base(uow) { }
 
         public List<TestObject> GetByInputOnDateRange(DateTime dateTime1, DateTime dateTime2) {
-            return GetEntities(new[] {
-                Where(x => x.InputOn, Comparison.GreaterThanOrEqual, dateTime1),
-                Where(x => x.InputOn, Comparison.LessThan, dateTime2)
-            });
+            return GetEntities(QueryBuilder
+                .Where(x => x.InputOn, Comparison.GreaterThanOrEqual, dateTime1)
+                .Where(x => x.InputOn, Comparison.LessThan, dateTime2));
         }
     }
-    }
+}
