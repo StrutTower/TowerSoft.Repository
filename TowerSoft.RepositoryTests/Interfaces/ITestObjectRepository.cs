@@ -9,6 +9,7 @@ namespace TowerSoft.RepositoryTests.Interfaces {
         public void Update(TestObject entity);
         public void Remove(TestObject entity);
         public List<TestObject> GetAll();
+        public List<TestObject> GetAllSorted();
         public long GetCount();
         TestObject GetByID(long id);
         TestObject GetByTitle(string title);

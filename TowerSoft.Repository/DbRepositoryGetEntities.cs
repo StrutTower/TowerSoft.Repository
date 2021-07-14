@@ -43,7 +43,9 @@ namespace TowerSoft.Repository {
                 }
                 index++;
             }
-            query.SqlQuery += $"WHERE {string.Join(" AND ", whereStatements)} ";
+
+            if (whereStatements.Any())
+                query.SqlQuery += $"WHERE {string.Join(" AND ", whereStatements)} ";
 
             if (builder.OrderStatements != null && builder.OrderStatements.Any()) {
                 List<string> orderBy = new List<string>();

@@ -187,6 +187,12 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         }
 
         [TestMethod]
+        public void OrderByWithoutWhereStatements_ShouldNotError() {
+            ITestObjectRepository repo = GetTestObjectRepository();
+            repo.GetAllSorted();
+        }
+
+        [TestMethod]
         public void Limit_ShouldLimitResults() {
             ITestObjectRepository repo = GetTestObjectRepository();
             string description = "Limit Test";

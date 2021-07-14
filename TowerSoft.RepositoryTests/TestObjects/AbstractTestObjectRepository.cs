@@ -6,6 +6,12 @@ namespace TowerSoft.RepositoryTests.TestObjects {
     public class AbstractTestObjectRepository : DbRepository<TestObject> {
         public AbstractTestObjectRepository(IUnitOfWork uow) : base(uow.DbAdapter) { }
 
+        public List<TestObject> GetAllSorted() {
+            return GetEntities(QueryBuilder
+                .OrderBy(x => x.InputOn)
+                .OrderBy(x => x.Title));
+        }
+
         public TestObject GetByID(long id) {
             return GetSingleEntity(WhereEqual(x => x.ID, id));
         }
