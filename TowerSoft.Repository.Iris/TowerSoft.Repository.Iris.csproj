@@ -1,8 +1,27 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>1.1.0</Version>
+    <Description>Intersystems Iris support for TowerSoft.Repository</Description>
+    <PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
+    <PackageLicenseFile>license.txt</PackageLicenseFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>StrutTower</Authors>
+    <Company>TowerSoft</Company>
+    <Product>TowerSoft.Repository</Product>
   </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\license.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="IRISProviderCore21" Version="1.0.0" />
