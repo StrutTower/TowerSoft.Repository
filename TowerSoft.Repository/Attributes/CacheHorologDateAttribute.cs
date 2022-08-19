@@ -7,6 +7,9 @@ namespace TowerSoft.Repository.Attributes {
     /// with connecting to the database.
     /// </summary>
     public class CacheHorologDateAttribute : Attribute {
+        /// <summary>
+        /// Name of the function used to display the value
+        /// </summary>
         public string FunctionName { get; set; }
     }
 }

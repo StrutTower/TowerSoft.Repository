@@ -4,6 +4,9 @@ using System.Data;
 using System.Reflection;
 
 namespace TowerSoft.Repository.Iris {
+    /// <summary>
+    /// DbAdapter for Intersystem's Iris Server
+    /// </summary>
     public class IrisDbAdapter : DbAdapter, IDbAdapter {
         /// <summary>
         /// Create a new DbAdapter for Intersystem's Iris Server
@@ -11,26 +14,61 @@ namespace TowerSoft.Repository.Iris {
         /// <param name="connectionString">Database connection string</param>
         public IrisDbAdapter(string connectionString) : base(connectionString) { }
 
+        /// <summary>
+        /// Returns the ADO.NET IDbCommand for this database.
+        /// </summary>
+        /// <param name="connectionString">Database connection string</param>
+        /// <returns></returns>
         public override IDbConnection CreateNewDbConnection(string connectionString) {
             return new IRISConnection(connectionString);
         }
 
+        /// <summary>
+        /// SQL Statement to retrieve the last inserted ID for this database.
+        /// </summary>
+        /// <returns></returns>
         public string GetLastInsertIdStatement() {
             return "SELECT LAST_IDENTITY()";
         }
 
+        /// <summary>
+        /// Specifies if the last insert ID query needs to be run separately from the insert statement.
+        /// </summary>
         public bool LastInsertIdInSeparateQuery => true;
 
+        /// <summary>
+        /// Specifies if the database allows multiple entities to be inserted in a single statement.
+        /// </summary>
         public bool ListInsertSupported => false;
 
+        /// <summary>
+        /// Returns the parameter placeholder for the supplied column. This is used in the SQL query.
+        /// </summary>
+        /// <param name="columnName">Name of the column</param>
+        /// <param name="parameterIndex">Index of the parameter for the query</param>
+        /// <returns></returns>
         public override string GetParameterPlaceholder(string columnName, int parameterIndex) {
             return "?";
         }
 
+        /// <summary>
+        /// Returns the parameter name for the supplied column. This is used in the parameter dictionary.
+        /// </summary>
+        /// <param name="columnName">Name of the column</param>
+        /// <param name="parameterIndex">Index of the parameter for the query</param>
+        /// <returns></returns>
         public override string GetParameterName(string columnName, int parameterIndex) {
             return $"{columnName}{parameterIndex}";
         }
 
+        /// <summary>
+        /// Gets the SELECT statement for this table and column.
+        /// Typically this is just TableName.ColumnName but some databases require casting the column to certain datatype
+        /// </summary>
+        /// <param name="type">Object type</param>
+        /// <param name="tableName">Name of the database table</param>
+        /// <param name="map">Map for the property</param>
+        /// <returns></returns>
         public override string GetSelectColumnCast(Type type, string tableName, IMap map) {
             PropertyInfo pi = type.GetProperty(map.PropertyName);
 

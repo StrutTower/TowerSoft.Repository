@@ -7,6 +7,9 @@ namespace TowerSoft.Repository.Attributes {
     /// connecting to the database.
     /// </summary>
     public class CacheFilemanDateAttribute : Attribute {
+        /// <summary>
+        /// Name of the function used to display the value
+        /// </summary>
         public string FunctionName { get; set; }
     }
 }

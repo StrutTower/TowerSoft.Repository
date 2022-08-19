@@ -15,7 +15,6 @@ namespace TowerSoft.Repository.Maps {
         /// </summary>
         public string ColumnName { get; }
 
-
         /// <summary>
         /// Name of the function used to display the value
         /// </summary>

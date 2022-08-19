@@ -55,7 +55,7 @@ namespace TowerSoft.Repository.Cache {
         /// Returns the parameter placeholder for the supplied column. This is used in the SQL query.
         /// </summary>
         /// <param name="columnName">Name of the column</param>
-        /// <param name="parameterIndex">Index of the parameter for the query query</param>
+        /// <param name="parameterIndex">Index of the parameter for the query</param>
         /// <returns></returns>
         public override string GetParameterPlaceholder(string columnName, int parameterIndex) {
             return "?";

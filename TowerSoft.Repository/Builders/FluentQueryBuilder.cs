@@ -42,7 +42,7 @@ namespace TowerSoft.Repository.Builders {
         }
 
         /// <summary>
-        /// LIMIT and OFFSET are not supported in Caché
+        /// LIMIT and OFFSET are not supported in Caché or Iris
         /// </summary>
         /// <param name="limit"></param>
         /// <returns></returns>
@@ -52,7 +52,7 @@ namespace TowerSoft.Repository.Builders {
         }
 
         /// <summary>
-        /// LIMIT and OFFSET are not supported in Caché
+        /// LIMIT and OFFSET are not supported in Caché or Iris
         /// </summary>
         /// <param name="offset"></param>
         /// <returns></returns>

@@ -5,6 +5,9 @@ namespace TowerSoft.Repository.Attributes {
     /// Defines the properties as an autonumber map
     /// </summary>
     public class AutonumberAttribute : Attribute {
+        /// <summary>
+        /// Name of the function used to display the value
+        /// </summary>
         public string FunctionName { get; set; }
     }
 }

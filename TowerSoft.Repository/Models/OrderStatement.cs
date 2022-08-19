@@ -1,4 +1,7 @@
 ﻿namespace TowerSoft.Repository {
+    /// <summary>
+    /// Used to store order by settings from FluentQueryBuilder
+    /// </summary>
     public class OrderStatement {
         /// <summary>
         /// Column to order by
