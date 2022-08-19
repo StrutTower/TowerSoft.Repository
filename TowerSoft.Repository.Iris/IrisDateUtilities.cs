@@ -21,7 +21,9 @@ namespace TowerSoft.Repository.Iris {
             int century = int.Parse(year.Substring(0, 2)) - 17;
             string dateString = dateTime.ToString("yyMMdd.HHmmss");
 
-            return $"{century}{dateString}";
+            // Convert to decimal then back to a string to leave off any trailing 0s after the period
+            decimal decimalValue = Convert.ToDecimal($"{century}{dateString}");
+            return decimalValue.ToString("0.######");
         }
 
         /// <summary>
