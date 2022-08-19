@@ -31,6 +31,38 @@ namespace TowerSoft.RepositoryTests {
             ValidateMaps(repo);
         }
 
+        [TestMethod]
+        public void GetQueryBuilder_Get_ShouldReturnSelectStatement() {
+            string expected = "SELECT " +
+                "TestObject.Title Title," +
+                "TestObject.Description Description," +
+                "TestObject.StatusID StatusID," +
+                "TestObject.InputOn InputOn," +
+                "TestObject.InputByID InputByID," +
+                "TestObject.IsActive IsActive," +
+                "TestObject.ID ID " +
+                "FROM TestObject ";
+            string query = new FauxRepository().GetQueryBuilderSqlQuery();
+            Assert.AreEqual(expected, query);
+        }
+
+        [TestMethod]
+        public void GetQueryBuilder_GetWithCustomColumns_ShouldReturnSelectStatement() {
+            string expected = "SELECT " +
+                "TestObject.Title Title," +
+                "TestObject.Description Description," +
+                "TestObject.StatusID StatusID," +
+                "TestObject.InputOn InputOn," +
+                "TestObject.InputByID InputByID," +
+                "TestObject.IsActive IsActive," +
+                "TestObject.ID ID," +
+                "CustomColumn," +
+                "$INTERNAL(CustomColumn2) " +
+                "FROM TestObject ";
+            string query = new FauxRepository().GetQueryBuilderSqlQueryWithCustomColumns();
+            Assert.AreEqual(expected, query);
+        }
+
         private void ValidateMaps(FauxRepository repo) {
             IMap expectedAutonumberMap = new AutonumberMap("ID");
             Assert.AreEqual(expectedAutonumberMap.PropertyName, repo.GetAutonumberMap().PropertyName);

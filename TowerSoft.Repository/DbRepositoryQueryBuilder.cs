@@ -18,24 +18,37 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-        /// Returns the basic SELECT and FROM parts of a SQL statement for the datebase table
+        /// Returns the basic SELECT and FROM parts of a SQL statement for the database table
         /// </summary>
         /// <returns></returns>
         protected virtual string GetBasicSelectText() {
             List<string> columns = new List<string>();
-            List<string> joins = new List<string>();
             foreach (Map map in Mappings.AllMaps) {
                 columns.Add(DbAdapter.GetSelectColumnCast(typeof(T), TableName, map));
             }
 
             string query = $"SELECT {string.Join(",", columns)} FROM {TableName} ";
-            if (joins.Any())
-                query += string.Join(" ", joins.Distinct()) + " ";
             return query;
         }
 
         /// <summary>
-        /// 
+        /// Returns the basic SELECT and FROM parts of a SQL statement for the database table including any extra columns that are supplied.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string GetBasicSelectText(IEnumerable<string> customColumns) {
+            List<string> columns = new List<string>();
+            foreach (Map map in Mappings.AllMaps) {
+                columns.Add(DbAdapter.GetSelectColumnCast(typeof(T), TableName, map));
+            }
+
+            columns.AddRange(customColumns);
+
+            string query = $"SELECT {string.Join(",", columns)} FROM {TableName} ";
+            return query;
+        }
+
+        /// <summary>
+        ///
         /// </summary>
         /// <typeparam name="TProperty"></typeparam>
         /// <param name="propertyExpression"></param>
@@ -48,7 +61,7 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-        /// Generate a query with the specified where statement
+        /// Generate a query with the specified where statement.
         /// </summary>
         /// <typeparam name="TProperty"></typeparam>
         /// <param name="propertyExpression">Property to query</param>
@@ -62,11 +75,20 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-        /// Returns a new instance of QueryBuilder for this repository
+        /// Returns a new instance of QueryBuilder for this repository.
         /// </summary>
         /// <returns></returns>
         protected QueryBuilder GetQueryBuilder() {
             return new QueryBuilder(TableName, Mappings.AllMaps, DbAdapter, typeof(T));
+        }
+
+        /// <summary>
+        /// Returns a new instance of QueryBuilder for this repository including any custom columns supplied.
+        /// </summary>
+        /// <param name="customColumns">Custom select columns to include in the query.</param>
+        /// <returns></returns>
+        protected QueryBuilder GetQueryBuilder(IEnumerable<string> customColumns) {
+            return new QueryBuilder(TableName, Mappings.AllMaps, DbAdapter, typeof(T), customColumns);
         }
     }
 }

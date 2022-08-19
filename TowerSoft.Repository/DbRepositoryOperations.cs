@@ -114,7 +114,7 @@ namespace TowerSoft.Repository {
                     columns.Add(map.ColumnName);
                 }
 
-                // Caculate the batch size based on the number of parameters that will be generated in the SQL statements.
+                // Calculate the batch size based on the number of parameters that will be generated in the SQL statements.
                 // SQLite has a parameter limit of 999
                 int batchSize = 900 / columns.Count;
 

@@ -2,14 +2,14 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using TowerSoft.RepositoryTests.Cache;
-using TowerSoft.RepositoryTests.Databases.Cache;
+using TowerSoft.RepositoryTests.Iris;
+using TowerSoft.RepositoryTests.Databases.Iris;
 using TowerSoft.RepositoryTests.Interfaces;
 using TowerSoft.RepositoryTests.TestObjects;
 
 namespace TowerSoft.RepositoryTests.DbRepository {
     [TestClass]
-    public class CacheRepositoryTests : DbRepositoryTests {
+    public class IrisRepositoryTests : DbRepositoryTests {
         private static IUnitOfWork uow;
 
         [ClassInitialize]
@@ -56,7 +56,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
         [TestMethod]
         public void AddDate_ShouldAddAndReturnDates() {
-            CacheDateTest expected = new CacheDateTest {
+            IrisDateTest expected = new IrisDateTest {
                 Title = "AddDate",
                 FilemanDateTime = new DateTime(2021, 3, 31, 10, 10, 30),
                 FilemanDate = new DateTime(2020, 1, 15),
@@ -66,7 +66,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             DateTestRepository repo = uow.GetRepo<DateTestRepository>();
             repo.Add(expected);
 
-            CacheDateTest actual = repo.GetByTitle(expected.Title);
+            IrisDateTest actual = repo.GetByTitle(expected.Title);
 
             Assert.AreEqual(expected.FilemanDateTime, actual.FilemanDateTime);
             Assert.AreEqual(expected.FilemanDate, actual.FilemanDate);
@@ -76,7 +76,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
         [TestMethod]
         public void UpdateDate_ShouldUpdateDates() {
-            CacheDateTest initial = new CacheDateTest {
+            IrisDateTest initial = new IrisDateTest {
                 Title = "UpdateDate",
                 FilemanDateTime = new DateTime(2021, 3, 31, 10, 10, 30),
                 FilemanDate = new DateTime(2020, 1, 15),
@@ -86,14 +86,14 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             DateTestRepository repo = uow.GetRepo<DateTestRepository>();
             repo.Add(initial);
 
-            CacheDateTest expected = repo.GetByTitle("UpdateDate");
+            IrisDateTest expected = repo.GetByTitle("UpdateDate");
             expected.FilemanDateTime = expected.FilemanDateTime.Value.AddDays(1);
             expected.FilemanDate = expected.FilemanDate.Value.AddDays(1);
             expected.SqlDateTime = expected.SqlDateTime.Value.AddDays(1);
             expected.SqlDate = expected.SqlDate.Value.AddDays(1);
             repo.Update(expected);
 
-            CacheDateTest actual = repo.GetByTitle("UpdateDate");
+            IrisDateTest actual = repo.GetByTitle("UpdateDate");
             Assert.AreEqual(expected.FilemanDateTime, actual.FilemanDateTime, "FilemanDateTime");
             Assert.AreEqual(expected.FilemanDate, actual.FilemanDate, "FilemanDate");
             Assert.AreEqual(expected.SqlDateTime, actual.SqlDateTime, "SqlDateTime");
@@ -103,14 +103,14 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         [TestMethod]
         public void GetByFilemanDate() {
             DateTime expected = new DateTime(2020, 12, 15);
-            CacheDateTest expectedDateTime = new CacheDateTest {
+            IrisDateTest expectedDateTime = new IrisDateTest {
                 Title = "FilemanDate",
                 FilemanDate = expected
             };
             DateTestRepository repo = uow.GetRepo<DateTestRepository>();
             repo.Add(expectedDateTime);
 
-            CacheDateTest actual = repo.GetByFilemanDate(expected);
+            IrisDateTest actual = repo.GetByFilemanDate(expected);
             Assert.IsNotNull(actual);
             Assert.AreEqual(expectedDateTime.Title, actual.Title, "Title");
             Assert.AreEqual(expectedDateTime.FilemanDate, actual.FilemanDate, "FilemanDate");
@@ -119,14 +119,14 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         [TestMethod]
         public void GetByFilemanDateTime() {
             DateTime expected = new DateTime(1990, 1, 31, 10, 00, 30);
-            CacheDateTest expectedDateTime = new CacheDateTest {
+            IrisDateTest expectedDateTime = new IrisDateTest {
                 Title = "FilemanDateTime",
                 FilemanDateTime = expected
             };
             DateTestRepository repo = uow.GetRepo<DateTestRepository>();
             repo.Add(expectedDateTime);
 
-            CacheDateTest actual = repo.GetByFilemanDateTime(expected);
+            IrisDateTest actual = repo.GetByFilemanDateTime(expected);
             Assert.IsNotNull(actual);
             Assert.AreEqual(expectedDateTime.Title, actual.Title, "Title");
             Assert.AreEqual(expectedDateTime.FilemanDateTime, actual.FilemanDateTime, "FilemanDateTime");
@@ -134,15 +134,15 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
         [TestMethod]
         public void GetByDatesBetweenDateRange() {
-            CacheDateTest datetime1 = new CacheDateTest {
+            IrisDateTest datetime1 = new IrisDateTest {
                 Title = "FilemanDateTimeRange1",
                 FilemanDateTime = new DateTime(1971, 2, 4, 12, 30, 00)
             };
-            CacheDateTest datetime2 = new CacheDateTest {
+            IrisDateTest datetime2 = new IrisDateTest {
                 Title = "FilemanDateTimeRange2",
-                FilemanDateTime = new DateTime(1971, 2, 8, 10, 15, 00)
+                FilemanDateTime = new DateTime(1971, 2, 13, 10, 15, 00)
             };
-            CacheDateTest datetime3 = new CacheDateTest {
+            IrisDateTest datetime3 = new IrisDateTest {
                 Title = "FilemanDateTimeRange3",
                 FilemanDateTime = new DateTime(1971, 2, 18, 11, 15, 00)
             };
@@ -151,7 +151,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             repo.Add(datetime2);
             repo.Add(datetime3);
 
-            List<CacheDateTest> results = repo.GetByFilemanDateTimeBetweenDates(new DateTime(1971, 2, 3), new DateTime(1971, 2, 14));
+            List<IrisDateTest> results = repo.GetByFilemanDateTimeBetweenDates(new DateTime(1971, 2, 3), new DateTime(1971, 2, 14));
             Assert.AreEqual(2, results.Count);
         }
 

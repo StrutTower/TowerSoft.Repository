@@ -1,6 +1,6 @@
 ﻿namespace TowerSoft.Repository {
     /// <summary>
-    /// Object used to build simple SQL statments
+    /// Object used to build simple SQL statements
     /// </summary>
     public class WhereCondition {
         /// <summary>
@@ -23,7 +23,7 @@
         /// </summary>
         /// <param name="columnName">Column name to compare to</param>
         /// <param name="value">Value to compare to</param>
-        /// <param name="comparison">Comparision type. Default is Equals</param>
+        /// <param name="comparison">Comparison type. Default is Equals</param>
         public WhereCondition(string columnName, object value, Comparison comparison = Comparison.Equals) {
             ColumnName = columnName;
             Value = value;
@@ -69,7 +69,7 @@
             }
             return s;
         }
-        
+
         /// <summary>
         /// Returns the parameter value
         /// </summary>
@@ -91,7 +91,7 @@
         }
 
         /// <summary>
-        /// Check if the SQL statment should be convert to a null where statement
+        /// Check if the SQL statement should be convert to a null where statement
         /// </summary>
         /// <returns></returns>
         public bool IsNullEqualsOrNotEquals() {

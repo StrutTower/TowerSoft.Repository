@@ -15,6 +15,12 @@ namespace TowerSoft.Repository.Maps {
         /// </summary>
         public string ColumnName { get; }
 
+
+        /// <summary>
+        /// Name of the function used to display the value
+        /// </summary>
+        public string FunctionName { get; }
+
         /// <summary>
         /// Initialize a new Map where the property name and column name are the same.
         /// </summary>
@@ -29,9 +35,15 @@ namespace TowerSoft.Repository.Maps {
         /// </summary>
         /// <param name="propertyName">Name of the property on the C# object</param>
         /// <param name="columnName">Name of the column in the database</param>
-        public Map(string propertyName, string columnName) {
+        /// <param name="functionName">
+        /// Name of the function used to display the value.
+        /// Currently only used by Cache and Iris databases.
+        /// Typical options are %INTERNAL and %EXTERNAL.
+        /// </param>
+        public Map(string propertyName, string columnName, string functionName = null) {
             PropertyName = propertyName;
             ColumnName = columnName;
+            FunctionName = functionName;
         }
 
         /// <summary>

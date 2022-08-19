@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TowerSoft.Repository.Cache\TowerSoft.Repository.Cache.csproj" />
+    <ProjectReference Include="..\TowerSoft.Repository.Iris\TowerSoft.Repository.Iris.csproj" />
     <ProjectReference Include="..\TowerSoft.Repository.MicrosoftSql\TowerSoft.Repository.MicrosoftSql.csproj" />
     <ProjectReference Include="..\TowerSoft.Repository.MySql\TowerSoft.Repository.MySql.csproj" />
     <ProjectReference Include="..\TowerSoft.Repository.PostgreSql\TowerSoft.Repository.PostgreSql.csproj" />
@@ -22,6 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="appsecrets.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="appsecrets.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

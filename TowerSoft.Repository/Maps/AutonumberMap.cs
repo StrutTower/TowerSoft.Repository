@@ -1,6 +1,6 @@
 ﻿namespace TowerSoft.Repository.Maps {
     /// <summary>
-    /// Autonumber map used to map a property to a column that is set to autoincrement
+    /// Autonumber map used to map a property to a column that is set to auto increment
     /// </summary>
     public class AutonumberMap : Map {
         /// <summary>
@@ -14,6 +14,11 @@
         /// </summary>
         /// <param name="propertyName">Name of the property on the C# object</param>
         /// <param name="columnName">Name of the column in the database</param>
-        public AutonumberMap(string propertyName, string columnName) : base(propertyName, columnName) { }
+        /// <param name="functionName">
+        /// Name of the function used to display the value.
+        /// Currently only used by Cache and Iris databases.
+        /// Typical options are %INTERNAL and %EXTERNAL.
+        /// </param>
+        public AutonumberMap(string propertyName, string columnName, string functionName = null) : base(propertyName, columnName, functionName) { }
     }
 }

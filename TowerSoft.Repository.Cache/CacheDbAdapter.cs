@@ -65,7 +65,7 @@ namespace TowerSoft.Repository.Cache {
         /// Returns the parameter name for the supplied column. This is used in the parameter dictionary.
         /// </summary>
         /// <param name="columnName">Name of the column</param>
-        /// <param name="parameterIndex">Index of the parameter for the query query</param>
+        /// <param name="parameterIndex">Index of the parameter for the query</param>
         /// <returns></returns>
         public override string GetParameterName(string columnName, int parameterIndex) {
             return $"?{columnName}{parameterIndex}";
@@ -89,26 +89,29 @@ namespace TowerSoft.Repository.Cache {
                 propertyType = pi.PropertyType.GetGenericArguments()[0];
             }
 
-            string cast = "";
-
-            if (Equals(propertyType, typeof(short))) {
-                cast = "SMALLINT";
-            } else if (Equals(propertyType, typeof(int))
-                  || Equals(propertyType, typeof(int))
-                  || Equals(propertyType.BaseType, typeof(Enum))) {
-                cast = "INT";
-            } else if (Equals(propertyType, typeof(long))) {
-                cast = "BIGINT";
-            } else if (Equals(propertyType, typeof(bool))) {
-                cast = "INT";
-            } else if (Equals(propertyType, typeof(DateTime))) {
-                cast = "DATETIME";
-            }
-
-            if (string.IsNullOrEmpty(cast)) {
-                return $"{tableName}.{map.ColumnName} {map.PropertyName}";
+            if (!string.IsNullOrWhiteSpace(map.FunctionName)) {
+                return $"{map.FunctionName}({tableName}.{map.ColumnName}) {map.PropertyName}";
             } else {
-                return $"CAST({tableName}.{map.ColumnName} AS {cast}) {map.PropertyName}";
+                string cast = string.Empty;
+
+                if (Equals(propertyType, typeof(short))) {
+                    cast = "SMALLINT";
+                } else if (Equals(propertyType, typeof(int))
+                      || Equals(propertyType.BaseType, typeof(Enum))) {
+                    cast = "INT";
+                } else if (Equals(propertyType, typeof(long))) {
+                    cast = "BIGINT";
+                } else if (Equals(propertyType, typeof(bool))) {
+                    cast = "INT";
+                } else if (Equals(propertyType, typeof(DateTime))) {
+                    cast = "DATETIME";
+                }
+
+                if (string.IsNullOrEmpty(cast)) {
+                    return $"{tableName}.{map.ColumnName} {map.PropertyName}";
+                } else {
+                    return $"CAST({tableName}.{map.ColumnName} AS {cast}) {map.PropertyName}";
+                }
             }
         }
 

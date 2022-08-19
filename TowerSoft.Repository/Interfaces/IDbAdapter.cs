@@ -82,12 +82,12 @@ namespace TowerSoft.Repository {
         bool ListInsertSupported { get; }
 
         /// <summary>
-        /// ILogger used for outputing debugging info
+        /// ILogger used for outputting debugging info
         /// </summary>
         ILogger DebugLogger { get; }
 
         /// <summary>
-        /// ILogger can be supplied to enable outputing debug info from the ORM
+        /// ILogger can be supplied to enable outputting debug info from the ORM
         /// </summary>
         /// <param name="logger">ILogger</param>
         void AddLogger(ILogger logger);

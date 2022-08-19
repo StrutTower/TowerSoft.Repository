@@ -44,7 +44,7 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-        /// Creates a new Repository with the table name and maps passed directly into the contructor.
+        /// Creates a new Repository with the table name and maps passed directly into the constructor.
         /// </summary>
         /// <param name="dbAdapter">DbAdapter class for the database being used</param>
         /// <param name="tableName">Name of the table</param>
@@ -100,7 +100,7 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-        /// Can be overriden to run code on entities after GetEntities or GetSingleEntity. This method does nothing unless overriden.
+        /// Can be overridden to run code on entities after GetEntities or GetSingleEntity. This method does nothing unless overridden.
         /// </summary>
         /// <param name="entities">Entities retrieved from the database</param>
         protected virtual void PostProcessEntities(List<T> entities) { }

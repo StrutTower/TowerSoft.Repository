@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TowerSoft.Repository {
     //TODO Rename file
@@ -7,7 +8,7 @@ namespace TowerSoft.Repository {
     /// Object to create complex SQL statements. Will rename in the future to avoid confusion with FluentQueryBuilder
     /// </summary>
     public class QueryBuilder {
-        internal QueryBuilder(string tableName, IEnumerable<IMap> maps, IDbAdapter dbAdapter, Type domainType) {
+        internal QueryBuilder(string tableName, IEnumerable<IMap> maps, IDbAdapter dbAdapter, Type domainType, IEnumerable<string> customColumns = null) {
             TableName = tableName;
             Parameters = new Dictionary<string, object>();
 
@@ -15,6 +16,11 @@ namespace TowerSoft.Repository {
             foreach (IMap map in maps) {
                 columns.Add(dbAdapter.GetSelectColumnCast(domainType, tableName, map));
             }
+
+            if (customColumns != null && customColumns.Any()) {
+                columns.AddRange(customColumns);
+            }
+
             SqlQuery = "SELECT " + string.Join(",", columns) + " FROM " + TableName + " ";
         }
 

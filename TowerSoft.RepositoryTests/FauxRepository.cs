@@ -47,5 +47,17 @@ namespace TowerSoft.RepositoryTests {
         public List<IMap> GetAllMaps() {
             return Mappings.AllMaps;
         }
+
+        public string GetQueryBuilderSqlQuery() {
+            return GetQueryBuilder().SqlQuery;
+        }
+
+        public string GetQueryBuilderSqlQueryWithCustomColumns() {
+            List<string> customColumns = new List<string> {
+                "CustomColumn",
+                "$INTERNAL(CustomColumn2)"
+            };
+            return GetQueryBuilder(customColumns).SqlQuery;
+        }
     }
 }

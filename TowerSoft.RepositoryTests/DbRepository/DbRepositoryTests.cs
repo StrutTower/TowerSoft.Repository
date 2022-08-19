@@ -36,7 +36,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         public void Add_MultipleTestObjects_ShouldAdd() {
             ITestObjectRepository repo = GetTestObjectRepository();
             List<TestObject> objects = new List<TestObject>();
-            for (int i = 0; i < 5000; i++) {
+            for (int i = 0; i < 1000; i++) {
                 objects.Add(new TestObject {
                     Title = "Add Multiple Test " + i,
                     Description = "Multiple Insert Test",
@@ -51,7 +51,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
             List<TestObject> testObjects = repo.GetByDescription("Multiple Insert Test");
 
-            Assert.AreEqual(objects.Count, testObjects.Count); // Make sure the same number of objects are returns
+            Assert.AreEqual(objects.Count, testObjects.Count); // Make sure the same number of objects are returned
             foreach (TestObject testObject in testObjects) {
                 Assert.AreEqual("Multiple Insert Test", testObject.Description);
             }

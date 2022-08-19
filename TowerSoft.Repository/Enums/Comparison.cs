@@ -1,6 +1,6 @@
 ﻿namespace TowerSoft.Repository {
     /// <summary>
-    /// Set the comparison that will be used when generating the SQL where statment
+    /// Set the comparison that will be used when generating the SQL where statement
     /// </summary>
     public enum Comparison {
         /// <summary>

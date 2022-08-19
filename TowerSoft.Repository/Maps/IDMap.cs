@@ -1,6 +1,6 @@
 ﻿namespace TowerSoft.Repository.Maps {
     /// <summary>
-    /// Primary key map used to map a property to a column that is a primary key but does not autoincrement
+    /// Primary key map used to map a property to a column that is a primary key but does not auto increment
     /// </summary>
     public class IDMap : Map {
         /// <summary>
@@ -14,6 +14,11 @@
         /// </summary>
         /// <param name="propertyName">Name of the property on the C# object</param>
         /// <param name="columnName">Name of the column in the database</param>
-        public IDMap(string propertyName, string columnName) : base(propertyName, columnName) { }
+        /// <param name="functionName">
+        /// Name of the function used to display the value.
+        /// Currently only used by Cache and Iris databases.
+        /// Typical options are %INTERNAL and %EXTERNAL.
+        /// </param>
+        public IDMap(string propertyName, string columnName, string functionName = null) : base(propertyName, columnName, functionName) { }
     }
 }

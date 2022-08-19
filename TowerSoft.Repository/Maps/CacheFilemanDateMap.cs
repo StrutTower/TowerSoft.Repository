@@ -17,7 +17,12 @@ namespace TowerSoft.Repository.Maps {
         /// </summary>
         /// <param name="propertyName">Name of the property on the C# object</param>
         /// <param name="columnName">Name of the column in the database</param>
-        public CacheFilemanDateMap(string propertyName, string columnName) : base(propertyName, columnName) { }
+        /// <param name="functionName">
+        /// Name of the function used to display the value.
+        /// Currently only used by Cache and Iris databases.
+        /// Typical options are %INTERNAL and %EXTERNAL.
+        /// </param>
+        public CacheFilemanDateMap(string propertyName, string columnName, string functionName = null) : base(propertyName, columnName, functionName) { }
 
         /// <summary>
         /// Gets the value from the supplied entity

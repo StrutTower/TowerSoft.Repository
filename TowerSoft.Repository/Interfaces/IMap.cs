@@ -14,6 +14,11 @@
         string ColumnName { get; }
 
         /// <summary>
+        /// Name of the function used to display the value. Currently only used on Cache and Iris databases.
+        /// </summary>
+        string FunctionName { get; }
+
+        /// <summary>
         /// Returns the value of the property for the supplied entity
         /// </summary>
         /// <param name="entity"></param>

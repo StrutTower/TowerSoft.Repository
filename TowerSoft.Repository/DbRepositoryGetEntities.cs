@@ -26,7 +26,7 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-        /// Return all rows matching the queryin FluentQueryBuilder
+        /// Return all rows matching the query in FluentQueryBuilder
         /// </summary>
         /// <param name="builder">FluentQueryBuilder</param>
         /// <returns></returns>
@@ -38,7 +38,8 @@ namespace TowerSoft.Repository {
                 if (whereCondition.IsNullEqualsOrNotEquals()) {
                     whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " NULL");
                 } else {
-                    whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName, index));
+                    whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " +
+                        whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName, index));
                     query.AddParameter(DbAdapter.GetParameterName(whereCondition.ColumnName, index), whereCondition.GetParameterValue());
                 }
                 index++;

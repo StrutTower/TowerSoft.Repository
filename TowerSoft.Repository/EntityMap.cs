@@ -21,7 +21,7 @@ namespace TowerSoft.Repository {
         /// Initialize a new entity map
         /// </summary>
         /// <param name="tableName">Name of the table in the database</param>
-        /// <param name="entityMapOption">Automapping option will enable automatically mapping properties to a column of the same name unless overidden.</param>
+        /// <param name="entityMapOption">Automapping option will enable automatically mapping properties to a column of the same name unless overridden.</param>
         public EntityMap(string tableName, AutoMappingOption entityMapOption = AutoMappingOption.None) {
             TableName = tableName;
             EntityMapOption = entityMapOption;
@@ -33,8 +33,8 @@ namespace TowerSoft.Repository {
         public string TableName { get; }
 
         /// <summary>
-        /// If true, the mapper will assume that any public non-virtual properties with a 
-        /// public getter and setter are the mapped to the same name as the property unless overriden in the entity map.
+        /// If true, the mapper will assume that any public non-virtual properties with a
+        /// public getter and setter are the mapped to the same name as the property unless overridden in the entity map.
         /// </summary>
         public AutoMappingOption EntityMapOption { get; }
 

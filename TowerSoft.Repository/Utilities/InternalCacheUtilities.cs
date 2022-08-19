@@ -13,8 +13,7 @@ namespace TowerSoft.Repository.Utilities {
             int century = int.Parse(year.Substring(0, 2)) - 17;
             string dateString = dateTime.ToString("yyMMdd.HHmmss");
 
-            decimal decimaltest = Convert.ToDecimal($"{century}{dateString}");
-            return decimaltest.ToString("0.######");
+            return $"{century}{dateString}";
         }
 
         internal static int DateTimeToHorologDate(DateTime datetime) {

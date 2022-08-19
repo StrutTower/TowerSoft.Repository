@@ -78,7 +78,16 @@ namespace TowerSoft.Repository.Maps {
 
                     // Column Name
                     string columnName = prop.Name;
-                    if (prop.IsDefined(typeof(ColumnAttribute))) {
+                    string functionName = null;
+                    if (prop.IsDefined(typeof(ColumnMapAttribute))) {
+                        ColumnMapAttribute colMapAttribute = prop.GetCustomAttribute<ColumnMapAttribute>();
+                        if (!string.IsNullOrWhiteSpace(colMapAttribute.ColumnName)) {
+                            columnName = colMapAttribute.ColumnName;
+                        }
+                        if (!string.IsNullOrWhiteSpace(colMapAttribute.FunctionName)) {
+                            functionName = colMapAttribute.FunctionName;
+                        }
+                    } else if (prop.IsDefined(typeof(ColumnAttribute))) {
                         ColumnAttribute colAttribute = (ColumnAttribute)prop.GetCustomAttribute(typeof(ColumnAttribute));
                         if (!string.IsNullOrWhiteSpace(colAttribute.Name)) {
                             columnName = colAttribute.Name;
@@ -89,24 +98,24 @@ namespace TowerSoft.Repository.Maps {
                         // Autonumber Map
                         if (AutonumberMap != null)
                             throw new Exception("Entity " + domainType.Name + " cannot have more than one autonumber map.");
-                        AutonumberMap = new AutonumberMap(prop.Name, columnName);
+                        AutonumberMap = new AutonumberMap(prop.Name, columnName, functionName);
                         PrimaryKeyMaps.Add(AutonumberMap);
 
                     } else if (prop.IsDefined(typeof(KeyAttribute))) {
                         // ID Maps
-                        IDMap idMap = new IDMap(prop.Name, columnName);
+                        IDMap idMap = new IDMap(prop.Name, columnName, functionName);
                         PrimaryKeyMaps.Add(idMap);
                     } else if (prop.IsDefined(typeof(CacheFilemanDateAttribute))) {
                         // Cache Fileman Date
-                        CacheFilemanDateMap filemanDateMap = new CacheFilemanDateMap(prop.Name, columnName);
+                        CacheFilemanDateMap filemanDateMap = new CacheFilemanDateMap(prop.Name, columnName, functionName);
                         StandardMaps.Add(filemanDateMap);
                     } else if (prop.IsDefined(typeof(CacheHorologDateAttribute))) {
                         // Cache Horolog Date
-                        CacheHorologDateMap horologDateMap = new CacheHorologDateMap(prop.Name, columnName);
+                        CacheHorologDateMap horologDateMap = new CacheHorologDateMap(prop.Name, columnName, functionName);
                         StandardMaps.Add(horologDateMap);
                     } else {
                         // Standard Maps
-                        StandardMaps.Add(new Map(prop.Name, columnName));
+                        StandardMaps.Add(new Map(prop.Name, columnName, functionName));
                     }
                 }
             }
@@ -144,7 +153,7 @@ namespace TowerSoft.Repository.Maps {
                     if (AutonumberMap != null)
                         throw new Exception("Multiple autonumber maps cannot be assigned");
                     if (PrimaryKeyMaps.Any())
-                        throw new Exception("The class already has ID maps assigned. Autonumbers cannot be used eith IDMaps");
+                        throw new Exception("The class already has ID maps assigned. Autonumbers cannot be used with IDMaps");
                     AutonumberMap = map as AutonumberMap;
                     PrimaryKeyMaps.Add(map as Map);
                 } else if (map is IDMap) {

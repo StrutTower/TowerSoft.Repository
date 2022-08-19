@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace TowerSoft.Repository {
     /// <summary>
@@ -39,12 +37,12 @@ namespace TowerSoft.Repository {
         public IDbTransaction DbTransaction { get; protected set; }
 
         /// <summary>
-        /// ILogger used for outputing debugging info
+        /// ILogger used for outputting debugging info
         /// </summary>
         public ILogger DebugLogger { get; private set; }
 
         /// <summary>
-        /// ILogger can be supplied to enable outputing debug info from the ORM
+        /// ILogger can be supplied to enable outputting debug info from the ORM
         /// </summary>
         /// <param name="logger"></param>
         public void AddLogger(ILogger logger) {
@@ -120,7 +118,7 @@ namespace TowerSoft.Repository {
         /// Returns the parameter placeholder for the supplied column. This is used in the SQL query.
         /// </summary>
         /// <param name="columnName">Name of the column</param>
-        /// <param name="parameterIndex">Index of the parameter for the query query</param>
+        /// <param name="parameterIndex">Index of the parameter for the query</param>
         /// <returns></returns>
         public virtual string GetParameterPlaceholder(string columnName, int parameterIndex) {
             return $"@{columnName}{parameterIndex}";
@@ -130,7 +128,7 @@ namespace TowerSoft.Repository {
         /// Returns the parameter name for the supplied column. This is used in the parameter dictionary.
         /// </summary>
         /// <param name="columnName">Name of the column</param>
-        /// <param name="parameterIndex">Index of the parameter for the query query</param>
+        /// <param name="parameterIndex">Index of the parameter for the query</param>
         /// <returns></returns>
         public virtual string GetParameterName(string columnName, int parameterIndex) {
             return $"@{columnName}{parameterIndex}";
