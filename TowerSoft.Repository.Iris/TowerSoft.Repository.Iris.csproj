@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IRISProviderCore21" Version="1.0.0" />
+    <PackageReference Include="InterSystems.Data.IrisClientCore" Version="2022.1.0" />
   </ItemGroup>
 
   <ItemGroup>
