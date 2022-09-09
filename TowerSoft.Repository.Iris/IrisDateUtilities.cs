@@ -6,11 +6,11 @@ namespace TowerSoft.Repository.Iris {
     /// </summary>
     public static class IrisDateUtilities {
         /// <summary>
-        /// Converts a DateTime to Iris's Fileman logical date format
+        /// Converts a DateTime to Iris's Fileman logical datetime format
         /// </summary>
         /// <param name="dateTime">DateTime to convert</param>
         /// <returns>Returns the Fileman logical date</returns>
-        public static string DateTimeToLogicalDate(DateTime dateTime) {
+        public static decimal DateTimeToLogicalDateTime(DateTime dateTime) {
             if (dateTime.Year < 1700)
                 throw new Exception("Iris is unable to store dates before the year 1700 in this format.");
             if (dateTime.Year >= 2700)
@@ -19,11 +19,30 @@ namespace TowerSoft.Repository.Iris {
             string year = dateTime.ToString("yyyy");
 
             int century = int.Parse(year.Substring(0, 2)) - 17;
-            string dateString = dateTime.ToString("yyMMdd.HHmmss");
+            string dateString = dateTime.ToString("yyMMdd.HHmmss").TrimEnd('0');
 
             // Convert to decimal then back to a string to leave off any trailing 0s after the period
-            decimal decimalValue = Convert.ToDecimal($"{century}{dateString}");
-            return decimalValue.ToString("0.######");
+            return decimal.Parse($"{century}{dateString}");
+        }
+
+        /// <summary>
+        /// Converts a DateTime to Iris's Fileman logical date format
+        /// </summary>
+        /// <param name="dateTime">Date to convert</param>
+        /// <returns>Returns the Fileman logical date</returns>
+        public static decimal DateTimeToLogicalDate(DateTime dateTime) {
+            if (dateTime.Year < 1700)
+                throw new Exception("Iris is unable to store dates before the year 1700 in this format.");
+            if (dateTime.Year >= 2700)
+                throw new Exception("Iris is unable to store dates after the year 2699 in this format.");
+
+            string year = dateTime.ToString("yyyy");
+
+            int century = int.Parse(year.Substring(0, 2)) - 17;
+            string dateString = dateTime.ToString("yyMMdd");
+
+            // Convert to decimal then back to a string to leave off any trailing 0s after the period
+            return decimal.Parse($"{century}{dateString}");
         }
 
         /// <summary>
