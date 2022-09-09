@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TowerSoft.Repository.MicrosoftSql</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.2</Version>
+    <Version>1.1.3</Version>
     <Company>TowerSoft</Company>
     <Authors>StrutTower</Authors>
     <Product>TowerSoft.Repository</Product>
