@@ -1,16 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using TowerSoft.Repository.Utilities;
 
 namespace TowerSoft.Repository.Maps {
-    /// <summary>
-    /// Only use on Intersystems Caché databases. Uses the Fileman logical date format for this column with connecting to the database.
-    /// </summary>
-    public class CacheFilemanDateMap : Map {
+    class CacheFilemanDateTimeMap : Map {
         /// <summary>
         /// Initialize a new IDMap where the property name and column name are the same.
         /// </summary>
         /// <param name="propertyAndColumnName">Name of the property and column</param>
-        public CacheFilemanDateMap(string propertyAndColumnName) : base(propertyAndColumnName) { }
+        public CacheFilemanDateTimeMap(string propertyAndColumnName) : base(propertyAndColumnName) { }
 
         /// <summary>
         /// Initialize a new IDMap where the column and property names are different
@@ -22,7 +21,7 @@ namespace TowerSoft.Repository.Maps {
         /// Currently only used by Cache and Iris databases.
         /// Typical options are %INTERNAL and %EXTERNAL.
         /// </param>
-        public CacheFilemanDateMap(string propertyName, string columnName, string functionName = null) : base(propertyName, columnName, functionName) { }
+        public CacheFilemanDateTimeMap(string propertyName, string columnName, string functionName = null) : base(propertyName, columnName, functionName) { }
 
         /// <summary>
         /// Gets the value from the supplied entity
@@ -31,8 +30,8 @@ namespace TowerSoft.Repository.Maps {
         /// <returns></returns>
         public override object GetValue(object entity) {
             object value = base.GetValue(entity);
-            if (value is DateTime date) {
-                return InternalCacheUtilities.DateTimeToLogicalDate(date);
+            if (value is DateTime dateTime) {
+                return InternalCacheUtilities.DateTimeToLogicalDateTime(dateTime);
             }
             return value;
         }

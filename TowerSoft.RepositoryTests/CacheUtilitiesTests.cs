@@ -7,13 +7,13 @@ namespace TowerSoft.RepositoryTests {
     public class CacheUtilitiesTests {
         [TestMethod]
         public void LogicalDate_ShouldConvertToLogicalDate() {
-            string expectedLogical = "2950425";
+            decimal expectedLogical = 2950425;
             DateTime expectedDateTime = new DateTime(1995, 4, 25);
 
-            string actual = InternalCacheUtilities.DateTimeToLogicalDate(expectedDateTime);
+            decimal actual = InternalCacheUtilities.DateTimeToLogicalDate(expectedDateTime);
 
             Assert.AreEqual(expectedLogical, actual);
-        } 
+        }
 
         [TestMethod]
         public void HorologDate_DayOne_ShouldConvertToHorologDate() {

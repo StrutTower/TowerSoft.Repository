@@ -11,6 +11,7 @@ namespace TowerSoft.Repository.Builders {
         private bool IsAutonumber { get; set; }
         private bool IsPrimaryKey { get; set; }
         private bool IsFilemanDateMap { get; set; }
+        private bool IsFilemanDateTimeMap { get; set; }
         private bool IsHorologDateMap { get; set; }
 
         /// <summary>
@@ -84,6 +85,15 @@ namespace TowerSoft.Repository.Builders {
         }
 
         /// <summary>
+        /// Marks the map as a Fileman DateTime map. Only use this on Intersystems Caché/Iris databases.
+        /// </summary>
+        /// <returns></returns>
+        public PropertyMapBuilder AsFilemanDateTimeMap() {
+            IsFilemanDateTimeMap = true;
+            return this;
+        }
+
+        /// <summary>
         /// Marks the map as a $HOROLOG date map. Only use this on Intersystems Caché/Iris databases
         /// </summary>
         /// <returns></returns>
@@ -108,6 +118,8 @@ namespace TowerSoft.Repository.Builders {
                 return new AutonumberMap(PropertyName, columnName ?? PropertyName, FunctionName);
             else if (IsPrimaryKey)
                 return new IDMap(PropertyName, columnName ?? PropertyName, FunctionName);
+            else if (IsFilemanDateTimeMap)
+                return new CacheFilemanDateTimeMap(PropertyName, columnName ?? PropertyName, FunctionName);
             else if (IsFilemanDateMap)
                 return new CacheFilemanDateMap(PropertyName, columnName ?? PropertyName, FunctionName);
             else if (IsHorologDateMap)
@@ -116,7 +128,7 @@ namespace TowerSoft.Repository.Builders {
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode() {
@@ -124,7 +136,7 @@ namespace TowerSoft.Repository.Builders {
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>

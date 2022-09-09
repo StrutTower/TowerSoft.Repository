@@ -51,9 +51,9 @@ namespace TowerSoft.Repository {
             if (builder.OrderStatements != null && builder.OrderStatements.Any()) {
                 List<string> orderBy = new List<string>();
                 foreach (OrderStatement orderStatement in builder.OrderStatements) {
-                    orderBy.Add(orderStatement.ColumnName + (orderStatement.IsAscending ? "" : " DESC"));
+                    orderBy.Add(TableName + "." + orderStatement.ColumnName + (orderStatement.IsAscending ? "" : " DESC"));
                 }
-                query.SqlQuery += $"ORDER BY {TableName}.{string.Join(",", orderBy)} ";
+                query.SqlQuery += $"ORDER BY {string.Join(",", orderBy)} ";
             }
 
             if (builder.Limit.HasValue || builder.Offset.HasValue) {

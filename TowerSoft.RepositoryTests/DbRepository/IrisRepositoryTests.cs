@@ -15,9 +15,11 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext) {
             uow = new UnitOfWork();
-            uow.DbAdapter.DbConnection.Execute("DROP TABLE testobject");
-            uow.DbAdapter.DbConnection.Execute("DROP TABLE counttest");
-            uow.DbAdapter.DbConnection.Execute("DROP TABLE datetest");
+            try {
+                uow.DbAdapter.DbConnection.Execute("DROP TABLE testobject");
+                uow.DbAdapter.DbConnection.Execute("DROP TABLE counttest");
+                uow.DbAdapter.DbConnection.Execute("DROP TABLE datetest");
+            } catch { }
             //uow.DbAdapter.DbConnection.Execute("DELETE FROM FM.CACHEDOTNET");
             uow.DbAdapter.DbConnection.Execute("" +
                     "CREATE TABLE testobject (" +
@@ -155,51 +157,39 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             Assert.AreEqual(2, results.Count);
         }
 
-        #region Fileman Tests
-        //[TestMethod]
-        //public void Add_FMCacheDotNet_ShouldAdd() {
-        //    FMCacheDotNetRepository repo = uow.GetRepo<FMCacheDotNetRepository>();
-        //    FMCacheDotNet expected = new FMCacheDotNet {
-        //        Name = 1,
-        //        Title = "Add Test",
-        //        StatusID = Status.Active,
-        //        InputOn = DateTime.Now,
-        //        InputByID = 1,
-        //        IsActive = true
-        //    };
-        //    repo.Add(expected);
+        #region Overrides
+        public override void Add_MultipleTestObjects_ShouldAdd() {
+            /// Iris doesn't support truly adding multiples at once so this does the function with fewer objects
+            ITestObjectRepository repo = GetTestObjectRepository();
+            List<TestObject> objects = new List<TestObject>();
+            for (int i = 0; i < 50; i++) {
+                objects.Add(new TestObject {
+                    Title = "Add Multiple Test " + i,
+                    Description = "Multiple Insert Test",
+                    StatusID = Status.Active,
+                    InputOn = DateTime.Now,
+                    InputByID = 1,
+                    IsActive = true
+                });
+            }
 
-        //    FMCacheDotNet actual = repo.GetByTitle(expected.Title);
+            repo.Add(objects);
 
-        //    Assert.IsNotNull(actual);
-        //    Assert.IsTrue(expected.AllPropsEqual(actual));
-        //}
+            List<TestObject> testObjects = repo.GetByDescription("Multiple Insert Test");
 
-        //[TestMethod]
-        //public void AddMultiple_FMCacheDotNet_ShouldAdd() {
-        //    string title = "Multiple Insert Test";
-        //    FMCacheDotNetRepository repo = uow.GetRepo<FMCacheDotNetRepository>();
-        //    List<FMCacheDotNet> expected = new List<FMCacheDotNet>();
-        //    for (int i = 0; i < 3; i++) {
-        //        expected.Add(new FMCacheDotNet {
-        //            Name = 99,
-        //            Title = $"{title}",
-        //            StatusID = (Status)(i + 1),
-        //            InputOn = DateTime.Now,
-        //            InputByID = 99,
-        //            IsActive = true
-        //        });
-        //    }
+            Assert.AreEqual(objects.Count, testObjects.Count); // Make sure the same number of objects are returned
+            foreach (TestObject testObject in testObjects) {
+                Assert.AreEqual("Multiple Insert Test", testObject.Description);
+            }
+        }
 
-        //    repo.Add(expected);
+        public override void Limit_ShouldLimitResults() {
+            //NOT SUPPORTED IN IRIS
+        }
 
-        //    List<FMCacheDotNet> actual = repo.GetByInputByID(99);
-
-        //    Assert.AreEqual(expected.Count, actual.Count); // Make sure the same number of objects are returns
-        //    foreach (FMCacheDotNet testObject in actual) {
-        //        Assert.IsTrue(testObject.Title.StartsWith(title));
-        //    }
-        //}
+        public override void LimitOffset_ShouldLimitAndOffsetResults() {
+            //NOT SUPPORTED IN IRIS
+        }
         #endregion
     }
 }

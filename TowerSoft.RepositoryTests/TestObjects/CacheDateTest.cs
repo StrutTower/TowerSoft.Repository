@@ -12,7 +12,7 @@ namespace TowerSoft.RepositoryTests.TestObjects {
 
         public string Title { get; set; }
 
-        [ColumnMap("Fileman_DateTime"), CacheFilemanDate]
+        [ColumnMap("Fileman_DateTime"), CacheFilemanDateTime]
         public DateTime? FilemanDateTime { get; set; }
 
         [ColumnMap("Fileman_Date"), CacheFilemanDate]

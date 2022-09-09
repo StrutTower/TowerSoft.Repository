@@ -15,7 +15,7 @@ namespace TowerSoft.RepositoryTests.Databases.Cache {
         }
 
         public CacheDateTest GetByFilemanDateTime(DateTime datetime) {
-            var logicalDate = CacheDateUtilities.DateTimeToLogicalDate(datetime);
+            var logicalDate = CacheDateUtilities.DateTimeToLogicalDateTime(datetime);
             return GetSingleEntity(WhereEqual(x => x.FilemanDateTime, logicalDate));
         }
 
@@ -25,8 +25,8 @@ namespace TowerSoft.RepositoryTests.Databases.Cache {
         }
 
         public List<CacheDateTest> GetByFilemanDateTimeBetweenDates(DateTime dateTime1, DateTime dateTime2) {
-            var date1logical = CacheDateUtilities.DateTimeToLogicalDate(dateTime1);
-            var date2logical = CacheDateUtilities.DateTimeToLogicalDate(dateTime2);
+            var date1logical = CacheDateUtilities.DateTimeToLogicalDateTime(dateTime1);
+            var date2logical = CacheDateUtilities.DateTimeToLogicalDateTime(dateTime2);
             return GetEntities(QueryBuilder
                 .Where(x => x.FilemanDateTime, Comparison.GreaterThanOrEqual, date1logical)
                 .Where(x => x.FilemanDateTime, Comparison.LessThan, date2logical));

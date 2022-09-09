@@ -105,6 +105,10 @@ namespace TowerSoft.Repository.Maps {
                         // ID Maps
                         IDMap idMap = new IDMap(prop.Name, columnName, functionName);
                         PrimaryKeyMaps.Add(idMap);
+                    } else if (prop.IsDefined(typeof(CacheFilemanDateTimeAttribute))) {
+                        // Cache Fileman DateTime
+                        CacheFilemanDateTimeMap filemanDateTimeMap = new CacheFilemanDateTimeMap(prop.Name, columnName, functionName);
+                        StandardMaps.Add(filemanDateTimeMap);
                     } else if (prop.IsDefined(typeof(CacheFilemanDateAttribute))) {
                         // Cache Fileman Date
                         CacheFilemanDateMap filemanDateMap = new CacheFilemanDateMap(prop.Name, columnName, functionName);

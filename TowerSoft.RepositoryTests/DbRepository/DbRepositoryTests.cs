@@ -33,7 +33,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         }
 
         [TestMethod]
-        public void Add_MultipleTestObjects_ShouldAdd() {
+        public virtual void Add_MultipleTestObjects_ShouldAdd() {
             ITestObjectRepository repo = GetTestObjectRepository();
             List<TestObject> objects = new List<TestObject>();
             for (int i = 0; i < 1000; i++) {
@@ -193,7 +193,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         }
 
         [TestMethod]
-        public void Limit_ShouldLimitResults() {
+        public virtual void Limit_ShouldLimitResults() {
             ITestObjectRepository repo = GetTestObjectRepository();
             string description = "Limit Test";
 
@@ -205,7 +205,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         }
 
         [TestMethod]
-        public void LimitOffset_ShouldLimitAndOffsetResults() {
+        public virtual void LimitOffset_ShouldLimitAndOffsetResults() {
             ITestObjectRepository repo = GetTestObjectRepository();
             string description = "Limit and Offset Test";
             List<TestObject> expected = GetLimitTestObject(description, 10);
