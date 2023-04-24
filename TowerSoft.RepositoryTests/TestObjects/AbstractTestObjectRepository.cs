@@ -1,10 +1,22 @@
 ﻿using System.Collections.Generic;
 using TowerSoft.Repository;
+using TowerSoft.Repository.Builders;
 using TowerSoft.RepositoryTests.Interfaces;
 
 namespace TowerSoft.RepositoryTests.TestObjects {
     public class AbstractTestObjectRepository : DbRepository<TestObject> {
-        public AbstractTestObjectRepository(IUnitOfWork uow) : base(uow.DbAdapter) { }
+        public AbstractTestObjectRepository(IUnitOfWork uow) : base(uow.DbAdapter, "testobject", GetMaps()) { }
+
+        private static List<IMap> GetMaps() {
+            return new MapBuilder<TestObject>()
+                .AutonumberMap(x => x.ID)
+                .Map(x => x.Title)
+                .Map(x => x.Description)
+                .Map(x => x.StatusID)
+                .Map(x => x.InputOn)
+                .Map(x => x.InputByID)
+                .Map(x => x.IsActive);
+        }
 
         public List<TestObject> GetAllSorted() {
             return GetEntities(Query

@@ -1,6 +1,5 @@
 ﻿using TowerSoft.Repository;
 using TowerSoft.RepositoryTests.Interfaces;
-using TowerSoft.RepositoryTests.TestObjects;
 
 namespace TowerSoft.RepositoryTests.TestObjects {
     public class AbstractCountTestRepository : DbRepository<CountTest>, ICountTestRepository {

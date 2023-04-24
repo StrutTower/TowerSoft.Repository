@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.3.32929.385
+VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.Repository", "TowerSoft.Repository\TowerSoft.Repository.csproj", "{8853B6A7-308F-4CB3-8FDC-69952429F9B2}"
 EndProject
@@ -14,8 +14,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.Repository.MicrosoftSql", "TowerSoft.Repository.MicrosoftSql\TowerSoft.Repository.MicrosoftSql.csproj", "{5C6E9F02-801E-41B6-9A3A-D1ADCFB6F34B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.Repository.PostgreSql", "TowerSoft.Repository.PostgreSql\TowerSoft.Repository.PostgreSql.csproj", "{8F6E6E5E-4963-4649-BA6D-5EEAE196B125}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{4DC8A9A8-5B82-4EDA-BFAD-AF57B7245FC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

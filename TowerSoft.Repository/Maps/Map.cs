@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace TowerSoft.Repository.Maps {
     /// <summary>
@@ -41,7 +42,10 @@ namespace TowerSoft.Repository.Maps {
         /// </param>
         public Map(string propertyName, string columnName, string functionName = null) {
             PropertyName = propertyName;
-            ColumnName = columnName;
+            if (string.IsNullOrWhiteSpace(columnName))
+                ColumnName = propertyName;
+            else
+                ColumnName = columnName;
             FunctionName = functionName;
         }
 
@@ -52,6 +56,9 @@ namespace TowerSoft.Repository.Maps {
         /// <returns></returns>
         public virtual object GetValue(object entity) {
             PropertyInfo prop = entity.GetType().GetProperty(PropertyName);
+            if (prop == null) {
+                throw new Exception($"Invalid Repository Mapping. Unable to find property '{PropertyName}' on object '{entity.GetType().Name}'.");
+            }
             return prop.GetValue(entity);
         }
 
@@ -62,6 +69,9 @@ namespace TowerSoft.Repository.Maps {
         /// <param name="value">Value to set</param>
         public void SetValue(object entity, object value) {
             PropertyInfo prop = entity.GetType().GetProperty(PropertyName);
+            if (prop == null) {
+                throw new Exception($"Invalid Repository Mapping. Unable to find property '{PropertyName}' on object '{entity.GetType().Name}'.");
+            }
             prop.SetValue(entity, value);
         }
     }
