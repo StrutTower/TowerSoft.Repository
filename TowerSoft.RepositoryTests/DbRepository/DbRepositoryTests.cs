@@ -30,7 +30,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             TestObject actual = repo.GetByTitle(expected.Title);
 
             Assert.IsNotNull(actual); // Make sure object was returned
-            Assert.AreNotEqual(0, actual); // Make sure autonumber was assigned
+            Assert.AreNotEqual(0, actual.ID); // Make sure autonumber was assigned
             Assert.IsTrue(expected.AllPropsEqual(actual), "The object returned from the database does not match the original");
         }
 
@@ -51,7 +51,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             TestObject actual = repo.GetByTitle(expected.Title);
 
             Assert.IsNotNull(actual); // Make sure object was returned
-            Assert.AreNotEqual(0, actual); // Make sure autonumber was assigned
+            Assert.AreNotEqual(0, actual.ID); // Make sure autonumber was assigned
             Assert.IsTrue(expected.AllPropsEqual(actual), "The object returned from the database does not match the original");
         }
 
