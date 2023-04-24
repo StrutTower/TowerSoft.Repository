@@ -21,7 +21,7 @@ namespace TowerSoft.RepositoryTests {
 
         [TestMethod]
         public void EntityMapMapping_TestObject_ShouldReturnCorrectMaps() {
-            FauxRepository repo = new FauxRepository(new TestObjectEntityMap());
+            FauxRepository repo = new FauxRepository(new FauxRepoTestObjectEntityMap());
             ValidateMaps(repo);
         }
 
@@ -32,16 +32,22 @@ namespace TowerSoft.RepositoryTests {
         }
 
         [TestMethod]
+        public void ExplicitMappingWithMapBuilder_ShouldReturnCorrectMaps() {
+            FauxRepository repo = new FauxRepository(1);
+            ValidateMaps(repo);
+        }
+
+        [TestMethod]
         public void GetQueryBuilder_Get_ShouldReturnSelectStatement() {
             string expected = "SELECT " +
-                "TestObject.Title Title," +
-                "TestObject.Description Description," +
-                "TestObject.StatusID StatusID," +
-                "TestObject.InputOn InputOn," +
-                "TestObject.InputByID InputByID," +
-                "TestObject.IsActive IsActive," +
-                "TestObject.ID ID " +
-                "FROM TestObject ";
+                "FauxRepoTestObject.Title Title," +
+                "FauxRepoTestObject.Description Description," +
+                "FauxRepoTestObject.Status StatusID," +
+                "FauxRepoTestObject.InputOn InputOn," +
+                "FauxRepoTestObject.InputByID InputByID," +
+                "FauxRepoTestObject.IsActive IsActive," +
+                "FauxRepoTestObject.ID ID " +
+                "FROM FauxRepoTestObject ";
             string query = new FauxRepository().GetQueryBuilderSqlQuery();
             Assert.AreEqual(expected, query);
         }
@@ -49,16 +55,16 @@ namespace TowerSoft.RepositoryTests {
         [TestMethod]
         public void GetQueryBuilder_GetWithCustomColumns_ShouldReturnSelectStatement() {
             string expected = "SELECT " +
-                "TestObject.Title Title," +
-                "TestObject.Description Description," +
-                "TestObject.StatusID StatusID," +
-                "TestObject.InputOn InputOn," +
-                "TestObject.InputByID InputByID," +
-                "TestObject.IsActive IsActive," +
-                "TestObject.ID ID," +
+                "FauxRepoTestObject.Title Title," +
+                "FauxRepoTestObject.Description Description," +
+                "FauxRepoTestObject.Status StatusID," +
+                "FauxRepoTestObject.InputOn InputOn," +
+                "FauxRepoTestObject.InputByID InputByID," +
+                "FauxRepoTestObject.IsActive IsActive," +
+                "FauxRepoTestObject.ID ID," +
                 "CustomColumn," +
                 "$INTERNAL(CustomColumn2) " +
-                "FROM TestObject ";
+                "FROM FauxRepoTestObject ";
             string query = new FauxRepository().GetQueryBuilderSqlQueryWithCustomColumns();
             Assert.AreEqual(expected, query);
         }
@@ -81,7 +87,7 @@ namespace TowerSoft.RepositoryTests {
             Assert.AreEqual("Description", lastNameMap.ColumnName);
 
             IMap statusMap = repo.GetAllMaps().SingleOrDefault(x => x.PropertyName == "StatusID");
-            Assert.AreEqual("StatusID", statusMap.ColumnName);
+            Assert.AreEqual("Status", statusMap.ColumnName);
 
             IMap inputOnMap = repo.GetAllMaps().SingleOrDefault(x => x.PropertyName == "InputOn");
             Assert.AreEqual("InputOn", inputOnMap.ColumnName);

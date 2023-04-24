@@ -1,8 +1,8 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TowerSoft.Repository.Builders;
 using TowerSoft.Repository.Interfaces;
 
 namespace TowerSoft.Repository {
@@ -12,25 +12,7 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <returns></returns>
         public virtual long GetCount() {
-            return GetCount(whereConditions: null);
-        }
-
-        /// <summary>
-        /// Returns the number of rows that match the supplied WhereCondition
-        /// </summary>
-        /// <param name="whereCondition">WhereCondition to filter by</param>
-        /// <returns></returns>
-        protected virtual long GetCount(WhereCondition whereCondition) {
-            return GetCount(new[] { whereCondition });
-        }
-
-        /// <summary>
-        /// Return the number of rows that match the supplied WhereConditions
-        /// </summary>
-        /// <param name="whereConditions">IEnumerable list of WhereCondtions to filter by</param>
-        /// <returns></returns>
-        protected virtual long GetCount(IEnumerable<WhereCondition> whereConditions) {
-            return GetCountAsync(whereConditions).Result;
+            return GetCountAsync(Query).Result;
         }
 
         /// <summary>
@@ -38,16 +20,25 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <returns></returns>
         public virtual async Task<long> GetCountAsync() {
-            return await GetCountAsync(whereConditions: null);
+            return await GetCountAsync(ConvertFluentToQueryBuilder(Query, isCountQuery: true));
         }
 
         /// <summary>
-        /// Returns the number of rows that match the supplied WhereCondition
+        /// Returned the total count of rows matching the built query
         /// </summary>
-        /// <param name="whereCondition">WhereCondition to filter by</param>
+        /// <param name="builder">FluentQueryBuilder</param>
         /// <returns></returns>
-        protected virtual async Task<long> GetCountAsync(WhereCondition whereCondition) {
-            return await GetCountAsync(new[] { whereCondition });
+        protected virtual long GetCount(FluentQueryBuilder<T> builder) {
+            return GetCountAsync(builder).Result;
+        }
+
+        /// <summary>
+        /// Returned the total count of rows matching the written query
+        /// </summary>
+        /// <param name="builder">=QueryBuilder</param>
+        /// <returns></returns>
+        protected virtual long GetCount(QueryBuilder builder) {
+            return GetCountAsync(builder).Result;
         }
 
         /// <summary>
@@ -55,28 +46,15 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <param name="whereConditions">IEnumerable list of WhereCondtions to filter by</param>
         /// <returns></returns>
-        protected virtual async Task<long> GetCountAsync(IEnumerable<WhereCondition> whereConditions) {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            string query = $"SELECT COUNT(*) FROM {TableName} ";
-            if (whereConditions != null && whereConditions.Any()) {
-                List<string> whereStatements = new List<string>();
-                int index = 1;
-                foreach (WhereCondition whereCondition in whereConditions) {
-                    if (whereCondition.IsNullEqualsOrNotEquals()) {
-                        whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " NULL");
-                    } else {
-                        whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName, index));
-                        parameters.Add(DbAdapter.GetParameterName(whereCondition.ColumnName, index), whereCondition.GetParameterValue());
-                    }
-                    index++;
-                }
-                query += "WHERE " + string.Join(" AND ", whereStatements);
-            }
+        protected virtual async Task<long> GetCountAsync(FluentQueryBuilder<T> builder) {
+            return await GetCountAsync(ConvertFluentToQueryBuilder(builder, isCountQuery: true));
+        }
 
+        protected virtual async Task<long> GetCountAsync(QueryBuilder builder) {
             if (DbAdapter.DebugLogger != null)
-                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
+                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {builder.SqlQuery} /Parameters/ {string.Join(", ", builder.Parameters.Select(x => x.Key + ":" + x.Value))}");
 
-            return await GetDbConnection().QuerySingleAsync<long>(query, parameters, DbAdapter.DbTransaction);
+            return await GetDbConnection().QuerySingleAsync<long>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
         }
     }
 }

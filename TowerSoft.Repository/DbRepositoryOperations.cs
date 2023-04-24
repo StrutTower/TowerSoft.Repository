@@ -35,24 +35,6 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-                    if (whereCondition.IsNullEqualsOrNotEquals()) {
-                        whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " NULL");
-                    } else {
-                        whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName, index));
-                        parameters.Add(DbAdapter.GetParameterName(whereCondition.ColumnName, index), whereCondition.GetParameterValue());
-                    }
-                    index++;
-                }
-                query += "WHERE " + string.Join(" AND ", whereStatements);
-            }
-
-            if (DbAdapter.DebugLogger != null)
-                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
-
-            return GetDbConnection().QuerySingle<long>(query, parameters, DbAdapter.DbTransaction);
-        }
-
-        /// <summary>
         /// Adds the supplied entity to the database
         /// </summary>
         /// <param name="entity">Entity to add to the database</param>

@@ -59,7 +59,41 @@ namespace TowerSoft.Repository {
         /// <param name="builder">FluentQueryBuilder</param>
         /// <returns></returns>
         protected async Task<List<T>> GetEntitiesAsync(FluentQueryBuilder<T> builder) {
+
+            return await GetEntitiesAsync(ConvertFluentToQueryBuilder(builder));
+        }
+
+        /// <summary>
+        /// Returns all rows returns from the SQL query
+        /// </summary>
+        /// <param name="builder">QueryBuilder</param>
+        /// <returns></returns>
+        protected virtual List<T> GetEntities(QueryBuilder builder) {
+            return GetEntitiesAsync(builder).Result;
+        }
+
+
+        /// <summary>
+        /// Returns all rows returns from the SQL query
+        /// </summary>
+        /// <param name="builder">QueryBuilder</param>
+        /// <returns></returns>
+        protected virtual async Task<List<T>> GetEntitiesAsync(QueryBuilder builder) {
+            if (DbAdapter.DebugLogger != null)
+                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {builder.SqlQuery} /Parameters/ {string.Join(", ", builder.Parameters.Select(x => x.Key + ":" + x.Value))}");
+            IEnumerable<T> enumerable = await GetDbConnection().QueryAsync<T>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
+            List<T> entities = enumerable.ToList();
+            PostProcessEntities(entities);
+            return entities;
+        }
+
+        private QueryBuilder ConvertFluentToQueryBuilder(FluentQueryBuilder<T> builder, bool isCountQuery = false) {
             QueryBuilder query = GetQueryBuilder();
+
+            if (isCountQuery) {
+                query.SqlQuery = $"SELECT COUNT(*) FROM {TableName} ";
+            }
+
             List<string> whereStatements = new List<string>();
             int index = 1;
             foreach (WhereCondition whereCondition in builder.WhereConditions) {
@@ -87,31 +121,7 @@ namespace TowerSoft.Repository {
             if (builder.Limit.HasValue || builder.Offset.HasValue) {
                 query.SqlQuery += DbAdapter.GetLimitOffsetStatement(builder.Limit, builder.Offset, query);
             }
-            return await GetEntitiesAsync(query);
-        }
-
-        /// <summary>
-        /// Returns all rows returns from the SQL query
-        /// </summary>
-        /// <param name="builder">QueryBuilder</param>
-        /// <returns></returns>
-        protected virtual List<T> GetEntities(QueryBuilder builder) {
-            return GetEntitiesAsync(builder).Result;
-        }
-
-
-        /// <summary>
-        /// Returns all rows returns from the SQL query
-        /// </summary>
-        /// <param name="builder">QueryBuilder</param>
-        /// <returns></returns>
-        protected virtual async Task<List<T>> GetEntitiesAsync(QueryBuilder builder) {
-            if (DbAdapter.DebugLogger != null)
-                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {builder.SqlQuery} /Parameters/ {string.Join(", ", builder.Parameters.Select(x => x.Key + ":" + x.Value))}");
-            IEnumerable<T> enumerable = await GetDbConnection().QueryAsync<T>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
-            List<T> entities = enumerable.ToList();
-            PostProcessEntities(entities);
-            return entities;
+            return query;
         }
     }
 }

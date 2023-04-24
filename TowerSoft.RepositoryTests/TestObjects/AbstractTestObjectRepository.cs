@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using TowerSoft.Repository;
 using TowerSoft.Repository.Builders;
+using TowerSoft.Repository.Maps;
 using TowerSoft.RepositoryTests.Interfaces;
 
 namespace TowerSoft.RepositoryTests.TestObjects {
@@ -17,6 +18,18 @@ namespace TowerSoft.RepositoryTests.TestObjects {
                 .Map(x => x.InputByID)
                 .Map(x => x.IsActive);
         }
+
+        //private static IEnumerable<IMap> GetMaps() {
+        //    return new[] {
+        //        new AutonumberMap("ID"),
+        //        new Map("Title"),
+        //        new Map("Description"),
+        //        new Map("StatusID"),
+        //        new Map("InputOn"),
+        //        new Map("InputByID"),
+        //        new Map("IsActive")
+        //    };
+        //}
 
         public List<TestObject> GetAllSorted() {
             return GetEntities(Query
