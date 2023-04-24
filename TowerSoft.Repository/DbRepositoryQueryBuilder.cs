@@ -11,6 +11,15 @@ namespace TowerSoft.Repository {
         /// <summary>
         /// Returns an instance of FluentQueryBuilder
         /// </summary>
+        protected FluentQueryBuilder<T> Query {
+            get {
+                return new FluentQueryBuilder<T>(Mappings);
+            }
+        }
+        /// <summary>
+        /// Returns an instance of FluentQueryBuilder
+        /// </summary>
+        [Obsolete("Use " + nameof(Query) + " instead.")]
         protected FluentQueryBuilder<T> QueryBuilder {
             get {
                 return new FluentQueryBuilder<T>(Mappings);

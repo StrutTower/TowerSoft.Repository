@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using TowerSoft.Repository.Interfaces;
 using TowerSoft.Repository.Maps;
 
@@ -18,49 +19,11 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-        /// Returns a total count of all rows in the table.
+        /// Get all entities from the database table
         /// </summary>
         /// <returns></returns>
-        public virtual long GetCount() {
-            return GetCount(whereConditions: null);
-        }
-
-        /// <summary>
-        /// Returns the number of rows that match the supplied WhereCondition
-        /// </summary>
-        /// <param name="whereCondition">WhereCondition to filter by</param>
-        /// <returns></returns>
-        protected virtual long GetCount(WhereCondition whereCondition) {
-            return GetCount(new[] { whereCondition });
-        }
-
-        /// <summary>
-        /// Return the number of rows that match the supplied WhereConditions
-        /// </summary>
-        /// <param name="whereConditions">IEnumerable list of WhereCondtions to filter by</param>
-        /// <returns></returns>
-        protected virtual long GetCount(IEnumerable<WhereCondition> whereConditions) {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            string query = $"SELECT COUNT(*) FROM {TableName} ";
-            if (whereConditions != null && whereConditions.Any()) {
-                List<string> whereStatements = new List<string>();
-                int index = 1;
-                foreach (WhereCondition whereCondition in whereConditions) {
-                    if (whereCondition.IsNullEqualsOrNotEquals()) {
-                        whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " NULL");
-                    } else {
-                        whereStatements.Add(TableName + "." + whereCondition.ColumnName + " " + whereCondition.GetComparisonString() + " " + DbAdapter.GetParameterPlaceholder(whereCondition.ColumnName, index));
-                        parameters.Add(DbAdapter.GetParameterName(whereCondition.ColumnName, index), whereCondition.GetParameterValue());
-                    }
-                    index++;
-                }
-                query += "WHERE " + string.Join(" AND ", whereStatements);
-            }
-
-            if (DbAdapter.DebugLogger != null)
-                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
-
-            return GetDbConnection().QuerySingle<long>(query, parameters, DbAdapter.DbTransaction);
+        public virtual async Task<List<T>> GetAllAsync() {
+            return await GetEntitiesAsync(GetQueryBuilder());
         }
 
         /// <summary>
@@ -68,6 +31,14 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <param name="entity">Entity to add to the database</param>
         public virtual void Add(T entity) {
+            AddAsync(entity).Wait();
+        }
+
+        /// <summary>
+        /// Adds the supplied entity to the database
+        /// </summary>
+        /// <param name="entity">Entity to add to the database</param>
+        public virtual async Task AddAsync(T entity) {
             List<string> columns = new List<string>();
             List<string> values = new List<string>();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -87,15 +58,15 @@ namespace TowerSoft.Repository {
                 DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
 
             if (Mappings.AutonumberMap == null) {
-                GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
+                await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
             } else {
                 long autonumberValue = 0;
                 if (DbAdapter.LastInsertIdInSeparateQuery) {
                     GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
-                    autonumberValue = GetDbConnection().QuerySingle<long>(DbAdapter.GetLastInsertIdStatement(), null, DbAdapter.DbTransaction);
+                    autonumberValue = await GetDbConnection().QuerySingleAsync<long>(DbAdapter.GetLastInsertIdStatement(), null, DbAdapter.DbTransaction);
                 } else {
                     query += ";" + DbAdapter.GetLastInsertIdStatement();
-                    autonumberValue = GetDbConnection().QuerySingle<long>(query, parameters, DbAdapter.DbTransaction);
+                    autonumberValue = await GetDbConnection().QuerySingleAsync<long>(query, parameters, DbAdapter.DbTransaction);
                 }
                 PropertyInfo prop = entity.GetType().GetProperty(Mappings.AutonumberMap.PropertyName);
                 Mappings.AutonumberMap.SetValue(entity, Convert.ChangeType(autonumberValue, prop.PropertyType));
@@ -107,6 +78,14 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <param name="entities">Entities to add to the database</param>
         public virtual void Add(IEnumerable<T> entities) {
+            AddAsync(entities).Wait();
+        }
+
+        /// <summary>
+        /// Add multiple values to the database. Inserts are done in batches. Cache does not support this method of inserting multiple entities and will instead add them separately.
+        /// </summary>
+        /// <param name="entities">Entities to add to the database</param>
+        public virtual async Task AddAsync(IEnumerable<T> entities) {
             if (DbAdapter.ListInsertSupported) {
                 List<string> columns = new List<string>();
 
@@ -141,20 +120,28 @@ namespace TowerSoft.Repository {
                     if (DbAdapter.DebugLogger != null)
                         DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
 
-                    GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
+                    await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
                 }
             } else {
                 foreach (T entity in entities) {
-                    Add(entity);
+                    await AddAsync(entity);
                 }
             }
+        }
+
+        /// <summary>
+         /// Updates the matching row in the database
+         /// </summary>
+         /// <param name="entity">Entity to update in the database</param>
+        public virtual void Update(T entity) {
+            UpdateAsync(entity).Wait();
         }
 
         /// <summary>
         /// Updates the matching row in the database
         /// </summary>
         /// <param name="entity">Entity to update in the database</param>
-        public virtual void Update(T entity) {
+        public virtual async Task UpdateAsync(T entity) {
             List<string> updateColumns = new List<string>();
             List<string> primaryKeyColumns = new List<string>();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -179,7 +166,7 @@ namespace TowerSoft.Repository {
             if (DbAdapter.DebugLogger != null)
                 DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
 
-            GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
+            await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
         }
 
         /// <summary>
@@ -187,6 +174,14 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <param name="entity">Entity to remove from the database</param>
         public virtual void Remove(T entity) {
+            RemoveAsync(entity).Wait();
+        }
+
+        /// <summary>
+        /// Removes the matching row from the database
+        /// </summary>
+        /// <param name="entity">Entity to remove from the database</param>
+        public virtual async Task RemoveAsync(T entity) {
             List<string> primaryKeyColumns = new List<string>();
             Dictionary<string, object> parameters = new Dictionary<string, object>();
 
@@ -202,7 +197,7 @@ namespace TowerSoft.Repository {
             if (DbAdapter.DebugLogger != null)
                 DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
 
-            GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
+            await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
         }
     }
 }

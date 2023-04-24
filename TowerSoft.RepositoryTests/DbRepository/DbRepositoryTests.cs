@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TowerSoft.RepositoryTests.Interfaces;
 using TowerSoft.RepositoryTests.TestObjects;
 
@@ -11,6 +12,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         protected abstract ITestObjectRepository GetTestObjectRepository();
         protected abstract ICountTestRepository GetCountTestRepository();
 
+        #region Add/Update/Remove
         [TestMethod]
         public void Add_TestObject_ShouldAdd() {
             ITestObjectRepository repo = GetTestObjectRepository();
@@ -24,6 +26,27 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             };
 
             repo.Add(expected);
+
+            TestObject actual = repo.GetByTitle(expected.Title);
+
+            Assert.IsNotNull(actual); // Make sure object was returned
+            Assert.AreNotEqual(0, actual); // Make sure autonumber was assigned
+            Assert.IsTrue(expected.AllPropsEqual(actual), "The object returned from the database does not match the original");
+        }
+
+        [TestMethod]
+        public async Task Async_Add_TestObject_ShouldAdd() {
+            ITestObjectRepository repo = GetTestObjectRepository();
+            TestObject expected = new TestObject {
+                Title = "AddAsync Test",
+                Description = "AddAsync Test Description",
+                StatusID = Status.Active,
+                InputOn = DateTime.Now,
+                InputByID = 1,
+                IsActive = true
+            };
+
+            await repo.AddAsync(expected);
 
             TestObject actual = repo.GetByTitle(expected.Title);
 
@@ -58,6 +81,31 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         }
 
         [TestMethod]
+        public virtual async Task Async_Add_MultipleTestObjects_ShouldAdd() {
+            ITestObjectRepository repo = GetTestObjectRepository();
+            List<TestObject> objects = new List<TestObject>();
+            for (int i = 0; i < 1000; i++) {
+                objects.Add(new TestObject {
+                    Title = "AddAsync Multiple Test " + i,
+                    Description = "MultipleAsync Insert Test",
+                    StatusID = Status.Active,
+                    InputOn = DateTime.Now,
+                    InputByID = 1,
+                    IsActive = true
+                });
+            }
+
+            await repo.AddAsync(objects);
+
+            List<TestObject> testObjects = repo.GetByDescription("MultipleAsync Insert Test");
+
+            Assert.AreEqual(objects.Count, testObjects.Count); // Make sure the same number of objects are returned
+            foreach (TestObject testObject in testObjects) {
+                Assert.AreEqual("MultipleAsync Insert Test", testObject.Description);
+            }
+        }
+
+        [TestMethod]
         public void Update_TestObject_ShouldUpdate() {
             ITestObjectRepository repo = GetTestObjectRepository();
             TestObject newObj = new TestObject {
@@ -73,6 +121,28 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             newObj.Title += " - Updated";
             newObj.StatusID = Status.Closed;
             repo.Update(newObj);
+            TestObject fromDB = repo.GetByID(newObj.ID);
+
+            Assert.IsNotNull(fromDB); // Make sure object was returned
+            Assert.IsTrue(newObj.AllPropsEqual(fromDB), "The object returned from the database does not match the updated original");
+        }
+
+        [TestMethod]
+        public async Task Async_Update_TestObject_ShouldUpdate() {
+            ITestObjectRepository repo = GetTestObjectRepository();
+            TestObject newObj = new TestObject {
+                Title = "UpdateAsync Test",
+                Description = "UpdateAsync Test Description",
+                StatusID = Status.Active,
+                InputOn = DateTime.Now,
+                InputByID = 1,
+                IsActive = true
+            };
+            repo.Add(newObj);
+
+            newObj.Title += " - Updated";
+            newObj.StatusID = Status.Closed;
+            await repo.UpdateAsync(newObj);
             TestObject fromDB = repo.GetByID(newObj.ID);
 
             Assert.IsNotNull(fromDB); // Make sure object was returned
@@ -101,6 +171,28 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         }
 
         [TestMethod]
+        public async Task Async_Remove_TestObject_ShouldRemove() {
+            ITestObjectRepository repo = GetTestObjectRepository();
+            TestObject newObj = new TestObject {
+                Title = "RemoveAsync Test",
+                Description = "RemoveAsync Test Description",
+                StatusID = Status.Pending,
+                InputOn = DateTime.Now,
+                InputByID = 1,
+                IsActive = true
+            };
+            repo.Add(newObj);
+
+            TestObject fromDbNotNull = repo.GetByID(newObj.ID);
+            await repo.RemoveAsync(newObj);
+            TestObject fromDbNull = repo.GetByID(newObj.ID);
+
+            Assert.IsNotNull(fromDbNotNull);
+            Assert.IsNull(fromDbNull);
+        }
+        #endregion
+
+        [TestMethod]
         public void GetAll_CountTest_ShouldGetAll() {
             ICountTestRepository repo = GetCountTestRepository();
             List<CountTest> all = repo.GetAll();
@@ -110,9 +202,25 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         }
 
         [TestMethod]
+        public async Task Async_GetAll_CountTest_ShouldGetAll() {
+            ICountTestRepository repo = GetCountTestRepository();
+            List<CountTest> all = await repo.GetAllAsync();
+
+            Assert.AreEqual(4, all.Count);
+            Assert.AreEqual("Object 2", all.SingleOrDefault(x => x.Number == 2).Name);
+        }
+
+        [TestMethod]
         public void GetCount_Count_ShouldGetCount() {
             ICountTestRepository repo = GetCountTestRepository();
             long count = repo.GetCount();
+            Assert.AreEqual(4, count);
+        }
+
+        [TestMethod]
+        public async Task Async_GetCount_Count_ShouldGetCount() {
+            ICountTestRepository repo = GetCountTestRepository();
+            long count = await repo.GetCountAsync();
             Assert.AreEqual(4, count);
         }
 
@@ -148,6 +256,42 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             repo.Add(newObj3);
 
             List<TestObject> actual = repo.GetByInputOnDateRange(new DateTime(1999, 1, 2), new DateTime(1999, 1, 7));
+
+            Assert.AreEqual(2, actual.Count);
+        }
+
+        [TestMethod]
+        public async Task Async_GetBetweenDates_ShouldReturnValidResults() {
+            ITestObjectRepository repo = GetTestObjectRepository();
+            TestObject newObj1 = new TestObject {
+                Title = "Async Date Range Test 1",
+                Description = "Async Remove Test Description",
+                StatusID = Status.Active,
+                InputOn = new DateTime(1939, 1, 4, 12, 34, 20),
+                InputByID = 1,
+                IsActive = true
+            };
+            TestObject newObj2 = new TestObject {
+                Title = "Async Date Range Test 2",
+                Description = "Async Remove Test Description",
+                StatusID = Status.Active,
+                InputOn = new DateTime(1939, 1, 6, 8, 4, 56),
+                InputByID = 1,
+                IsActive = true
+            };
+            TestObject newObj3 = new TestObject {
+                Title = "Async Date Range Test 3",
+                Description = "Async Remove Test Description",
+                StatusID = Status.Active,
+                InputOn = new DateTime(1939, 1, 9, 18, 14, 0),
+                InputByID = 1,
+                IsActive = true
+            };
+            await repo.AddAsync(newObj1);
+            await repo.AddAsync(newObj2);
+            await repo.AddAsync(newObj3);
+
+            List<TestObject> actual = await repo.GetByInputOnDateRangeAsync(new DateTime(1939, 1, 2), new DateTime(1939, 1, 7));
 
             Assert.AreEqual(2, actual.Count);
         }

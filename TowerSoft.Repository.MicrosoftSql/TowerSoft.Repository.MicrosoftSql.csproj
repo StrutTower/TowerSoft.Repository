@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TowerSoft.Repository.MicrosoftSql</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1.3</Version>
+    <Version>2.0.1</Version>
     <Company>TowerSoft</Company>
     <Authors>StrutTower</Authors>
     <Product>TowerSoft.Repository</Product>
@@ -12,6 +12,9 @@
     <PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
+    <PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
+    <RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -27,10 +30,14 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="..\towersoft-logo-T_128x.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
   <ItemGroup>

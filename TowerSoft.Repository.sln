@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.352
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.Repository", "TowerSoft.Repository\TowerSoft.Repository.csproj", "{8853B6A7-308F-4CB3-8FDC-69952429F9B2}"
 EndProject
@@ -13,11 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.Repository.SQLite
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.Repository.MicrosoftSql", "TowerSoft.Repository.MicrosoftSql\TowerSoft.Repository.MicrosoftSql.csproj", "{5C6E9F02-801E-41B6-9A3A-D1ADCFB6F34B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TowerSoft.Repository.Cache", "TowerSoft.Repository.Cache\TowerSoft.Repository.Cache.csproj", "{93403903-956A-428C-AE30-7E7498FFC0FC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TowerSoft.Repository.PostgreSql", "TowerSoft.Repository.PostgreSql\TowerSoft.Repository.PostgreSql.csproj", "{8F6E6E5E-4963-4649-BA6D-5EEAE196B125}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TowerSoft.Repository.Iris", "TowerSoft.Repository.Iris\TowerSoft.Repository.Iris.csproj", "{7A0EE3E5-202F-4F6C-A120-953BF6228A1E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{4DC8A9A8-5B82-4EDA-BFAD-AF57B7245FC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,18 +43,10 @@ Global
 		{5C6E9F02-801E-41B6-9A3A-D1ADCFB6F34B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C6E9F02-801E-41B6-9A3A-D1ADCFB6F34B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C6E9F02-801E-41B6-9A3A-D1ADCFB6F34B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93403903-956A-428C-AE30-7E7498FFC0FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93403903-956A-428C-AE30-7E7498FFC0FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93403903-956A-428C-AE30-7E7498FFC0FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93403903-956A-428C-AE30-7E7498FFC0FC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8F6E6E5E-4963-4649-BA6D-5EEAE196B125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8F6E6E5E-4963-4649-BA6D-5EEAE196B125}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F6E6E5E-4963-4649-BA6D-5EEAE196B125}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F6E6E5E-4963-4649-BA6D-5EEAE196B125}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7A0EE3E5-202F-4F6C-A120-953BF6228A1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A0EE3E5-202F-4F6C-A120-953BF6228A1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A0EE3E5-202F-4F6C-A120-953BF6228A1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A0EE3E5-202F-4F6C-A120-953BF6228A1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
