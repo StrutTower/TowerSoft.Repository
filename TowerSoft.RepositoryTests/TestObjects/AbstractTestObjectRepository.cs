@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TowerSoft.Repository;
 using TowerSoft.Repository.Builders;
-using TowerSoft.Repository.Maps;
 using TowerSoft.RepositoryTests.Interfaces;
 
 namespace TowerSoft.RepositoryTests.TestObjects {
@@ -18,18 +18,6 @@ namespace TowerSoft.RepositoryTests.TestObjects {
                 .Map(x => x.InputByID)
                 .Map(x => x.IsActive);
         }
-
-        //private static IEnumerable<IMap> GetMaps() {
-        //    return new[] {
-        //        new AutonumberMap("ID"),
-        //        new Map("Title"),
-        //        new Map("Description"),
-        //        new Map("StatusID"),
-        //        new Map("InputOn"),
-        //        new Map("InputByID"),
-        //        new Map("IsActive")
-        //    };
-        //}
 
         public List<TestObject> GetAllSorted() {
             return GetEntities(Query
@@ -48,10 +36,15 @@ namespace TowerSoft.RepositoryTests.TestObjects {
         public List<TestObject> GetByDescription(string description) {
             return GetEntities(Query
                 .WhereEqual(x => x.Description, description)
-                .WhereEqual(x => x.StatusID, Status.Active)
                 .OrderBy(x => x.Title));
         }
 
+        public List<TestObject> GetActiveByDescription(string description) {
+            return GetEntities(Query
+                .WhereEqual(x => x.Description, description)
+                .WhereEqual(x => x.StatusID, Status.Active)
+                .OrderBy(x => x.Title));
+        }
 
         public List<TestObject> GetByDescriptionWithInputOnOrderAsc(string description) {
             return GetEntities(Query
@@ -88,6 +81,18 @@ namespace TowerSoft.RepositoryTests.TestObjects {
                 .OrderBy(x => x.InputOn)
                 .LimitTo(limit)
                 .OffsetBy(offset));
+        }
+
+        public void UpdateTitleAndStatus(TestObject testObject) {
+            UpdateColumns(testObject,
+                x => x.Title,
+                x => x.StatusID);
+        }
+
+        public async Task UpdateTitleAndStatusAsync(TestObject testObject) {
+            await UpdateColumnsAsync(testObject,
+                x => x.Title,
+                x => x.StatusID);
         }
     }
 }

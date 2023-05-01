@@ -72,7 +72,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
             repo.Add(objects);
 
-            List<TestObject> testObjects = repo.GetByDescription("Multiple Insert Test");
+            List<TestObject> testObjects = repo.GetActiveByDescription("Multiple Insert Test");
 
             Assert.AreEqual(objects.Count, testObjects.Count); // Make sure the same number of objects are returned
             foreach (TestObject testObject in testObjects) {
@@ -97,7 +97,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
             await repo.AddAsync(objects);
 
-            List<TestObject> testObjects = repo.GetByDescription("MultipleAsync Insert Test");
+            List<TestObject> testObjects = repo.GetActiveByDescription("MultipleAsync Insert Test");
 
             Assert.AreEqual(objects.Count, testObjects.Count); // Make sure the same number of objects are returned
             foreach (TestObject testObject in testObjects) {
@@ -308,7 +308,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
             expected = expected.OrderBy(x => x.InputOn).ToList();
 
-            for(int i= 0; i < actual.Count; i++) {
+            for (int i = 0; i < actual.Count; i++) {
                 Assert.AreEqual(actual[i].InputOn, expected[i].InputOn);
             }
         }
@@ -383,6 +383,80 @@ namespace TowerSoft.RepositoryTests.DbRepository {
                 });
             }
             return output;
+        }
+
+        [TestMethod]
+        public virtual void UpdateSpecficColumns_ShouldOnlyUpdateTitleAndDescription() {
+            string expectedTitle = "New Title";
+            DateTime expectedDateTime = DateTime.Now;
+            int expectedInputBy = 1;
+            bool expectedActiveStatus = true;
+            string description = "Update Specific Column Test";
+            ITestObjectRepository repo = GetTestObjectRepository();
+
+            TestObject testObject = new TestObject() {
+                Title = "Original Title",
+                Description = description,
+                StatusID = Status.Active,
+                InputOn = expectedDateTime,
+                InputByID = expectedInputBy,
+                IsActive = expectedActiveStatus
+            };
+
+            repo.Add(testObject);
+
+            testObject.Title = expectedTitle;
+            testObject.StatusID = Status.Closed;
+            testObject.InputOn = new DateTime(2000, 1, 1);
+            testObject.InputByID = 50;
+            testObject.IsActive = false;
+
+            repo.UpdateTitleAndStatus(testObject);
+
+            TestObject actual = repo.GetByDescription(description).Single();
+
+            Assert.AreEqual(expectedTitle, actual.Title);
+            Assert.AreEqual(Status.Closed, actual.StatusID);
+            Assert.AreEqual(expectedDateTime.ToString("yyyy/MM/dd HH:mm"), actual.InputOn.ToString("yyyy/MM/dd HH:mm"));
+            Assert.AreEqual(expectedInputBy, actual.InputByID);
+            Assert.AreEqual(expectedActiveStatus, actual.IsActive);
+        }
+
+        [TestMethod]
+        public virtual async Task UpdateSpecficColumnsAsync_ShouldOnlyUpdateTitleAndDescription() {
+            string expectedTitle = "New Title Async";
+            DateTime expectedDateTime = DateTime.Now;
+            int expectedInputBy = 1;
+            bool expectedActiveStatus = true;
+            string description = "Update Specific Column Test Async";
+            ITestObjectRepository repo = GetTestObjectRepository();
+
+            TestObject testObject = new() {
+                Title = "Original Title Async",
+                Description = description,
+                StatusID = Status.Active,
+                InputOn = expectedDateTime,
+                InputByID = expectedInputBy,
+                IsActive = expectedActiveStatus
+            };
+
+            await repo.AddAsync(testObject);
+
+            testObject.Title = expectedTitle;
+            testObject.StatusID = Status.Closed;
+            testObject.InputOn = new DateTime(2000, 1, 1);
+            testObject.InputByID = 50;
+            testObject.IsActive = false;
+
+            await repo.UpdateTitleAndStatusAsync(testObject);
+
+            TestObject actual = repo.GetByDescription(description).Single();
+
+            Assert.AreEqual(expectedTitle, actual.Title);
+            Assert.AreEqual(Status.Closed, actual.StatusID);
+            Assert.AreEqual(expectedDateTime.ToString("yyyy/MM/dd HH:mm"), actual.InputOn.ToString("yyyy/MM/dd HH:mm"));
+            Assert.AreEqual(expectedInputBy, actual.InputByID);
+            Assert.AreEqual(expectedActiveStatus, actual.IsActive);
         }
     }
 }

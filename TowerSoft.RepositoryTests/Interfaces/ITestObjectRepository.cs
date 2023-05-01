@@ -5,20 +5,23 @@ using TowerSoft.RepositoryTests.TestObjects;
 
 namespace TowerSoft.RepositoryTests.Interfaces {
     public interface ITestObjectRepository {
-        public void Add(TestObject entity);
-        public Task AddAsync(TestObject entity);
-        public void Add(IEnumerable<TestObject> entity);
-        public Task AddAsync(IEnumerable<TestObject> entity);
-        public void Update(TestObject entity);
-        public Task UpdateAsync(TestObject entity);
-        public void Remove(TestObject entity);
-        public Task RemoveAsync(TestObject entity);
-        public List<TestObject> GetAll();
-        public List<TestObject> GetAllSorted();
-        public long GetCount();
+        void Add(TestObject entity);
+        Task AddAsync(TestObject entity);
+        void Add(IEnumerable<TestObject> entity);
+        Task AddAsync(IEnumerable<TestObject> entity);
+        void Update(TestObject entity);
+        Task UpdateAsync(TestObject entity);
+        void UpdateTitleAndStatus(TestObject entity);
+        Task UpdateTitleAndStatusAsync(TestObject entity);
+        void Remove(TestObject entity);
+        Task RemoveAsync(TestObject entity);
+        List<TestObject> GetAll();
+        List<TestObject> GetAllSorted();
+        long GetCount();
         TestObject GetByID(long id);
         TestObject GetByTitle(string title);
         List<TestObject> GetByDescription(string description);
+        List<TestObject> GetActiveByDescription(string description);
         List<TestObject> GetByDescriptionWithInputOnOrderAsc(string description);
         List<TestObject> GetByDescriptionWithInputOnOrderDesc(string description);
         List<TestObject> GetByDescriptionWithLimit(string description, int limit);

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using TowerSoft.Repository.Interfaces;
@@ -130,9 +131,9 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-         /// Updates the matching row in the database
-         /// </summary>
-         /// <param name="entity">Entity to update in the database</param>
+        /// Updates the matching row in the database
+        /// </summary>
+        /// <param name="entity">Entity to update in the database</param>
         public virtual void Update(T entity) {
             UpdateAsync(entity).Wait();
         }
@@ -148,6 +149,84 @@ namespace TowerSoft.Repository {
 
             int index = 1;
             foreach (Map map in Mappings.StandardMaps) {
+                updateColumns.Add(map.ColumnName + "=" + DbAdapter.GetParameterPlaceholder(map.ColumnName, index));
+                parameters.Add(DbAdapter.GetParameterName(map.ColumnName, index), map.GetValue(entity));
+                index++;
+            }
+
+            foreach (Map map in Mappings.PrimaryKeyMaps) {
+                primaryKeyColumns.Add(map.ColumnName + "=" + DbAdapter.GetParameterPlaceholder(map.ColumnName, index));
+                parameters.Add(DbAdapter.GetParameterName(map.ColumnName, index), map.GetValue(entity));
+                index++;
+            }
+
+            string query = $"UPDATE {TableName} " +
+                $"SET {string.Join(",", updateColumns)} " +
+                $"WHERE {string.Join(" AND ", primaryKeyColumns)} ";
+
+            if (DbAdapter.DebugLogger != null)
+                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
+
+            await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
+        }
+
+        /// <summary>
+        /// Updates only the specifically defined properties/columns
+        /// </summary>
+        /// <param name="entity">Entity to update in the database</param>
+        /// <param name="properties">Lambda expression of the properties to update.</param>
+        protected virtual void UpdateColumns(T entity, params Expression<Func<T, object>>[] properties) {
+            UpdateColumnsAsync(entity, properties).Wait();
+        }
+
+        /// <summary>
+        /// Updates only the specifically defined properties/columns
+        /// </summary>
+        /// <param name="entity">Entity to update in the database</param>
+        /// <param name="properties">Lambda expression of the properties to update.</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        protected virtual async Task UpdateColumnsAsync(T entity, params Expression<Func<T, object>>[] properties) {
+            List<IMap> maps = new List<IMap>();
+            List<string> missingMaps = new List<string>();
+            List<string> invalidMaps = new List<string>();
+
+            foreach (var property in properties) {
+                MemberExpression memberExpression;
+                if(property.Body is MemberExpression) {
+                    memberExpression = (MemberExpression)property.Body;
+                } else if (property.Body is UnaryExpression unaryExpression && unaryExpression.NodeType == ExpressionType.Convert) {
+                    memberExpression = unaryExpression.Operand as MemberExpression;
+                } else {
+                    throw new Exception($"Unexpected expression type {property.NodeType}");
+                }
+
+                if (!Mappings.AllMapsDictionary.ContainsKey(memberExpression.Member.Name)) {
+                    missingMaps.Add(memberExpression.Member.Name);
+                    continue;
+                }
+                IMap map = Mappings.AllMaps.Single(x => x.PropertyName == memberExpression.Member.Name);
+
+                if (map is AutonumberMap || map is IDMap) {
+                    invalidMaps.Add(memberExpression.Member.Name);
+                    continue;
+                }
+                maps.Add(map);
+            }
+
+            if (missingMaps.Any()) {
+                throw new Exception($"{typeof(T).Name}: Maps cannot be found for the following properties: {string.Join(", ", missingMaps)}");
+            }
+            if (invalidMaps.Any()) {
+                throw new Exception($"{typeof(T).Name}: Cannot update the following primary key maps: {string.Join(", ", invalidMaps)}");
+            }
+
+            List<string> updateColumns = new List<string>();
+            List<string> primaryKeyColumns = new List<string>();
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+
+            int index = 1;
+            foreach (Map map in maps) {
                 updateColumns.Add(map.ColumnName + "=" + DbAdapter.GetParameterPlaceholder(map.ColumnName, index));
                 parameters.Add(DbAdapter.GetParameterName(map.ColumnName, index), map.GetValue(entity));
                 index++;
