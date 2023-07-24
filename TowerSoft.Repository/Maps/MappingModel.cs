@@ -141,6 +141,10 @@ namespace TowerSoft.Repository.Maps {
                     }
                 }
             }
+
+            if (maps.Any(x => x is NotMappedMap))
+                maps = maps.Where(x => !(x is NotMappedMap)).ToList();
+
             ProcessMapList(maps);
         }
 

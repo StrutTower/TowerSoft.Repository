@@ -22,6 +22,9 @@ namespace TowerSoft.RepositoryTests.TestObjects {
 
         public bool IsActive { get; set; }
 
+        [NotMapped]
+        public string NotMappedProp { get; set; }
+
         public CountTest CountTest_Object { get; set; }
 
         public bool Equals(FauxRepoTestObject other) {

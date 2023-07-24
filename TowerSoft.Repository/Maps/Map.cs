@@ -74,5 +74,9 @@ namespace TowerSoft.Repository.Maps {
             }
             prop.SetValue(entity, value);
         }
+
+        public override string ToString() {
+            return $"Property: {PropertyName} - Column: {ColumnName}";
+        }
     }
 }

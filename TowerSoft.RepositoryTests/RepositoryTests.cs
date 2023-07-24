@@ -26,6 +26,12 @@ namespace TowerSoft.RepositoryTests {
         }
 
         [TestMethod]
+        public void EntityMapMappingWithAutoGen_TestObject_ShouldReturnCorrectMaps() {
+            FauxRepository repo = new FauxRepository(new FauxRepoTestObjectEntityMapAuto());
+            ValidateMaps(repo);
+        }
+
+        [TestMethod]
         public void ExplicitMapping_TestObject_ShouldReturnCorrectMaps() {
             FauxRepository repo = new FauxRepository(true);
             ValidateMaps(repo);
@@ -77,6 +83,8 @@ namespace TowerSoft.RepositoryTests {
             Assert.AreEqual(1, repo.GetPrimaryKeyMaps().Count());
             Assert.AreEqual(expectedAutonumberMap.PropertyName, repo.GetPrimaryKeyMaps().First().PropertyName);
             Assert.AreEqual(expectedAutonumberMap.ColumnName, repo.GetPrimaryKeyMaps().First().ColumnName);
+
+            var test = repo.GetAllMaps();
 
             Assert.AreEqual(7, repo.GetAllMaps().Count());
 

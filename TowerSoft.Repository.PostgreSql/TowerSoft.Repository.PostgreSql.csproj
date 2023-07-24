@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.2.0</Version>
+    <Version>2.2.1</Version>
     <PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
     <RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
     <PackageIcon>towersoft-logo-T_128x.png</PackageIcon>

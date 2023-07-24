@@ -44,7 +44,7 @@ namespace TowerSoft.Repository.Builders {
         /// </summary>
         /// <returns></returns>
         public IMap NotMapped() {
-            return new Map(PropertyName, null);
+            return new NotMappedMap(PropertyName);
         }
 
         /// <summary>

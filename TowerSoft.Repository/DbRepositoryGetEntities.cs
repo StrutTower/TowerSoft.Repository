@@ -69,7 +69,11 @@ namespace TowerSoft.Repository {
         /// <param name="builder">QueryBuilder</param>
         /// <returns></returns>
         protected virtual List<T> GetEntities(QueryBuilder builder) {
-            return GetEntitiesAsync(builder).Result;
+            //return GetEntitiesAsync(builder).Result;
+            IEnumerable<T> enumerable = GetDbConnection().Query<T>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
+            List<T> entities = enumerable.ToList();
+            PostProcessEntities(entities);
+            return entities;
         }
 
 
