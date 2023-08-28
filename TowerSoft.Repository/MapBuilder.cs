@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using TowerSoft.Repository.Maps;
 
-namespace TowerSoft.Repository.Builders
+namespace TowerSoft.Repository
 {
     /// <summary>
     /// Map builder to help define maps in the repository constructor. Can implicitly be converted to List<IMap>

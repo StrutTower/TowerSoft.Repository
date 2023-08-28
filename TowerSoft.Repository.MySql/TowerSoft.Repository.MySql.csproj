@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>TowerSoft.Repository.MySql</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.2.1</Version>
+    <Version>2.2.2</Version>
     <Authors>StrutTower</Authors>
     <Company>TowerSoft</Company>
     <Product>TowerSoft.Repository</Product>
