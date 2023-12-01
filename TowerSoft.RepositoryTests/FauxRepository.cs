@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
-using TowerSoft.Repository;
-using TowerSoft.Repository.Builders;
-using TowerSoft.Repository.Maps;
+﻿using TowerSoft.Repository.Maps;
 using TowerSoft.Repository.MySql;
 using TowerSoft.RepositoryTests.TestObjects;
 

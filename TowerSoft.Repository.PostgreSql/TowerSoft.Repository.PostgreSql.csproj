@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.2.1</Version>
+		<TargetFramework>net6</TargetFramework>
+		<Version>3.0.0</Version>
     <PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
     <RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
     <PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Npgsql" Version="7.0.4" />
+    <PackageReference Include="Npgsql" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

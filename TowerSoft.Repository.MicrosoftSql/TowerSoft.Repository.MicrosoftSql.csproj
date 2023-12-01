@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFramework>net6</TargetFramework>
     <RootNamespace>TowerSoft.Repository.MicrosoftSql</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.2.2</Version>
+		<Version>3.0.0</Version>
     <Company>TowerSoft</Company>
     <Authors>StrutTower</Authors>
     <Product>TowerSoft.Repository</Product>
@@ -38,10 +38,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
+    <PackageReference Include="TowerSoft.Repository" Version="2.2.2" />
   </ItemGroup>
 
 </Project>

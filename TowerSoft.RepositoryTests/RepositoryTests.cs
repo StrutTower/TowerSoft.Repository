@@ -1,7 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
-using TowerSoft.Repository;
-using TowerSoft.Repository.Maps;
+﻿using TowerSoft.Repository.Maps;
 
 namespace TowerSoft.RepositoryTests {
     [TestClass]

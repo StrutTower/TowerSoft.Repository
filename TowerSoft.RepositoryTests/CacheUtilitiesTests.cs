@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TowerSoft.Repository.Utilities;
-using System;
+﻿using TowerSoft.Repository.Utilities;
 
 namespace TowerSoft.RepositoryTests {
     [TestClass]

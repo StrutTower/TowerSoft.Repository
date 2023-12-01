@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
-using TowerSoft.Repository.Attributes;
+﻿using TowerSoft.Repository.Attributes;
 
 namespace TowerSoft.RepositoryTests.TestObjects {
     public class TestObject : IEquatable<TestObject> {

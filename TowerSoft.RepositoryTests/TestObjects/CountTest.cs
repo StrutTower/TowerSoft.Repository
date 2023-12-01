@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TowerSoft.RepositoryTests.TestObjects {
     public class CountTest : IEquatable<CountTest> {

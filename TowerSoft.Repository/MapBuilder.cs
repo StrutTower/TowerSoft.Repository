@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using TowerSoft.Repository.Maps;
 
-namespace TowerSoft.Repository
-{
+namespace TowerSoft.Repository {
     /// <summary>
-    /// Map builder to help define maps in the repository constructor. Can implicitly be converted to List<IMap>
+    /// Map builder to help define maps in the repository constructor. Can implicitly be converted to List of IMap
     /// </summary>
     /// <typeparam name="T">Domain object type</typeparam>
-    public class MapBuilder<T>
-    {
+    public class MapBuilder<T> {
         private List<IMap> Maps { get; set; } = new List<IMap>();
 
         /// <summary>
@@ -28,8 +26,7 @@ namespace TowerSoft.Repository
         /// Typical options are %INTERNAL and %EXTERNAL.
         /// </param>
         /// <returns></returns>
-        public MapBuilder<T> AutonumberMap<TProperty>(Expression<Func<T, TProperty>> propertyExpression, string overrideDatabaseColumnName = null, string functionName = null)
-        {
+        public MapBuilder<T> AutonumberMap<TProperty>(Expression<Func<T, TProperty>> propertyExpression, string overrideDatabaseColumnName = null, string functionName = null) {
             MemberExpression memberExpression = propertyExpression.Body as MemberExpression;
             Maps.Add(new AutonumberMap(memberExpression.Member.Name, overrideDatabaseColumnName, functionName));
             return this;
@@ -50,8 +47,7 @@ namespace TowerSoft.Repository
         /// Typical options are %INTERNAL and %EXTERNAL.
         /// </param>
         /// <returns></returns>
-        public MapBuilder<T> IDMap<TProperty>(Expression<Func<T, TProperty>> propertyExpression, string overrideDatabaseColumnName = null, string functionName = null)
-        {
+        public MapBuilder<T> IDMap<TProperty>(Expression<Func<T, TProperty>> propertyExpression, string overrideDatabaseColumnName = null, string functionName = null) {
             MemberExpression memberExpression = propertyExpression.Body as MemberExpression;
             Maps.Add(new IDMap(memberExpression.Member.Name, overrideDatabaseColumnName, functionName));
             return this;
@@ -72,8 +68,7 @@ namespace TowerSoft.Repository
         /// Typical options are %INTERNAL and %EXTERNAL.
         /// </param>
         /// <returns></returns>
-        public MapBuilder<T> Map<TProperty>(Expression<Func<T, TProperty>> propertyExpression, string overrideDatabaseColumnName = null, string functionName = null)
-        {
+        public MapBuilder<T> Map<TProperty>(Expression<Func<T, TProperty>> propertyExpression, string overrideDatabaseColumnName = null, string functionName = null) {
             MemberExpression memberExpression = propertyExpression.Body as MemberExpression;
             Maps.Add(new Map(memberExpression.Member.Name, overrideDatabaseColumnName, functionName));
             return this;
@@ -94,8 +89,7 @@ namespace TowerSoft.Repository
         /// Typical options are %INTERNAL and %EXTERNAL.
         /// </param>
         /// <returns></returns>
-        public MapBuilder<T> FilemanDateMap<TProperty>(Expression<Func<T, TProperty>> propertyExpression, string overrideDatabaseColumnName = null, string functionName = null)
-        {
+        public MapBuilder<T> FilemanDateMap<TProperty>(Expression<Func<T, TProperty>> propertyExpression, string overrideDatabaseColumnName = null, string functionName = null) {
             MemberExpression memberExpression = propertyExpression.Body as MemberExpression;
             Maps.Add(new CacheFilemanDateMap(memberExpression.Member.Name, overrideDatabaseColumnName, functionName));
             return this;
@@ -116,8 +110,7 @@ namespace TowerSoft.Repository
         /// Typical options are %INTERNAL and %EXTERNAL.
         /// </param>
         /// <returns></returns>
-        public MapBuilder<T> FilemanDateTimeMap<TProperty>(Expression<Func<T, TProperty>> propertyExpression, string overrideDatabaseColumnName = null, string functionName = null)
-        {
+        public MapBuilder<T> FilemanDateTimeMap<TProperty>(Expression<Func<T, TProperty>> propertyExpression, string overrideDatabaseColumnName = null, string functionName = null) {
             MemberExpression memberExpression = propertyExpression.Body as MemberExpression;
             Maps.Add(new CacheFilemanDateTimeMap(memberExpression.Member.Name, overrideDatabaseColumnName, functionName));
             return this;
@@ -138,16 +131,17 @@ namespace TowerSoft.Repository
         /// Typical options are %INTERNAL and %EXTERNAL.
         /// </param>
         /// <returns></returns>
-        public MapBuilder<T> HorologDateMap<TProperty>(Expression<Func<T, TProperty>> propertyExpression, string overrideDatabaseColumnName = null, string functionName = null)
-        {
+        public MapBuilder<T> HorologDateMap<TProperty>(Expression<Func<T, TProperty>> propertyExpression, string overrideDatabaseColumnName = null, string functionName = null) {
             MemberExpression memberExpression = propertyExpression.Body as MemberExpression;
             Maps.Add(new CacheHorologDateMap(memberExpression.Member.Name, overrideDatabaseColumnName, functionName));
             return this;
         }
 
-
-        public static implicit operator List<IMap>(MapBuilder<T> builder)
-        {
+        /// <summary>
+        /// Implicit conversion to list of IMap
+        /// </summary>
+        /// <param name="builder"></param>
+        public static implicit operator List<IMap>(MapBuilder<T> builder) {
             return builder.Maps;
         }
     }

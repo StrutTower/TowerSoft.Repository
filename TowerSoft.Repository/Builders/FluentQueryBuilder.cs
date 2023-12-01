@@ -4,6 +4,10 @@ using System.Linq.Expressions;
 using TowerSoft.Repository.Maps;
 
 namespace TowerSoft.Repository.Builders {
+    /// <summary>
+    /// Fluent query builder class
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class FluentQueryBuilder<T> {
         private readonly MappingModel<T> mappingModel;
 
@@ -19,22 +23,49 @@ namespace TowerSoft.Repository.Builders {
             this.mappingModel = mappingModel;
         }
 
+        /// <summary>
+        /// Adds a WhereEquals statement to the query builder
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="propertyExpression">Property/Column</param>
+        /// <param name="value">Value to compare</param>
+        /// <returns></returns>
         public FluentQueryBuilder<T> WhereEqual<TProperty>(Expression<Func<T, TProperty>> propertyExpression, object value) {
             AddWhereCondition(propertyExpression, Comparison.Equals, value);
             return this;
         }
 
+        /// <summary>
+        /// Adds a Where statement to the query builder
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="propertyExpression">Property/Column</param>
+        /// <param name="comparison">Comparison type</param>
+        /// <param name="value">Value to compare</param>
+        /// <returns></returns>
         public FluentQueryBuilder<T> Where<TProperty>(Expression<Func<T, TProperty>> propertyExpression, Comparison comparison, object value) {
             AddWhereCondition(propertyExpression, comparison, value);
             return this;
         }
 
+        /// <summary>
+        /// Adds an order by statement to the query
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="propertyExpression">Property/Column to order by</param>
+        /// <returns></returns>
         public FluentQueryBuilder<T> OrderBy<TProperty>(Expression<Func<T, TProperty>> propertyExpression) {
             if (OrderStatements == null) OrderStatements = new List<OrderStatement>();
             OrderStatements.Add(new OrderStatement(GetColumnName(propertyExpression), isAscending: true));
             return this;
         }
 
+        /// <summary>
+        /// Adds an order by statement to the query
+        /// </summary>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <param name="propertyExpression">Property/Column to order by</param>
+        /// <returns></returns>
         public FluentQueryBuilder<T> OrderByDescending<TProperty>(Expression<Func<T, TProperty>> propertyExpression) {
             if (OrderStatements == null) OrderStatements = new List<OrderStatement>();
             OrderStatements.Add(new OrderStatement(GetColumnName(propertyExpression), isAscending: false));

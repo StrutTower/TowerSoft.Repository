@@ -1,8 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using TowerSoft.Repository;
-
-namespace TowerSoft.RepositoryTests {
+﻿namespace TowerSoft.RepositoryTests {
     [TestClass]
     public class WhereConditionTests {
         #region GetComparisonString

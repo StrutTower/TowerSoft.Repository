@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TowerSoft.Repository;
-using TowerSoft.RepositoryTests.TestObjects;
+﻿using TowerSoft.RepositoryTests.TestObjects;
 
 namespace TowerSoft.RepositoryTests {
     public class FauxRepoTestObjectEntityMap : EntityMap<FauxRepoTestObject> {

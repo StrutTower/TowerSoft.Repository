@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFramework>net6</TargetFramework>
     <RootNamespace>TowerSoft.Repository.MySql</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.2.2</Version>
+		<Version>3.0.0</Version>
     <Authors>StrutTower</Authors>
     <Company>TowerSoft</Company>
     <Product>TowerSoft.Repository</Product>
@@ -32,11 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.33" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
+    <PackageReference Include="MySql.Data" Version="8.2.0" />
+    <PackageReference Include="TowerSoft.Repository" Version="2.2.2" />
   </ItemGroup>
 
 </Project>
