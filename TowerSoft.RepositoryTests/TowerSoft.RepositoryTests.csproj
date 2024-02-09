@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TowerSoft.Repository.MicrosoftSql\TowerSoft.Repository.MicrosoftSql.csproj" />
     <ProjectReference Include="..\TowerSoft.Repository.MySql\TowerSoft.Repository.MySql.csproj" />
+    <ProjectReference Include="..\TowerSoft.Repository.PostgreSql\TowerSoft.Repository.PostgreSql.csproj" />
     <ProjectReference Include="..\TowerSoft.Repository.SqlLite\TowerSoft.Repository.SQLite.csproj" />
     <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
   </ItemGroup>
