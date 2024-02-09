@@ -27,7 +27,7 @@ namespace TowerSoft.Repository.PostgreSql {
         /// </summary>
         /// <returns></returns>
         public string GetLastInsertIdStatement() {
-            throw new NotImplementedException();
+            return "SELECT lastval();";
         }
 
         /// <summary>
@@ -38,6 +38,6 @@ namespace TowerSoft.Repository.PostgreSql {
         /// <summary>
         /// Specifies if the database allows multiple entities to be inserted in a single statement.
         /// </summary>
-        public bool ListInsertSupported => false;
+        public bool ListInsertSupported => true;
     }
 }

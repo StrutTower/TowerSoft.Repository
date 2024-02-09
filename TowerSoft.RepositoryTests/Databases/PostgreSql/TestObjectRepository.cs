@@ -5,9 +5,9 @@ using TowerSoft.Repository;
 using TowerSoft.RepositoryTests.Interfaces;
 using TowerSoft.RepositoryTests.TestObjects;
 
-namespace TowerSoft.RepositoryTests.MicrosoftSql {
+namespace TowerSoft.RepositoryTests.PostgreSql {
     public class TestObjectRepository : AbstractTestObjectRepository, ITestObjectRepository {
-        public TestObjectRepository(UnitOfWorkBase uow) : base(uow) { }
+        public TestObjectRepository(UnitOfWork uow) : base(uow) { }
 
         public List<TestObject> GetByInputOnDateRange(DateTime dateTime1, DateTime dateTime2) {
             return GetEntities(Query

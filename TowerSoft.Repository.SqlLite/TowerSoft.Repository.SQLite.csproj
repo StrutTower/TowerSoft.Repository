@@ -1,44 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-		<TargetFramework>net6</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Version>3.0.0</Version>
-    <Authors>StrutTower</Authors>
-    <Company>TowerSoft</Company>
-    <Product>TowerSoft.Repository</Product>
-    <Description>SQLite support of TowerSoft.Repository</Description>
-    <PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
-    <PackageLicenseFile>license.txt</PackageLicenseFile>
-    <PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
-    <RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
-  </PropertyGroup>
+		<Authors>StrutTower</Authors>
+		<Company>TowerSoft</Company>
+		<Product>TowerSoft.Repository</Product>
+		<Description>SQLite support of TowerSoft.Repository</Description>
+		<PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
+		<PackageLicenseFile>license.txt</PackageLicenseFile>
+		<PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
+		<RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\license.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\towersoft-logo-T_128x.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\license.txt">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\towersoft-logo-T_128x.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
+	</ItemGroup>
 
 </Project>

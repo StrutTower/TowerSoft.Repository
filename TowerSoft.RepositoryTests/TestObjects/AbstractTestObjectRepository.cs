@@ -6,7 +6,7 @@ using TowerSoft.RepositoryTests.Interfaces;
 
 namespace TowerSoft.RepositoryTests.TestObjects {
     public class AbstractTestObjectRepository : DbRepository<TestObject> {
-        public AbstractTestObjectRepository(IUnitOfWork uow) : base(uow.DbAdapter, "testobject", GetMaps()) { }
+        public AbstractTestObjectRepository(UnitOfWorkBase uow) : base(uow.DbAdapter, "testobject", GetMaps()) { }
 
         private static List<IMap> GetMaps() {
             return new MapBuilder<TestObject>()

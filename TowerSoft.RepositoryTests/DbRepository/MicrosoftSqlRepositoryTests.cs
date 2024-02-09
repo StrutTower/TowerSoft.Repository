@@ -10,10 +10,11 @@ using TowerSoft.RepositoryTests.TestObjects;
 namespace TowerSoft.RepositoryTests.DbRepository {
     [TestClass]
     public class MicrosoftSqlRepositoryTests : DbRepositoryTests {
-        private static UnitOfWork uow;
+        private static IUnitOfWork uow;
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext) {
+            // Do not use a unit of work like this in a normal project. It must be disposed after use.
             uow = new UnitOfWork();
             //uow.DbAdapter.DbConnection.Execute("DROP TABLE testobject;");
             //uow.DbAdapter.DbConnection.Execute("DROP TABLE counttest;");

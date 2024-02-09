@@ -1,42 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-		<TargetFramework>net6</TargetFramework>
-    <RootNamespace>TowerSoft.Repository.MySql</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<RootNamespace>TowerSoft.Repository.MySql</RootNamespace>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Version>3.0.0</Version>
-    <Authors>StrutTower</Authors>
-    <Company>TowerSoft</Company>
-    <Product>TowerSoft.Repository</Product>
-    <Description>MySQL support for TowerSoft.Repository</Description>
-    <PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
-    <PackageLicenseFile>license.txt</PackageLicenseFile>
-    <PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
-    <RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-  </PropertyGroup>
+		<Authors>StrutTower</Authors>
+		<Company>TowerSoft</Company>
+		<Product>TowerSoft.Repository</Product>
+		<Description>MySQL support for TowerSoft.Repository</Description>
+		<PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
+		<PackageLicenseFile>license.txt</PackageLicenseFile>
+		<PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
+		<RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\license.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\towersoft-logo-T_128x.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\license.txt">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\towersoft-logo-T_128x.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.2.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MySql.Data" Version="8.3.0" />
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -1,46 +1,47 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-		<TargetFramework>net6</TargetFramework>
-    <RootNamespace>TowerSoft.Repository</RootNamespace>
-    <AssemblyName>TowerSoft.Repository</AssemblyName>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>TowerSoft.Repository</PackageId>
-    <Version>3.0.0</Version>
-    <Authors>StrutTower</Authors>
-    <Product>TowerSoft Repository</Product>
-    <Company>TowerSoft</Company>
-    <Description>An abstraction layer over Dapper. Includes CRUD operations and unit of work support</Description>
-    <PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
-    <PackageLicenseFile>license.txt</PackageLicenseFile>
-    <PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
-    <RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<RootNamespace>TowerSoft.Repository</RootNamespace>
+		<AssemblyName>TowerSoft.Repository</AssemblyName>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>TowerSoft.Repository</PackageId>
+		<Version>3.0.0</Version>
+		<Authors>StrutTower</Authors>
+		<Product>TowerSoft Repository</Product>
+		<Company>TowerSoft</Company>
+		<Description>An abstraction layer over Dapper. Includes CRUD operations and unit of work support</Description>
+		<PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
+		<PackageLicenseFile>license.txt</PackageLicenseFile>
+		<PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
+		<RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\license.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\towersoft-logo-T_128x.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\license.txt">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\towersoft-logo-T_128x.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.1.24" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Dapper" Version="2.1.28" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
+		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+	</ItemGroup>
 
 </Project>

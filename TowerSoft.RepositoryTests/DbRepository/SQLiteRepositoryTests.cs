@@ -15,6 +15,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext) {
             string dbPath = $"{Environment.CurrentDirectory}\\unittest.db";
+            // Do not use a unit of work like this in a normal project. It must be disposed after use.
             uow = new UnitOfWork(dbPath);
             if (!File.Exists(dbPath))
                 SQLiteConnection.CreateFile(dbPath);

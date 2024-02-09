@@ -78,11 +78,29 @@ namespace TowerSoft.Repository {
         /// Disposes the DbConnection and DbTransaction
         /// </summary>
         public void Dispose() {
-            if (DbTransaction != null)
-                DbTransaction.Dispose();
-            if (DbConnection != null)
-                DbConnection.Dispose();
-            IsDisposed = true;
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool supressFinalize) {
+            if (!IsDisposed) {
+                DbTransaction?.Dispose();
+                DbConnection?.Dispose();
+                IsDisposed = true;
+            }
+            if (!supressFinalize) {
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        // Finalizer. Backup in case dispose was not properly called.
+        ~DbAdapter() {
+            if (!IsDisposed) {
+                Dispose(false);
+
+                Console.WriteLine("WARNING! TowerSoft.Repository.DbAdapter was not properly disposed!");
+                if (DebugLogger != null)
+                    DebugLogger.LogWarning("WARNING! TowerSoft.Repository.DbAdapter was not properly disposed!");
+            }
         }
 
         /// <summary>
