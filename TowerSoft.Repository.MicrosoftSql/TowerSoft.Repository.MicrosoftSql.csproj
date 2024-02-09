@@ -4,7 +4,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<RootNamespace>TowerSoft.Repository.MicrosoftSql</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>3.0.0</Version>
+		<Version>3.1.0</Version>
 		<Company>TowerSoft</Company>
 		<Authors>StrutTower</Authors>
 		<Product>TowerSoft.Repository</Product>
@@ -41,7 +41,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
+	  <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<Version>3.0.0</Version>
+		<Version>3.1.0</Version>
 		<PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
 		<PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
