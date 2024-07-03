@@ -81,6 +81,10 @@ namespace TowerSoft.Repository {
             Dispose(true);
         }
 
+        /// <summary>
+        /// Dispose method. Closes the database transation and connection.
+        /// </summary>
+        /// <param name="supressFinalize"></param>
         protected virtual void Dispose(bool supressFinalize) {
             if (!IsDisposed) {
                 DbTransaction?.Dispose();
@@ -92,7 +96,9 @@ namespace TowerSoft.Repository {
             }
         }
 
-        // Finalizer. Backup in case dispose was not properly called.
+        /// <summary>
+        /// Finalizer. Backup in case dispose was not properly called.
+        /// </summary>
         ~DbAdapter() {
             if (!IsDisposed) {
                 Dispose(false);

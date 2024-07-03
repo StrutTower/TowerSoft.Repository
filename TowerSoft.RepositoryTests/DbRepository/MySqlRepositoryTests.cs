@@ -28,6 +28,11 @@ namespace TowerSoft.RepositoryTests.DbRepository {
                 "Name VARCHAR(45) NOT NULL UNIQUE) " +
                 "ENGINE=InnoDB;");
             uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE counttest");
+            uow.DbAdapter.DbConnection.Execute("CREATE TABLE IF NOT EXISTS stringprimarykey (" +
+                "IEN VARCHAR(15) PRIMARY KEY," +
+                "Name VARCHAR(45) NOT NULL) " +
+                "ENGINE=InnoDB;");
+            uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE stringprimarykey");
             CountTestRepository repo = uow.GetRepo<CountTestRepository>();
             repo.Add(new CountTest { Number = 1, Name = "Object 1" });
             repo.Add(new CountTest { Number = 2, Name = "Object 2" });
@@ -41,6 +46,14 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
         protected override ITestObjectRepository GetTestObjectRepository() {
             return uow.GetRepo<TestObjectRepository>();
+        }
+
+        protected override ITestObjectRepositoryKey GetTestObjectRepositoryKey() {
+            return uow.GetRepo<TestObjectRepositoryKey>();
+        }
+
+        protected override IStringPrimaryKeyRepository GetStringPrimaryKeyRepository() {
+            return uow.GetRepo<StringPrimaryKeyRepository>();
         }
     }
 }

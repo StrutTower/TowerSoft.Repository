@@ -4,6 +4,7 @@ namespace TowerSoft.Repository.Attributes {
     /// <summary>
     /// Assigns this property to a different column name in the database.
     /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
     public class ColumnMapAttribute : Attribute {
         /// <summary>
         /// Name of the column in the database

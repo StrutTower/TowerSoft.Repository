@@ -6,6 +6,7 @@ namespace TowerSoft.Repository.Attributes {
     /// Uses the Fileman logical date format for this column with
     /// connecting to the database.
     /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
     public class CacheFilemanDateTimeAttribute : Attribute {
         /// <summary>
         /// Name of the function used to display the value

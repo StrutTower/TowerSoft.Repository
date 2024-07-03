@@ -2,10 +2,10 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<Version>3.1.0</Version>
+		<Version>4.0.0</Version>
 		<PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
-		<PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
+		<PackageIcon>towersoft-logo_128x.png</PackageIcon>
 		<RepositoryType>git</RepositoryType>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
 	</PropertyGroup>
@@ -19,14 +19,14 @@
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
-		<None Include="..\towersoft-logo-T_128x.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
+		<None Include="..\towersoft-logo_128x.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Npgsql" Version="8.0.1" />
+		<PackageReference Include="Npgsql" Version="8.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>

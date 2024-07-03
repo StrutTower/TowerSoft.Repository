@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using TowerSoft.RepositoryTests.TestObjects;
+﻿using TowerSoft.RepositoryTests.TestObjects;
 
 namespace TowerSoft.RepositoryTests.Interfaces {
     public interface ITestObjectRepository {

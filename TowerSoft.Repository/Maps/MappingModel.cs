@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 using TowerSoft.Repository.Attributes;
@@ -37,10 +35,7 @@ namespace TowerSoft.Repository.Maps {
         /// </summary>
         public Dictionary<string, string> AllMapsDictionary { get; set; }
 
-        private bool IgnoreObjectMaps { get; set; }
-
-        internal MappingModel(bool ignoreObjectMaps) {
-            IgnoreObjectMaps = ignoreObjectMaps;
+        internal MappingModel() {
             InitializeLists();
             GetColumnMappingUsingReflection();
             FinalizeMapReading();
@@ -70,8 +65,7 @@ namespace TowerSoft.Repository.Maps {
             Type domainType = typeof(T);
 
             foreach (PropertyInfo prop in domainType.GetProperties()) {
-                if (prop.IsDefined(typeof(NotMappedAttribute))) continue;
-                if (IgnoreObjectMaps && (prop.Name.EndsWith("_Object") || prop.Name.EndsWith("_Objects"))) continue;
+                if (prop.IsDefined(typeof(SkipMappingAttribute))) continue;
 
                 if (prop.GetMethod != null && prop.GetMethod.IsPublic &&
                 prop.SetMethod != null && prop.SetMethod.IsPublic) {
@@ -87,11 +81,6 @@ namespace TowerSoft.Repository.Maps {
                         if (!string.IsNullOrWhiteSpace(colMapAttribute.FunctionName)) {
                             functionName = colMapAttribute.FunctionName;
                         }
-                    } else if (prop.IsDefined(typeof(ColumnAttribute))) {
-                        ColumnAttribute colAttribute = (ColumnAttribute)prop.GetCustomAttribute(typeof(ColumnAttribute));
-                        if (!string.IsNullOrWhiteSpace(colAttribute.Name)) {
-                            columnName = colAttribute.Name;
-                        }
                     }
 
                     if (prop.IsDefined(typeof(AutonumberAttribute), true)) {
@@ -100,22 +89,21 @@ namespace TowerSoft.Repository.Maps {
                             throw new Exception("Entity " + domainType.Name + " cannot have more than one autonumber map.");
                         AutonumberMap = new AutonumberMap(prop.Name, columnName, functionName);
                         PrimaryKeyMaps.Add(AutonumberMap);
-
-                    } else if (prop.IsDefined(typeof(KeyAttribute))) {
+                    } else if (prop.IsDefined(typeof(KeyMapAttribute))) {
                         // ID Maps
-                        IDMap idMap = new IDMap(prop.Name, columnName, functionName);
+                        IDMap idMap = new(prop.Name, columnName, functionName);
                         PrimaryKeyMaps.Add(idMap);
                     } else if (prop.IsDefined(typeof(CacheFilemanDateTimeAttribute))) {
                         // Cache Fileman DateTime
-                        CacheFilemanDateTimeMap filemanDateTimeMap = new CacheFilemanDateTimeMap(prop.Name, columnName, functionName);
+                        CacheFilemanDateTimeMap filemanDateTimeMap = new(prop.Name, columnName, functionName);
                         StandardMaps.Add(filemanDateTimeMap);
                     } else if (prop.IsDefined(typeof(CacheFilemanDateAttribute))) {
                         // Cache Fileman Date
-                        CacheFilemanDateMap filemanDateMap = new CacheFilemanDateMap(prop.Name, columnName, functionName);
+                        CacheFilemanDateMap filemanDateMap = new(prop.Name, columnName, functionName);
                         StandardMaps.Add(filemanDateMap);
                     } else if (prop.IsDefined(typeof(CacheHorologDateAttribute))) {
                         // Cache Horolog Date
-                        CacheHorologDateMap horologDateMap = new CacheHorologDateMap(prop.Name, columnName, functionName);
+                        CacheHorologDateMap horologDateMap = new(prop.Name, columnName, functionName);
                         StandardMaps.Add(horologDateMap);
                     } else {
                         // Standard Maps
@@ -143,7 +131,7 @@ namespace TowerSoft.Repository.Maps {
             }
 
             if (maps.Any(x => x is NotMappedMap))
-                maps = maps.Where(x => !(x is NotMappedMap)).ToList();
+                maps = maps.Where(x => x is not NotMappedMap).ToList();
 
             ProcessMapList(maps);
         }
@@ -193,9 +181,9 @@ namespace TowerSoft.Repository.Maps {
         }
 
         private IEnumerable<Map> GetDefaultMaps(AutoMappingOption option) {
-            List<Map> maps = new List<Map>();
+            List<Map> maps = new();
             foreach (PropertyInfo prop in typeof(T).GetProperties()) {
-                if (prop.IsDefined(typeof(NotMappedAttribute))) continue;
+                if (prop.IsDefined(typeof(SkipMappingAttribute))) continue;
                 if (option == AutoMappingOption.UseNonObjectPropertyMaps && (prop.Name.EndsWith("_Object") || prop.Name.EndsWith("_Objects"))) continue;
                 if (prop.GetMethod != null && prop.GetMethod.IsPublic &&
                     prop.SetMethod != null && prop.SetMethod.IsPublic) {

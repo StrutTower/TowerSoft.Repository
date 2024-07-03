@@ -6,6 +6,7 @@ namespace TowerSoft.Repository.Attributes {
     /// Uses the $HOROLOG date format for this column
     /// with connecting to the database.
     /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
     public class CacheHorologDateAttribute : Attribute {
         /// <summary>
         /// Name of the function used to display the value

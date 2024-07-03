@@ -1,9 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TowerSoft.RepositoryTests.Interfaces;
+﻿using TowerSoft.RepositoryTests.Interfaces;
 using TowerSoft.RepositoryTests.TestObjects;
 
 namespace TowerSoft.RepositoryTests.DbRepository {
@@ -11,6 +6,8 @@ namespace TowerSoft.RepositoryTests.DbRepository {
     public abstract class DbRepositoryTests {
         protected abstract ITestObjectRepository GetTestObjectRepository();
         protected abstract ICountTestRepository GetCountTestRepository();
+        protected abstract ITestObjectRepositoryKey GetTestObjectRepositoryKey();
+        protected abstract IStringPrimaryKeyRepository GetStringPrimaryKeyRepository();
 
         #region Add/Update/Remove
         [TestMethod]
@@ -37,7 +34,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         [TestMethod]
         public async Task Async_Add_TestObject_ShouldAdd() {
             ITestObjectRepository repo = GetTestObjectRepository();
-            TestObject expected = new TestObject {
+            TestObject expected = new() {
                 Title = "AddAsync Test",
                 Description = "AddAsync Test Description",
                 StatusID = Status.Active,
@@ -58,7 +55,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         [TestMethod]
         public virtual void Add_MultipleTestObjects_ShouldAdd() {
             ITestObjectRepository repo = GetTestObjectRepository();
-            List<TestObject> objects = new List<TestObject>();
+            List<TestObject> objects = new();
             for (int i = 0; i < 1000; i++) {
                 objects.Add(new TestObject {
                     Title = "Add Multiple Test " + i,
@@ -83,7 +80,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         [TestMethod]
         public virtual async Task Async_Add_MultipleTestObjects_ShouldAdd() {
             ITestObjectRepository repo = GetTestObjectRepository();
-            List<TestObject> objects = new List<TestObject>();
+            List<TestObject> objects = new();
             for (int i = 0; i < 1000; i++) {
                 objects.Add(new TestObject {
                     Title = "AddAsync Multiple Test " + i,
@@ -192,6 +189,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         }
         #endregion
 
+        #region Counts
         [TestMethod]
         public void GetAll_CountTest_ShouldGetAll() {
             ICountTestRepository repo = GetCountTestRepository();
@@ -223,7 +221,9 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             long count = await repo.GetCountAsync();
             Assert.AreEqual(4, count);
         }
+        #endregion
 
+        #region Between Dates
         [TestMethod]
         public void GetBetweenDates_ShouldReturnValidResults() {
             ITestObjectRepository repo = GetTestObjectRepository();
@@ -295,7 +295,9 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
             Assert.AreEqual(2, actual.Count);
         }
+        #endregion
 
+        #region Order and Limit
         [TestMethod]
         public void OrderBy_ShouldOrderAscending() {
             ITestObjectRepository repo = GetTestObjectRepository();
@@ -370,7 +372,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         }
 
         private List<TestObject> GetLimitTestObject(string description, int itemCount) {
-            List<TestObject> output = new List<TestObject>();
+            List<TestObject> output = new();
             Random r = new Random();
             for (int i = 0; i < itemCount; i++) {
                 output.Add(new TestObject {
@@ -384,7 +386,9 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             }
             return output;
         }
+        #endregion
 
+        #region Specific Column Updates
         [TestMethod]
         public virtual void UpdateSpecficColumns_ShouldOnlyUpdateTitleAndDescription() {
             string expectedTitle = "New Title";
@@ -458,5 +462,81 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             Assert.AreEqual(expectedInputBy, actual.InputByID);
             Assert.AreEqual(expectedActiveStatus, actual.IsActive);
         }
+        #endregion
+
+        #region DbRepositoryKey
+        [TestMethod]
+        public void DbRepositoryKey_GetByID() {
+            ITestObjectRepositoryKey repo = GetTestObjectRepositoryKey();
+
+            TestObject expected = new() {
+                Title = "DbRepositoryIDKey_GetByID",
+                Description = "DbRepositoryIDKey_GetByID"
+            };
+
+            repo.Add(expected);
+
+            TestObject actual = repo.GetByID(expected.ID);
+
+            Assert.AreEqual(expected.ID, actual.ID);
+            Assert.AreEqual(expected.Title, actual.Title);
+        }
+
+        [TestMethod]
+        public void DbRepositoryKey_GetByIDs() {
+            ITestObjectRepositoryKey repo = GetTestObjectRepositoryKey();
+
+            List<TestObject> expected = new();
+
+            for (int i = 0; i < 10; i++) {
+                TestObject testObject = new() {
+                    Title = "DbRepositoryIDKey_GetByIDs_" + i,
+                    Description = "DbRepositoryIDKey_GetByIDs_" + i
+                };
+
+                repo.Add(testObject);
+                expected.Add(testObject);
+            }
+
+            List<TestObject> actual = repo.GetByIDs(new List<long>() { expected[0].ID, expected[2].ID, expected[4].ID, });
+
+            Assert.AreEqual(3, actual.Count);
+        }
+
+        [TestMethod]
+        public void DbRepositoryKey_GetAllDictionary() {
+            ITestObjectRepositoryKey repo = GetTestObjectRepositoryKey();
+
+            for (int i = 1; i < 6; i++) {
+                TestObject expected = new() {
+                    Title = "DbRepositoryIDKey_GetAllDictionary_" + i
+                };
+
+                repo.Add(expected);
+            }
+
+            Dictionary<long, TestObject> actual = repo.GetAllDictionary();
+
+            Assert.IsTrue(actual.Count >= 5);
+        }
+
+        [TestMethod]
+        public void DbRepositoryKey_PrimaryKeyDifferentNames() {
+            IStringPrimaryKeyRepository repo = GetStringPrimaryKeyRepository();
+
+            string id = "test";
+
+            StringPrimaryKey expected = new() {
+                PrimaryKey = id,
+                Name = "test"
+            };
+
+            repo.Add(expected);
+
+            StringPrimaryKey actual = repo.GetByID(id);
+
+            Assert.AreEqual(expected, actual);
+        }
+        #endregion
     }
 }

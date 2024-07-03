@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using TowerSoft.Repository.Attributes;
 
 namespace TowerSoft.RepositoryTests.TestObjects {
     public class CountTest : IEquatable<CountTest> {
-        [Key]
+        [KeyMap]
         public int Number { get; set; }
 
         public string Name { get; set; }

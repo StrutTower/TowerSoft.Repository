@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TowerSoft.Repository.Attributes;
+﻿using TowerSoft.Repository.Attributes;
 
 namespace TowerSoft.RepositoryTests.TestObjects {
     public class FauxRepoTestObject : IEquatable<FauxRepoTestObject> {
@@ -19,10 +18,8 @@ namespace TowerSoft.RepositoryTests.TestObjects {
 
         public bool IsActive { get; set; }
 
-        [NotMapped]
+        [SkipMapping]
         public string NotMappedProp { get; set; }
-
-        public CountTest CountTest_Object { get; set; }
 
         public bool Equals(FauxRepoTestObject other) {
             return other != null &&

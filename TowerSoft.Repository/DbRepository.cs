@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Reflection;
+using TowerSoft.Repository.Attributes;
 using TowerSoft.Repository.Interfaces;
 using TowerSoft.Repository.Maps;
 
@@ -20,15 +20,14 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <param name="dbAdapter">DbAdapter class for the database being used</param>
         /// <param name="overrideTableName">Overrides the table name generated from the object name or the table attribute.</param>
-        /// <param name="ignoreObjectMaps">Sets if properties that end with _Object or _Objects will be ignored by the automatic mapping</param>
-        public DbRepository(IDbAdapter dbAdapter, string overrideTableName = null, bool ignoreObjectMaps = true) {
+        public DbRepository(IDbAdapter dbAdapter, string overrideTableName = null) {
             DbAdapter = dbAdapter;
             ConnectionString = dbAdapter.ConnectionString;
             if (string.IsNullOrWhiteSpace(overrideTableName))
                 TableName = GetTableName();
             else
                 TableName = overrideTableName;
-            Mappings = new MappingModel<T>(ignoreObjectMaps);
+            Mappings = new MappingModel<T>();
         }
 
         /// <summary>
@@ -109,8 +108,8 @@ namespace TowerSoft.Repository {
             Type domainType = typeof(T);
 
             string tableName = domainType.Name;
-            if (domainType.IsDefined(typeof(TableAttribute))) {
-                TableAttribute tableAttr = (TableAttribute)domainType.GetCustomAttribute(typeof(TableAttribute));
+            if (domainType.IsDefined(typeof(TableNameAttribute))) {
+                TableNameAttribute tableAttr = (TableNameAttribute)domainType.GetCustomAttribute(typeof(TableNameAttribute));
                 if (!string.IsNullOrWhiteSpace(tableAttr.Name)) {
                     tableName = tableAttr.Name;
                 }

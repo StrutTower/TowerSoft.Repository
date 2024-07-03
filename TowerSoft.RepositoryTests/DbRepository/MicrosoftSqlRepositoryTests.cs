@@ -1,8 +1,4 @@
 ﻿using Dapper;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TowerSoft.RepositoryTests.Interfaces;
 using TowerSoft.RepositoryTests.MicrosoftSql;
 using TowerSoft.RepositoryTests.TestObjects;
@@ -36,6 +32,13 @@ namespace TowerSoft.RepositoryTests.DbRepository {
                     "Number INT PRIMARY KEY," +
                     "Name VARCHAR(45) NOT NULL UNIQUE)");
             uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE counttest");
+            uow.DbAdapter.DbConnection.Execute("" +
+                "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='stringprimarykey' AND xtype='U')" +
+                    "CREATE TABLE stringprimarykey " +
+                    "(" +
+                    "IEN VARCHAR(45) PRIMARY KEY," +
+                    "Name VARCHAR(45) NOT NULL)");
+            uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE stringprimarykey");
             CountTestRepository repo = uow.GetRepo<CountTestRepository>();
             repo.Add(new CountTest { Number = 1, Name = "Object 1" });
             repo.Add(new CountTest { Number = 2, Name = "Object 2" });
@@ -49,6 +52,14 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
         protected override ICountTestRepository GetCountTestRepository() {
             return uow.GetRepo<CountTestRepository>();
+        }
+
+        protected override ITestObjectRepositoryKey GetTestObjectRepositoryKey() {
+            return uow.GetRepo<TestObjectRepositoryKey>();
+        }
+
+        protected override IStringPrimaryKeyRepository GetStringPrimaryKeyRepository() {
+            return uow.GetRepo<StringPrimaryKeyRepository>();
         }
     }
 }

@@ -17,8 +17,6 @@ namespace TowerSoft.RepositoryTests.TestObjects {
 
         public bool IsActive { get; set; }
 
-        public CountTest CountTest_Object { get; set; }
-
         public bool Equals(TestObject other) {
             return other != null &&
                ID == other.ID;

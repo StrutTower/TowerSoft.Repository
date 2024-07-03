@@ -4,14 +4,14 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<RootNamespace>TowerSoft.Repository.MySql</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>3.1.0</Version>
+		<Version>4.0.0</Version>
 		<Authors>StrutTower</Authors>
 		<Company>TowerSoft</Company>
 		<Product>TowerSoft.Repository</Product>
 		<Description>MySQL support for TowerSoft.Repository</Description>
 		<PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
-		<PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
+		<PackageIcon>towersoft-logo_128x.png</PackageIcon>
 		<RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
@@ -25,15 +25,14 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
-		<None Include="..\towersoft-logo-T_128x.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
+		<None Include="..\towersoft-logo_128x.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="8.3.0" />
-		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+		<PackageReference Include="MySql.Data" Version="9.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

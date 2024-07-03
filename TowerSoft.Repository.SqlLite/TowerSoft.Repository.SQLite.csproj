@@ -3,14 +3,14 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>3.1.0</Version>
+		<Version>4.0.0</Version>
 		<Authors>StrutTower</Authors>
 		<Company>TowerSoft</Company>
 		<Product>TowerSoft.Repository</Product>
 		<Description>SQLite support of TowerSoft.Repository</Description>
 		<PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
-		<PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
+		<PackageIcon>towersoft-logo_128x.png</PackageIcon>
 		<RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
 	</PropertyGroup>
 
@@ -27,9 +27,9 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
-		<None Include="..\towersoft-logo-T_128x.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
+		<None Include="..\towersoft-logo_128x.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
 

@@ -1,8 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TowerSoft.Repository.Attributes;
+﻿using TowerSoft.Repository.Attributes;
 
 namespace TowerSoft.RepositoryTests.TestObjects {
-    [Table("datetest")]
+    [TableName("datetest")]
     public class IrisDateTest {
         [Autonumber]
         public int ID { get; set; }
