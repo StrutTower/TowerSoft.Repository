@@ -74,12 +74,12 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <typeparam name="TProperty"></typeparam>
         /// <param name="propertyExpression">Property to query</param>
-        /// <param name="comparison">Comparison type</param>
+        /// <param name="queryComparison">Comparison type</param>
         /// <param name="value">Value to compare to</param>
         /// <returns></returns>
-        protected FluentQueryBuilder<T> Where<TProperty>(Expression<Func<T, TProperty>> propertyExpression, Comparison comparison, object value) {
+        protected FluentQueryBuilder<T> Where<TProperty>(Expression<Func<T, TProperty>> propertyExpression, Comparison queryComparison, object value) {
             FluentQueryBuilder<T> builder = new FluentQueryBuilder<T>(Mappings);
-            builder.AddWhereCondition(propertyExpression, comparison, value);
+            builder.AddWhereCondition(propertyExpression, queryComparison, value);
             return builder;
         }
 
