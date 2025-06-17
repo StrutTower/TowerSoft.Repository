@@ -2,16 +2,20 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
-		<Version>4.1.0</Version>
-		<PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
+		<RootNamespace>TowerSoft.Repository.MySqlConnector</RootNamespace>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Version>4.1.0</Version>
 		<Authors>StrutTower</Authors>
 		<Company>TowerSoft</Company>
 		<Product>TowerSoft.Repository</Product>
-		<RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
-		<PackageIcon>towersoft-logo_128x.png</PackageIcon>
-		<RepositoryType>git</RepositoryType>
+		<Description>MariaDb and MySQL support for TowerSoft.Repository using MySqlConnector</Description>
+		<PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
+		<PackageIcon>towersoft-logo_128x.png</PackageIcon>
+		<RepositoryUrl>https://github.com/StrutTower/Repository</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -21,20 +25,17 @@
 	<ItemGroup>
 		<None Include="..\license.txt">
 			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
+			<PackagePath></PackagePath>
 		</None>
 		<None Include="..\towersoft-logo_128x.png">
-		  <Pack>True</Pack>
-		  <PackagePath>\</PackagePath>
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Npgsql" Version="9.0.3" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
+		<PackageReference Include="MySqlConnector" Version="2.4.0" />
+		<PackageReference Include="TowerSoft.Repository" Version="4.1.0" />
 	</ItemGroup>
 
 </Project>

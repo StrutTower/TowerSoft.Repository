@@ -1,12 +1,12 @@
-﻿using Npgsql;
+﻿using MySqlConnector;
 using System.Data;
 
-namespace TowerSoft.Repository.PostgreSql {
+namespace TowerSoft.Repository.MySqlConnector {
     /// <summary>
-    /// DbAdapter for PostgreSQL
+    /// DbAdapter for MySQL
     /// </summary>
-    /// <param name="connectionString">Connection string to the database</param>
-    public class PostgreSqlDbAdapter(string connectionString) : DbAdapter(connectionString), IDbAdapter {
+    /// <param name="connectionString">Database connection string</param>
+    public class MySqlConnectorDbAdapter(string connectionString) : DbAdapter(connectionString), IDbAdapter {
 
         /// <summary>
         /// Returns the ADO.NET IDbCommand for this database.
@@ -14,7 +14,7 @@ namespace TowerSoft.Repository.PostgreSql {
         /// <param name="connectionString">Database connection string</param>
         /// <returns></returns>
         public override IDbConnection CreateNewDbConnection(string connectionString) {
-            return new NpgsqlConnection(connectionString);
+            return new MySqlConnection(connectionString);
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace TowerSoft.Repository.PostgreSql {
         /// </summary>
         /// <returns></returns>
         public string GetLastInsertIdStatement() {
-            return "SELECT lastval();";
+            return "SELECT LAST_INSERT_ID();";
         }
 
         /// <summary>

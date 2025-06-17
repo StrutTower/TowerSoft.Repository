@@ -5,12 +5,8 @@ namespace TowerSoft.Repository.MySql {
     /// <summary>
     /// DbAdapter for MySQL
     /// </summary>
-    public class MySqlDbAdapter : DbAdapter, IDbAdapter {
-        /// <summary>
-        /// Create a new DbAdapter for MySQL
-        /// </summary>
-        /// <param name="connectionString">Database connection string</param>
-        public MySqlDbAdapter(string connectionString) : base(connectionString) { }
+    /// <param name="connectionString">Database connection string</param>
+    public class MySqlDbAdapter(string connectionString) : DbAdapter(connectionString), IDbAdapter {
 
         /// <summary>
         /// Returns the ADO.NET IDbCommand for this database.

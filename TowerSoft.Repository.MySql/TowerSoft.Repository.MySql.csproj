@@ -1,14 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<RootNamespace>TowerSoft.Repository.MySql</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>4.0.0</Version>
+		<Version>4.1.0</Version>
 		<Authors>StrutTower</Authors>
 		<Company>TowerSoft</Company>
 		<Product>TowerSoft.Repository</Product>
-		<Description>MySQL support for TowerSoft.Repository</Description>
+		<Description>MySQL support for TowerSoft.Repository using MySql.Data</Description>
 		<PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
 		<PackageIcon>towersoft-logo_128x.png</PackageIcon>
@@ -32,11 +34,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="9.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
+		<PackageReference Include="MySql.Data" Version="9.3.0" />
+		<PackageReference Include="TowerSoft.Repository" Version="4.1.0" />
 	</ItemGroup>
 
 </Project>

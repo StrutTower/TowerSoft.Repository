@@ -5,12 +5,8 @@ namespace TowerSoft.Repository.SQLite {
     /// <summary>
     /// SQLite Database adapter
     /// </summary>
-    public class SQLiteDbAdapter : DbAdapter, IDbAdapter {
-        /// <summary>
-        /// Create a new DbAdapter for SQLite
-        /// </summary>
-        /// <param name="connectionString">Database connection string</param>
-        public SQLiteDbAdapter(string connectionString) : base(connectionString) { }
+    /// <param name="connectionString">Database connection string</param>
+    public class SQLiteDbAdapter(string connectionString) : DbAdapter(connectionString), IDbAdapter {
 
         /// <summary>
         /// Returns the ADO.NET IDbCommand for this database.

@@ -1,20 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.4.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.4.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.9.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.9.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TowerSoft.Repository.MariaDb\TowerSoft.Repository.MySqlConnector.csproj" />
     <ProjectReference Include="..\TowerSoft.Repository.MicrosoftSql\TowerSoft.Repository.MicrosoftSql.csproj" />
     <ProjectReference Include="..\TowerSoft.Repository.MySql\TowerSoft.Repository.MySql.csproj" />
     <ProjectReference Include="..\TowerSoft.Repository.PostgreSql\TowerSoft.Repository.PostgreSql.csproj" />
