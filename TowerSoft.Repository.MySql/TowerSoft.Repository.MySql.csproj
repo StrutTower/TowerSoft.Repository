@@ -35,7 +35,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="MySql.Data" Version="9.3.0" />
-		<PackageReference Include="TowerSoft.Repository" Version="4.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
 	</ItemGroup>
 
 </Project>

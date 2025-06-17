@@ -39,7 +39,10 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
-	  <PackageReference Include="TowerSoft.Repository" Version="4.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
 	</ItemGroup>
 
 </Project>
