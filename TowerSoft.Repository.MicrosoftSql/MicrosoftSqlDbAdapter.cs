@@ -1,16 +1,12 @@
 ﻿using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace TowerSoft.Repository.MicrosoftSql {
     /// <summary>
     /// DbAdapter for Microsoft's SQL Server
     /// </summary>
-    public class MicrosoftSqlDbAdapter : DbAdapter, IDbAdapter {
-        /// <summary>
-        /// Create a new DbAdapter for Microsoft's SQL Server
-        /// </summary>
-        /// <param name="connectionString">Database connection string</param>
-        public MicrosoftSqlDbAdapter(string connectionString) : base(connectionString) { }
+    /// <param name="connectionString">Database connection string</param>
+    public class MicrosoftSqlDbAdapter(string connectionString) : DbAdapter(connectionString), IDbAdapter {
 
         /// <summary>
         /// Returns the ADO.NET IDbCommand for this database.
@@ -47,7 +43,7 @@ namespace TowerSoft.Repository.MicrosoftSql {
         /// <param name="query">Current query builder</param>
         /// <returns></returns>
         public override string GetLimitOffsetStatement(int? limit, int? offset, QueryBuilder query) {
-            if (!query.SqlQuery.ToUpper().Contains("ORDER BY"))
+            if (!query.SqlQuery.Contains("ORDER BY", StringComparison.CurrentCultureIgnoreCase))
                 throw new System.Exception("Microsoft's SQL server requires and ORDER BY when using LIMIT/FETCH.");
 
             if (limit.HasValue && offset.HasValue)

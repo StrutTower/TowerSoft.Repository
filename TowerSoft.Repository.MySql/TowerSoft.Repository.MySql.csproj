@@ -3,12 +3,14 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<RootNamespace>TowerSoft.Repository.MySql</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Version>4.1.0</Version>
 		<Authors>StrutTower</Authors>
 		<Company>TowerSoft</Company>
 		<Product>TowerSoft.Repository</Product>
-		<Description>MySQL support for TowerSoft.Repository</Description>
+		<Description>MySQL support for TowerSoft.Repository using MySql.Data</Description>
 		<PackageProjectUrl>https://github.com/StrutTower/Repository</PackageProjectUrl>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
 		<PackageIcon>towersoft-logo_128x.png</PackageIcon>

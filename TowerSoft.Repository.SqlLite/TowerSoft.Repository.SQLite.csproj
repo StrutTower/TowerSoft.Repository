@@ -38,7 +38,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
+	  <ProjectReference Include="..\TowerSoft.Repository\TowerSoft.Repository.csproj" />
 	</ItemGroup>
 
 </Project>

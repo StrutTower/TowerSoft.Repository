@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<RootNamespace>TowerSoft.Repository.MicrosoftSql</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Version>4.1.0</Version>
 		<Company>TowerSoft</Company>
@@ -37,7 +38,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+	  <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
