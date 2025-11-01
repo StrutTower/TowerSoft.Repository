@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace TowerSoft.Repository {
@@ -85,6 +86,16 @@ namespace TowerSoft.Repository {
         /// ILogger used for outputting debugging info
         /// </summary>
         ILogger DebugLogger { get; }
+
+        /// <summary>
+        /// Setting this to true will automatically trim any strings on an object before Add,Update,Remove actions
+        /// </summary>
+        bool AutomaticallyTrimStrings { get; set; }
+
+        /// <summary>
+        /// Setting this to true will automatically convert any empty or white space strings to null before Add,Update,Remove actions
+        /// </summary>
+        bool AutomaticallyConvertWhiteSpaceStringsToNull { get; set; }
 
         /// <summary>
         /// ILogger can be supplied to enable outputting debug info from the ORM

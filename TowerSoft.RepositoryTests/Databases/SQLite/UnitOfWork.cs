@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using TowerSoft.Repository;
-using TowerSoft.Repository.Interfaces;
+﻿using TowerSoft.Repository.Interfaces;
 using TowerSoft.Repository.SQLite;
 using TowerSoft.RepositoryTests.Interfaces;
 
@@ -21,6 +18,14 @@ namespace TowerSoft.RepositoryTests.SQLite {
 
             if (!_repos.ContainsKey(type)) _repos[type] = Activator.CreateInstance(type, this);
             return (TRepo)_repos[type];
+        }
+
+        public void SetTrimSetting(bool autoTrim) {
+            DbAdapter.AutomaticallyTrimStrings = autoTrim;
+        }
+
+        public void SetNullStringSetting(bool nullString) {
+            DbAdapter.AutomaticallyConvertWhiteSpaceStringsToNull = nullString;
         }
     }
 }

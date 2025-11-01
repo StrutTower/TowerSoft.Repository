@@ -1,6 +1,4 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Logging;
-using System.Linq;
 using System.Threading.Tasks;
 using TowerSoft.Repository.Builders;
 using TowerSoft.Repository.Interfaces;
@@ -50,8 +48,7 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <param name="builder">QueryBuilder</param>
         protected virtual async Task<long> GetCountAsync(QueryBuilder builder) {
-            if (DbAdapter.DebugLogger != null)
-                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {builder.SqlQuery} /Parameters/ {string.Join(", ", builder.Parameters.Select(x => x.Key + ":" + x.Value))}");
+            WriteLog(GetType().Name, builder.SqlQuery, builder.Parameters);
 
             return await GetDbConnection().QuerySingleAsync<long>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
         }

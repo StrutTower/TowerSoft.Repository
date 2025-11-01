@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using TowerSoft.Repository.Interfaces;
 using TowerSoft.Repository.Maps;
+using TowerSoft.Repository.Utilities;
 
 namespace TowerSoft.Repository {
     public partial class DbRepository<T> : IDbRepository {
@@ -40,9 +40,14 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <param name="entity">Entity to add to the database</param>
         public virtual async Task AddAsync(T entity) {
-            List<string> columns = new List<string>();
-            List<string> values = new List<string>();
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            if (DbAdapter.AutomaticallyTrimStrings)
+                StringUtilities.TrimProperties(entity);
+            if (DbAdapter.AutomaticallyConvertWhiteSpaceStringsToNull)
+                StringUtilities.NullOutEmptyStrings(entity);
+
+            List<string> columns = [];
+            List<string> values = [];
+            Dictionary<string, object> parameters = [];
 
             int index = 1;
             foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
@@ -55,8 +60,7 @@ namespace TowerSoft.Repository {
             string query = $"INSERT INTO {TableName} " +
                 $"({string.Join(",", columns)}) VALUES ({string.Join(",", values)})";
 
-            if (DbAdapter.DebugLogger != null)
-                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
+            WriteLog(GetType().Name, query, parameters);
 
             if (Mappings.AutonumberMap == null) {
                 await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
@@ -88,7 +92,17 @@ namespace TowerSoft.Repository {
         /// <param name="entities">Entities to add to the database</param>
         public virtual async Task AddAsync(IEnumerable<T> entities) {
             if (DbAdapter.ListInsertSupported) {
-                List<string> columns = new List<string>();
+
+                if (DbAdapter.AutomaticallyTrimStrings) {
+                    foreach (var entity in entities)
+                        StringUtilities.TrimProperties(entity);
+                }
+                if (DbAdapter.AutomaticallyConvertWhiteSpaceStringsToNull) {
+                    foreach (var entity in entities)
+                        StringUtilities.NullOutEmptyStrings(entity);
+                }
+
+                List<string> columns = [];
 
                 foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
                     columns.Add(map.ColumnName);
@@ -102,11 +116,11 @@ namespace TowerSoft.Repository {
                 foreach (List<T> batchGroup in entities.Select((x, i) => new { Value = x, Index = i }).GroupBy(x => x.Index / batchSize).Select(x => x.Select(y => y.Value).ToList())) {
                     string query = $"INSERT INTO {TableName} ({string.Join(",", columns)}) VALUES ";
 
-                    List<string> values = new List<string>();
-                    Dictionary<string, object> parameters = new Dictionary<string, object>();
+                    List<string> values = [];
+                    Dictionary<string, object> parameters = [];
                     int counter = 1;
                     foreach (T entity in batchGroup) {
-                        List<string> vals = new List<string>();
+                        List<string> vals = [];
                         int index = 1;
                         foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
                             vals.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName, index) + counter);
@@ -118,8 +132,7 @@ namespace TowerSoft.Repository {
                     }
                     query += string.Join(",", values);
 
-                    if (DbAdapter.DebugLogger != null)
-                        DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
+                    WriteLog(GetType().Name, query, parameters);
 
                     await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
                 }
@@ -143,9 +156,14 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <param name="entity">Entity to update in the database</param>
         public virtual async Task UpdateAsync(T entity) {
-            List<string> updateColumns = new List<string>();
-            List<string> primaryKeyColumns = new List<string>();
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            if (DbAdapter.AutomaticallyTrimStrings)
+                StringUtilities.TrimProperties(entity);
+            if (DbAdapter.AutomaticallyConvertWhiteSpaceStringsToNull)
+                StringUtilities.NullOutEmptyStrings(entity);
+
+            List<string> updateColumns = [];
+            List<string> primaryKeyColumns = [];
+            Dictionary<string, object> parameters = [];
 
             int index = 1;
             foreach (Map map in Mappings.StandardMaps) {
@@ -164,8 +182,7 @@ namespace TowerSoft.Repository {
                 $"SET {string.Join(",", updateColumns)} " +
                 $"WHERE {string.Join(" AND ", primaryKeyColumns)} ";
 
-            if (DbAdapter.DebugLogger != null)
-                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
+            WriteLog(GetType().Name, query, parameters);
 
             await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
         }
@@ -187,13 +204,18 @@ namespace TowerSoft.Repository {
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         protected virtual async Task UpdateColumnsAsync(T entity, params Expression<Func<T, object>>[] properties) {
-            List<IMap> maps = new List<IMap>();
-            List<string> missingMaps = new List<string>();
-            List<string> invalidMaps = new List<string>();
+            if (DbAdapter.AutomaticallyTrimStrings)
+                StringUtilities.TrimProperties(entity);
+            if (DbAdapter.AutomaticallyConvertWhiteSpaceStringsToNull)
+                StringUtilities.NullOutEmptyStrings(entity);
+
+            List<IMap> maps = [];
+            List<string> missingMaps = [];
+            List<string> invalidMaps = [];
 
             foreach (var property in properties) {
                 MemberExpression memberExpression;
-                if(property.Body is MemberExpression) {
+                if (property.Body is MemberExpression) {
                     memberExpression = (MemberExpression)property.Body;
                 } else if (property.Body is UnaryExpression unaryExpression && unaryExpression.NodeType == ExpressionType.Convert) {
                     memberExpression = unaryExpression.Operand as MemberExpression;
@@ -221,9 +243,9 @@ namespace TowerSoft.Repository {
                 throw new Exception($"{typeof(T).Name}: Cannot update the following primary key maps: {string.Join(", ", invalidMaps)}");
             }
 
-            List<string> updateColumns = new List<string>();
-            List<string> primaryKeyColumns = new List<string>();
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            List<string> updateColumns = [];
+            List<string> primaryKeyColumns = [];
+            Dictionary<string, object> parameters = [];
 
             int index = 1;
             foreach (Map map in maps) {
@@ -242,8 +264,7 @@ namespace TowerSoft.Repository {
                 $"SET {string.Join(",", updateColumns)} " +
                 $"WHERE {string.Join(" AND ", primaryKeyColumns)} ";
 
-            if (DbAdapter.DebugLogger != null)
-                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
+            WriteLog(GetType().Name, query, parameters);
 
             await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
         }
@@ -261,8 +282,13 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <param name="entity">Entity to remove from the database</param>
         public virtual async Task RemoveAsync(T entity) {
-            List<string> primaryKeyColumns = new List<string>();
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            if (DbAdapter.AutomaticallyTrimStrings)
+                StringUtilities.TrimProperties(entity);
+            if (DbAdapter.AutomaticallyConvertWhiteSpaceStringsToNull)
+                StringUtilities.NullOutEmptyStrings(entity);
+
+            List<string> primaryKeyColumns = [];
+            Dictionary<string, object> parameters = [];
 
             int index = 1;
             foreach (Map map in Mappings.PrimaryKeyMaps) {
@@ -273,8 +299,7 @@ namespace TowerSoft.Repository {
 
             string query = $"DELETE FROM {TableName} WHERE {string.Join(" AND ", primaryKeyColumns)}";
 
-            if (DbAdapter.DebugLogger != null)
-                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
+            WriteLog(GetType().Name, query, parameters);
 
             await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
         }

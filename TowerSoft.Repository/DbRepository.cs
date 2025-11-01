@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Reflection;
 using TowerSoft.Repository.Attributes;
 using TowerSoft.Repository.Interfaces;
@@ -116,6 +118,11 @@ namespace TowerSoft.Repository {
             }
 
             return tableName;
+        }
+
+        private void WriteLog(string typeName, string query, Dictionary<string, object> parameters) {
+            if (DbAdapter.DebugLogger != null)
+                DbAdapter.DebugLogger.LogInformation($"{typeName} /Query/ {query} /Parameters/ {string.Join(", ", parameters.Select(x => x.Key + ":" + x.Value))}");
         }
     }
 }

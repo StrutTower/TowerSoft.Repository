@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,7 +68,6 @@ namespace TowerSoft.Repository {
         /// <param name="builder">QueryBuilder</param>
         /// <returns></returns>
         protected virtual List<T> GetEntities(QueryBuilder builder) {
-            //return GetEntitiesAsync(builder).Result;
             IEnumerable<T> enumerable = GetDbConnection().Query<T>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
             List<T> entities = enumerable.ToList();
             PostProcessEntities(entities);
@@ -83,8 +81,7 @@ namespace TowerSoft.Repository {
         /// <param name="builder">QueryBuilder</param>
         /// <returns></returns>
         protected virtual async Task<List<T>> GetEntitiesAsync(QueryBuilder builder) {
-            if (DbAdapter.DebugLogger != null)
-                DbAdapter.DebugLogger.LogInformation($"{GetType().Name} /Query/ {builder.SqlQuery} /Parameters/ {string.Join(", ", builder.Parameters.Select(x => x.Key + ":" + x.Value))}");
+            WriteLog(GetType().Name, builder.SqlQuery, builder.Parameters);
             IEnumerable<T> enumerable = await GetDbConnection().QueryAsync<T>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
             List<T> entities = enumerable.ToList();
             PostProcessEntities(entities);
@@ -98,7 +95,7 @@ namespace TowerSoft.Repository {
                 query.SqlQuery = $"SELECT COUNT(*) FROM {TableName} ";
             }
 
-            List<string> whereStatements = new List<string>();
+            List<string> whereStatements = [];
             int index = 1;
             foreach (WhereCondition whereCondition in builder.WhereConditions) {
                 if (whereCondition.IsNullEqualsOrNotEquals()) {
@@ -115,7 +112,7 @@ namespace TowerSoft.Repository {
                 query.SqlQuery += $"WHERE {string.Join(" AND ", whereStatements)} ";
 
             if (builder.OrderStatements != null && builder.OrderStatements.Any()) {
-                List<string> orderBy = new List<string>();
+                List<string> orderBy = [];
                 foreach (OrderStatement orderStatement in builder.OrderStatements) {
                     orderBy.Add(TableName + "." + orderStatement.ColumnName + (orderStatement.IsAscending ? "" : " DESC"));
                 }

@@ -42,6 +42,16 @@ namespace TowerSoft.Repository {
         public ILogger DebugLogger { get; private set; }
 
         /// <summary>
+        /// Setting this to true will automatically trim any strings on an object before Add or Update actions
+        /// </summary>
+        public bool AutomaticallyTrimStrings { get; set; } = false;
+
+        /// <summary>
+        /// Setting this to true will automatically convert any empty or white space strings to null before Add or Update actions
+        /// </summary>
+        public bool AutomaticallyConvertWhiteSpaceStringsToNull { get; set; } = false;
+
+        /// <summary>
         /// ILogger can be supplied to enable outputting debug info from the ORM
         /// </summary>
         /// <param name="logger"></param>
@@ -82,16 +92,16 @@ namespace TowerSoft.Repository {
         }
 
         /// <summary>
-        /// Dispose method. Closes the database transation and connection.
+        /// Dispose method. Closes the database transaction and connection.
         /// </summary>
-        /// <param name="supressFinalize"></param>
-        protected virtual void Dispose(bool supressFinalize) {
+        /// <param name="suppressFinalize"></param>
+        protected virtual void Dispose(bool suppressFinalize) {
             if (!IsDisposed) {
                 DbTransaction?.Dispose();
                 DbConnection?.Dispose();
                 IsDisposed = true;
             }
-            if (!supressFinalize) {
+            if (!suppressFinalize) {
                 GC.SuppressFinalize(this);
             }
         }
