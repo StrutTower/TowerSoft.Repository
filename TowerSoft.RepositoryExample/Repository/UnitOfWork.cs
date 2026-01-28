@@ -32,19 +32,19 @@ namespace TowerSoft.RepositoryExample.Repository {
         // Setup methods - This shouldn't be used normally
         private void CreateDatabase() {
             // Create the test tables
-            DbAdapter.DbConnection.Execute("CREATE TABLE IF NOT EXISTS Person (" +
+            DbAdapter.GetDbConnection().Execute("CREATE TABLE IF NOT EXISTS Person (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "DisplayName TEXT NOT NULL," +
                 "CreatedOn TEXT," +
                 "Birthdate TEXT," +
                 "IsActive INTEGER NOT NULL);");
-            DbAdapter.DbConnection.Execute("DELETE FROM Person");
-            DbAdapter.DbConnection.Execute("CREATE TABLE IF NOT EXISTS TransactionEntry (" +
+            DbAdapter.GetDbConnection().Execute("DELETE FROM Person");
+            DbAdapter.GetDbConnection().Execute("CREATE TABLE IF NOT EXISTS TransactionEntry (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "PersonID INTEGER NOT NULL," +
                 "DateTime TEXT," +
                 "Amount INTEGER NOT NULL);");
-            DbAdapter.DbConnection.Execute("DELETE FROM TransactionEntry");
+            DbAdapter.GetDbConnection().Execute("DELETE FROM TransactionEntry");
         }
 
         private void SeedDatabase() {

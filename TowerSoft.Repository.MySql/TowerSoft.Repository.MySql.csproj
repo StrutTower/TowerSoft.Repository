@@ -6,7 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>4.1.0</Version>
+		<Version>5.0.1-alpha</Version>
 		<Authors>StrutTower</Authors>
 		<Company>TowerSoft</Company>
 		<Product>TowerSoft.Repository</Product>
@@ -34,7 +34,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="9.5.0" />
+		<PackageReference Include="MySql.Data" Version="9.6.0" />
 	</ItemGroup>
 
 	<ItemGroup>

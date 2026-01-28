@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Data;
 
 namespace TowerSoft.Repository {
@@ -22,7 +20,7 @@ namespace TowerSoft.Repository {
         /// <summary>
         /// ADO.NET DbConnection for the current database
         /// </summary>
-        IDbConnection DbConnection { get; set; }
+        List<IDbConnection> DbConnections { get; set; }
 
         /// <summary>
         /// ADO.NET DbTransaction for the current database
@@ -53,9 +51,15 @@ namespace TowerSoft.Repository {
         IDbConnection CreateNewDbConnection(string connectionString);
 
         /// <summary>
-        /// Runs configuration settings on the DbConnection
+        /// 
         /// </summary>
-        void ConfigureDbConnection();
+        /// <returns></returns>
+        IDbConnection GetDbConnection();
+
+        ///// <summary>
+        ///// Runs configuration settings on the DbConnection
+        ///// </summary>
+        //void ConfigureDbConnection();
 
         /// <summary>
         /// Returns a limit and offset statement for the current database type
@@ -86,6 +90,11 @@ namespace TowerSoft.Repository {
         /// ILogger used for outputting debugging info
         /// </summary>
         ILogger DebugLogger { get; }
+
+        /// <summary>
+        /// Tracks if a transaction is currently active
+        /// </summary>
+        bool TransactionActive { get; }
 
         /// <summary>
         /// Setting this to true will automatically trim any strings on an object before Add,Update,Remove actions

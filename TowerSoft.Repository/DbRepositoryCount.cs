@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using System.Data;
 using TowerSoft.Repository.Builders;
 using TowerSoft.Repository.Interfaces;
 
@@ -49,7 +50,19 @@ namespace TowerSoft.Repository {
         protected virtual async Task<long> GetCountAsync(QueryBuilder builder) {
             WriteLog(GetType().Name, builder.SqlQuery, builder.Parameters);
 
-            return await GetDbConnection().QuerySingleAsync<long>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
+            IDbConnection connection = GetDbConnection();
+
+            long result;
+            try {
+                result = await connection.QuerySingleAsync<long>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
+            } catch {
+                throw;
+            } finally {
+                if (DbAdapter.DbTransaction == null)
+                    connection.Dispose();
+            }
+
+            return result;
         }
     }
 }

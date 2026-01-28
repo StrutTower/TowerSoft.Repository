@@ -89,15 +89,16 @@ namespace TowerSoft.Repository {
                 throw new Exception("This DbAdapter has already been disposed. " +
                     "Make sure you are calling the DbAdapter and your Unit of Work class in a using statement.");
 
-            if (DbAdapter.DbConnection == null)
-                DbAdapter.DbConnection = DbAdapter.CreateNewDbConnection(ConnectionString);
+            if (DbAdapter.TransactionActive) {
+                return DbAdapter.DbTransaction.Connection;
+            }
 
-            if (DbAdapter.DbConnection.State != ConnectionState.Open)
-                DbAdapter.DbConnection.Open();
+            IDbConnection connection = DbAdapter.CreateNewDbConnection(ConnectionString);
 
-            DbAdapter.ConfigureDbConnection();
+            if (connection.State != ConnectionState.Open)
+                connection.Open();
 
-            return DbAdapter.DbConnection;
+            return connection;
         }
 
         /// <summary>

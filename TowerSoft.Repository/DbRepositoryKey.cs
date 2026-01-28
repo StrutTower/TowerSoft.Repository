@@ -104,16 +104,16 @@ namespace TowerSoft.Repository {
         /// </summary>
         /// <param name="ids">Primay key values</param>
         public async Task<List<TDomainObject>> GetByIDsAsync(IEnumerable<TPrimaryKey> ids) {
-            if (ids == null || !ids.Any()) return new();
+            if (ids == null || !ids.Any()) return [];
 
             QueryBuilder query = GetQueryBuilder();
             query.SqlQuery += $"WHERE {PrimaryKeyMap.ColumnName} IN (";
 
             int counter = 1;
-            List<string> inStatements = new();
+            List<string> inStatements = [];
             foreach (TPrimaryKey id in ids.Distinct()) {
-                inStatements.Add("@p" + id);
-                query.AddParameter("@p" + id, id);
+                inStatements.Add("@p" + counter);
+                query.AddParameter("@p" + counter, id);
                 counter++;
             }
             query.SqlQuery += string.Join(",", inStatements) + ") ";

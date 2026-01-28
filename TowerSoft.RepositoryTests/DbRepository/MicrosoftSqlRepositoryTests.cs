@@ -14,7 +14,7 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             uow = new UnitOfWork();
             //uow.DbAdapter.DbConnection.Execute("DROP TABLE testobject;");
             //uow.DbAdapter.DbConnection.Execute("DROP TABLE counttest;");
-            uow.DbAdapter.DbConnection.Execute("" +
+            uow.DbAdapter.GetDbConnection().Execute("" +
                 "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='testobject' AND xtype='U')" +
                     "CREATE TABLE testobject (" +
                     "ID BIGINT IDENTITY(1,1) PRIMARY KEY," +
@@ -24,27 +24,29 @@ namespace TowerSoft.RepositoryTests.DbRepository {
                     "InputOn DATETIME NOT NULL," +
                     "InputByID INT NOT NULL," +
                     "IsActive TINYINT NOT NULL)");
-            uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE testobject");
-            uow.DbAdapter.DbConnection.Execute("" +
+            uow.DbAdapter.GetDbConnection().Execute("TRUNCATE TABLE testobject");
+            uow.DbAdapter.GetDbConnection().Execute("" +
                 "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='counttest' AND xtype='U')" +
                     "CREATE TABLE counttest " +
                     "(" +
                     "Number INT PRIMARY KEY," +
                     "Name VARCHAR(45) NOT NULL UNIQUE)");
-            uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE counttest");
-            uow.DbAdapter.DbConnection.Execute("" +
+            uow.DbAdapter.GetDbConnection().Execute("TRUNCATE TABLE counttest");
+            uow.DbAdapter.GetDbConnection().Execute("" +
                 "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='stringprimarykey' AND xtype='U')" +
                     "CREATE TABLE stringprimarykey " +
                     "(" +
                     "IEN VARCHAR(45) PRIMARY KEY," +
                     "Name VARCHAR(45) NOT NULL)");
-            uow.DbAdapter.DbConnection.Execute("TRUNCATE TABLE stringprimarykey");
+            uow.DbAdapter.GetDbConnection().Execute("TRUNCATE TABLE stringprimarykey");
             CountTestRepository repo = uow.GetRepo<CountTestRepository>();
             repo.Add(new CountTest { Number = 1, Name = "Object 1" });
             repo.Add(new CountTest { Number = 2, Name = "Object 2" });
             repo.Add(new CountTest { Number = 3, Name = "Object 3" });
             repo.Add(new CountTest { Number = 4, Name = "Object 4" });
         }
+
+        protected override IUnitOfWork GetUnitOfWork() => uow;
 
         protected override ITestObjectRepository GetTestObjectRepository() {
             return uow.GetRepo<TestObjectRepository>();

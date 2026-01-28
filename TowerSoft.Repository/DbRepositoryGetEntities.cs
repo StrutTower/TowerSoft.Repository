@@ -1,7 +1,5 @@
 ﻿using Dapper;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Data;
 using TowerSoft.Repository.Builders;
 using TowerSoft.Repository.Interfaces;
 
@@ -68,9 +66,19 @@ namespace TowerSoft.Repository {
         /// <param name="builder">QueryBuilder</param>
         /// <returns></returns>
         protected virtual List<T> GetEntities(QueryBuilder builder) {
-            IEnumerable<T> enumerable = GetDbConnection().Query<T>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
-            List<T> entities = enumerable.ToList();
-            PostProcessEntities(entities);
+            IDbConnection connection = GetDbConnection();
+
+            List<T> entities;
+            try {
+                IEnumerable<T> enumerable = connection.Query<T>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
+                entities = enumerable.ToList();
+                PostProcessEntities(entities);
+            } catch {
+                throw;
+            } finally {
+                if (DbAdapter.DbTransaction == null)
+                    connection.Dispose();
+            }
             return entities;
         }
 
@@ -82,9 +90,19 @@ namespace TowerSoft.Repository {
         /// <returns></returns>
         protected virtual async Task<List<T>> GetEntitiesAsync(QueryBuilder builder) {
             WriteLog(GetType().Name, builder.SqlQuery, builder.Parameters);
-            IEnumerable<T> enumerable = await GetDbConnection().QueryAsync<T>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
-            List<T> entities = enumerable.ToList();
-            PostProcessEntities(entities);
+            IDbConnection connection = GetDbConnection();
+
+            List<T> entities;
+            try {
+                IEnumerable<T> enumerable = await connection.QueryAsync<T>(builder.SqlQuery, builder.Parameters, DbAdapter.DbTransaction);
+                entities = enumerable.ToList();
+                PostProcessEntities(entities);
+            } catch {
+                throw;
+            } finally {
+                if (DbAdapter.DbTransaction == null)
+                    connection.Dispose();
+            }
             return entities;
         }
 

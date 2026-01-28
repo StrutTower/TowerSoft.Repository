@@ -1,10 +1,7 @@
 ﻿using Dapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Data;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 using TowerSoft.Repository.Interfaces;
 using TowerSoft.Repository.Maps;
 using TowerSoft.Repository.Utilities;
@@ -50,6 +47,7 @@ namespace TowerSoft.Repository {
             Dictionary<string, object> parameters = [];
 
             int index = 1;
+
             foreach (Map map in Mappings.AllMaps.Where(x => x != Mappings.AutonumberMap)) {
                 columns.Add(map.ColumnName);
                 values.Add(DbAdapter.GetParameterPlaceholder(map.ColumnName, index));
@@ -63,15 +61,39 @@ namespace TowerSoft.Repository {
             WriteLog(GetType().Name, query, parameters);
 
             if (Mappings.AutonumberMap == null) {
-                await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
+                IDbConnection connection = GetDbConnection();
+                try {
+                    await connection.ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
+                } catch {
+                    throw;
+                } finally {
+                    if (DbAdapter.DbTransaction == null)
+                        connection.Dispose();
+                }
             } else {
                 long autonumberValue = 0;
                 if (DbAdapter.LastInsertIdInSeparateQuery) {
-                    GetDbConnection().Execute(query, parameters, DbAdapter.DbTransaction);
-                    autonumberValue = await GetDbConnection().QuerySingleAsync<long>(DbAdapter.GetLastInsertIdStatement(), null, DbAdapter.DbTransaction);
+                    IDbConnection connection = GetDbConnection();
+                    try {
+                        connection.Execute(query, parameters, DbAdapter.DbTransaction);
+                        autonumberValue = await connection.QuerySingleAsync<long>(DbAdapter.GetLastInsertIdStatement(), null, DbAdapter.DbTransaction);
+                    } catch {
+                        throw;
+                    } finally {
+                        if (DbAdapter.DbTransaction == null)
+                            connection.Dispose();
+                    }
                 } else {
                     query += ";" + DbAdapter.GetLastInsertIdStatement();
-                    autonumberValue = await GetDbConnection().QuerySingleAsync<long>(query, parameters, DbAdapter.DbTransaction);
+                    IDbConnection connection = GetDbConnection();
+                    try {
+                        autonumberValue = await connection.QuerySingleAsync<long>(query, parameters, DbAdapter.DbTransaction);
+                    } catch {
+                        throw;
+                    } finally {
+                        if (DbAdapter.DbTransaction == null)
+                            connection.Dispose();
+                    }
                 }
                 PropertyInfo prop = entity.GetType().GetProperty(Mappings.AutonumberMap.PropertyName);
                 Mappings.AutonumberMap.SetValue(entity, Convert.ChangeType(autonumberValue, prop.PropertyType));
@@ -94,11 +116,11 @@ namespace TowerSoft.Repository {
             if (DbAdapter.ListInsertSupported) {
 
                 if (DbAdapter.AutomaticallyTrimStrings) {
-                    foreach (var entity in entities)
+                    foreach (T entity in entities)
                         StringUtilities.TrimProperties(entity);
                 }
                 if (DbAdapter.AutomaticallyConvertWhiteSpaceStringsToNull) {
-                    foreach (var entity in entities)
+                    foreach (T entity in entities)
                         StringUtilities.NullOutEmptyStrings(entity);
                 }
 
@@ -134,7 +156,15 @@ namespace TowerSoft.Repository {
 
                     WriteLog(GetType().Name, query, parameters);
 
-                    await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
+                    IDbConnection connection = GetDbConnection();
+                    try {
+                        await connection.ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
+                    } catch {
+                        throw;
+                    } finally {
+                        if (DbAdapter.DbTransaction == null)
+                            connection.Dispose();
+                    }
                 }
             } else {
                 foreach (T entity in entities) {
@@ -184,7 +214,15 @@ namespace TowerSoft.Repository {
 
             WriteLog(GetType().Name, query, parameters);
 
-            await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
+            IDbConnection connection = GetDbConnection();
+            try {
+                await connection.ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
+            } catch {
+                throw;
+            } finally {
+                if (DbAdapter.DbTransaction == null)
+                    connection.Dispose();
+            }
         }
 
         /// <summary>
@@ -213,7 +251,7 @@ namespace TowerSoft.Repository {
             List<string> missingMaps = [];
             List<string> invalidMaps = [];
 
-            foreach (var property in properties) {
+            foreach (Expression<Func<T, object>> property in properties) {
                 MemberExpression memberExpression;
                 if (property.Body is MemberExpression) {
                     memberExpression = (MemberExpression)property.Body;
@@ -266,7 +304,15 @@ namespace TowerSoft.Repository {
 
             WriteLog(GetType().Name, query, parameters);
 
-            await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
+            IDbConnection connection = GetDbConnection();
+            try {
+                await connection.ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
+            } catch {
+                throw;
+            } finally {
+                if (DbAdapter.DbTransaction == null)
+                    connection.Dispose();
+            }
         }
 
         /// <summary>
@@ -301,7 +347,15 @@ namespace TowerSoft.Repository {
 
             WriteLog(GetType().Name, query, parameters);
 
-            await GetDbConnection().ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
+            IDbConnection connection = GetDbConnection();
+            try {
+                await connection.ExecuteAsync(query, parameters, DbAdapter.DbTransaction);
+            } catch {
+                throw;
+            } finally {
+                if (DbAdapter.DbTransaction == null)
+                    connection.Dispose();
+            }
         }
     }
 }

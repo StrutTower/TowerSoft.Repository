@@ -18,7 +18,7 @@ namespace TowerSoft.RepositoryTests.DbAdapter {
                 SQLiteConnection.CreateFile(dbPath);
 
             //uow.DbAdapter.DbConnection.Execute("DROP TABLE AdapterTestObject");
-            uow.DbAdapter.DbConnection.Execute("CREATE TABLE IF NOT EXISTS AdapterTestObject (" +
+            uow.DbAdapter.GetDbConnection().Execute("CREATE TABLE IF NOT EXISTS AdapterTestObject (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "Title TEXT NOT NULL UNIQUE," +
                 "Subtitle TEXT NULL," +
@@ -27,7 +27,7 @@ namespace TowerSoft.RepositoryTests.DbAdapter {
                 "InputOn TEXT NOT NULL," +
                 "InputByID INTEGER NOT NULL," +
                 "IsActive INTEGER NOT NULL);");
-            uow.DbAdapter.DbConnection.Execute("DELETE FROM AdapterTestObject");
+            uow.DbAdapter.GetDbConnection().Execute("DELETE FROM AdapterTestObject");
         }
 
         #region Add

@@ -13,7 +13,6 @@ namespace TowerSoft.Repository {
         /// <param name="connectionString">Connection string to the database</param>
         public DbAdapter(string connectionString) {
             ConnectionString = connectionString;
-            DbConnection = CreateNewDbConnection(ConnectionString);
         }
 
         /// <summary>
@@ -29,7 +28,7 @@ namespace TowerSoft.Repository {
         /// <summary>
         /// ADO.NET DbConnection for the current database
         /// </summary>
-        public IDbConnection DbConnection { get; set; }
+        public List<IDbConnection> DbConnections { get; set; } = [];
 
         /// <summary>
         /// ADO.NET DbTransaction for the current database
@@ -40,6 +39,11 @@ namespace TowerSoft.Repository {
         /// ILogger used for outputting debugging info
         /// </summary>
         public ILogger DebugLogger { get; private set; }
+
+        /// <summary>
+        /// Tracks if a transaction is currently active
+        /// </summary>
+        public bool TransactionActive { get; private set; }
 
         /// <summary>
         /// Setting this to true will automatically trim any strings on an object before Add or Update actions
@@ -63,9 +67,14 @@ namespace TowerSoft.Repository {
         /// Begins a transaction
         /// </summary>
         public void BeginTransaction() {
-            if (DbConnection.State != ConnectionState.Open)
-                DbConnection.Open();
-            DbTransaction = DbConnection.BeginTransaction();
+            IDbConnection connection = CreateNewDbConnection(ConnectionString);
+            DbConnections.Add(connection);
+
+            if (connection.State != ConnectionState.Open)
+                connection.Open();
+
+            TransactionActive = true;
+            DbTransaction = connection.BeginTransaction();
         }
 
         /// <summary>
@@ -73,7 +82,11 @@ namespace TowerSoft.Repository {
         /// </summary>
         public void CommitTransaction() {
             DbTransaction.Commit();
+            if (DbTransaction.Connection != null)
+                DbTransaction.Connection.Dispose();
             DbTransaction.Dispose();
+            DbTransaction = null;
+            TransactionActive = false;
         }
 
         /// <summary>
@@ -81,7 +94,11 @@ namespace TowerSoft.Repository {
         /// </summary>
         public void RollbackTransaction() {
             DbTransaction.Rollback();
+            if (DbTransaction.Connection != null)
+                DbTransaction.Connection.Dispose();
             DbTransaction.Dispose();
+            DbTransaction = null;
+            TransactionActive = false;
         }
 
         /// <summary>
@@ -98,7 +115,8 @@ namespace TowerSoft.Repository {
         protected virtual void Dispose(bool suppressFinalize) {
             if (!IsDisposed) {
                 DbTransaction?.Dispose();
-                DbConnection?.Dispose();
+                DbConnections?.ForEach(x => x?.Dispose());
+                //DbConnection?.Dispose();
                 IsDisposed = true;
             }
             if (!suppressFinalize) {
@@ -127,9 +145,21 @@ namespace TowerSoft.Repository {
         public abstract IDbConnection CreateNewDbConnection(string connectionString);
 
         /// <summary>
-        /// Runs configuration settings on the DbConnection
+        /// 
         /// </summary>
-        public virtual void ConfigureDbConnection() { }
+        /// <returns></returns>
+        public IDbConnection GetDbConnection() {
+            IDbConnection connection = CreateNewDbConnection(ConnectionString);
+            if (connection.State != ConnectionState.Open)
+                connection.Open();
+            DbConnections.Add(connection);
+            return connection;
+        }
+
+        ///// <summary>
+        ///// Runs configuration settings on the DbConnection
+        ///// </summary>
+        //public virtual void ConfigureDbConnection() { }
 
         /// <summary>
         /// Returns a limit and offset statement for the current database type

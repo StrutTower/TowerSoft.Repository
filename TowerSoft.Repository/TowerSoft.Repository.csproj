@@ -7,7 +7,7 @@
 		<AssemblyName>TowerSoft.Repository</AssemblyName>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>TowerSoft.Repository</PackageId>
-		<Version>4.1.0</Version>
+		<Version>5.0.1-alpha</Version>
 		<Authors>StrutTower</Authors>
 		<Product>TowerSoft Repository</Product>
 		<Company>TowerSoft</Company>
