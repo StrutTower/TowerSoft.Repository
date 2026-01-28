@@ -39,6 +39,8 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             repo.Add(new CountTest { Number = 4, Name = "Object 4" });
         }
 
+        protected override IUnitOfWork GetUnitOfWork() => uow;
+
         protected override ICountTestRepository GetCountTestRepository() {
             return uow.GetRepo<CountTestRepository>();
         }

@@ -4,6 +4,7 @@ using TowerSoft.RepositoryTests.TestObjects;
 namespace TowerSoft.RepositoryTests.DbRepository {
     [TestClass]
     public abstract class DbRepositoryTests {
+        protected abstract IUnitOfWork GetUnitOfWork();
         protected abstract ITestObjectRepository GetTestObjectRepository();
         protected abstract ICountTestRepository GetCountTestRepository();
         protected abstract ITestObjectRepositoryKey GetTestObjectRepositoryKey();
@@ -12,10 +13,11 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         #region Add/Update/Remove
         [TestMethod]
         public void Add_TestObject_ShouldAdd() {
+            string category = "AddTest";
             ITestObjectRepository repo = GetTestObjectRepository();
             TestObject expected = new TestObject {
-                Title = "Add Test",
-                Description = "Add Test Description",
+                Title = category,
+                Description = $"{category} Description",
                 StatusID = Status.Active,
                 InputOn = DateTime.Now,
                 InputByID = 1,
@@ -33,10 +35,11 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
         [TestMethod]
         public async Task Async_Add_TestObject_ShouldAdd() {
+            string category = "AddAsyncTest";
             ITestObjectRepository repo = GetTestObjectRepository();
             TestObject expected = new() {
-                Title = "AddAsync Test",
-                Description = "AddAsync Test Description",
+                Title = category,
+                Description = $"{category} Description",
                 StatusID = Status.Active,
                 InputOn = DateTime.Now,
                 InputByID = 1,
@@ -54,12 +57,13 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
         [TestMethod]
         public virtual void Add_MultipleTestObjects_ShouldAdd() {
+            string category = "AddListTest";
             ITestObjectRepository repo = GetTestObjectRepository();
             List<TestObject> objects = new();
             for (int i = 0; i < 1000; i++) {
                 objects.Add(new TestObject {
-                    Title = "Add Multiple Test " + i,
-                    Description = "Multiple Insert Test",
+                    Title = category + i,
+                    Description = category,
                     StatusID = Status.Active,
                     InputOn = DateTime.Now,
                     InputByID = 1,
@@ -69,22 +73,23 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
             repo.Add(objects);
 
-            List<TestObject> testObjects = repo.GetActiveByDescription("Multiple Insert Test");
+            List<TestObject> testObjects = repo.GetActiveByDescription(category);
 
             Assert.AreEqual(objects.Count, testObjects.Count); // Make sure the same number of objects are returned
             foreach (TestObject testObject in testObjects) {
-                Assert.AreEqual("Multiple Insert Test", testObject.Description);
+                Assert.AreEqual(category, testObject.Description);
             }
         }
 
         [TestMethod]
         public virtual async Task Async_Add_MultipleTestObjects_ShouldAdd() {
+            string category = "AddListAsync";
             ITestObjectRepository repo = GetTestObjectRepository();
             List<TestObject> objects = new();
             for (int i = 0; i < 1000; i++) {
                 objects.Add(new TestObject {
-                    Title = "AddAsync Multiple Test " + i,
-                    Description = "MultipleAsync Insert Test",
+                    Title = category + i,
+                    Description = category,
                     StatusID = Status.Active,
                     InputOn = DateTime.Now,
                     InputByID = 1,
@@ -94,11 +99,11 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
             await repo.AddAsync(objects);
 
-            List<TestObject> testObjects = repo.GetActiveByDescription("MultipleAsync Insert Test");
+            List<TestObject> testObjects = repo.GetActiveByDescription(category);
 
             Assert.AreEqual(objects.Count, testObjects.Count); // Make sure the same number of objects are returned
             foreach (TestObject testObject in testObjects) {
-                Assert.AreEqual("MultipleAsync Insert Test", testObject.Description);
+                Assert.AreEqual(category, testObject.Description);
             }
         }
 
@@ -539,6 +544,162 @@ namespace TowerSoft.RepositoryTests.DbRepository {
         }
         #endregion
 
+        #region Transactions
+        [TestMethod]
+        public void TransactionAdd_Commit_ShouldSave() {
+            string category = "AddTransactionCommit";
+            GetUnitOfWork().BeginTransaction();
+            ITestObjectRepository repo = GetTestObjectRepository();
+            try {
+                TestObject obj1 = new() {
+                    Title = $"{category}1",
+                    Description = category,
+                    StatusID = Status.Active,
+                    InputOn = DateTime.Now,
+                    InputByID = 1,
+                    IsActive = true
+                };
+                repo.Add(obj1);
 
+                TestObject obj2 = new() {
+                    Title = $"{category}3",
+                    Description = category,
+                    StatusID = Status.Active,
+                    InputOn = DateTime.Now,
+                    InputByID = 1,
+                    IsActive = true
+                };
+                repo.Add(obj2);
+
+                GetUnitOfWork().CommitTransaction();
+            } catch (Exception) {
+                throw;
+            }
+
+            List<TestObject> objs = repo.GetByDescription(category);
+            Assert.HasCount(2, objs);
+
+            GetTestObjectRepository().GetAll();
+        }
+
+        [TestMethod]
+        public void TransactionAdd_Rollback_ShouldRollback() {
+            string category = "AddTransactionRollback";
+            GetUnitOfWork().BeginTransaction();
+            ITestObjectRepository repo = GetTestObjectRepository();
+            try {
+                TestObject obj1 = new() {
+                    Title = $"{category}1",
+                    Description = category,
+                    StatusID = Status.Active,
+                    InputOn = DateTime.Now,
+                    InputByID = 1,
+                    IsActive = true
+                };
+                repo.Add(obj1);
+
+                TestObject obj2 = new() {
+                    Title = $"{category}2",
+                    Description = category,
+                    StatusID = Status.Active,
+                    InputOn = DateTime.Now,
+                    InputByID = 1,
+                    IsActive = true
+                };
+                repo.Add(obj2);
+
+                GetUnitOfWork().RollbackTransaction();
+            } catch (Exception) {
+                throw;
+            }
+
+            List<TestObject> objs = repo.GetByDescription(category);
+            Assert.HasCount(0, objs);
+
+            GetTestObjectRepository().GetAll();
+        }
+
+        [TestMethod]
+        public void TransactionUpdate_Commit_ShouldSave() {
+            string category = "UpdateTransactionCommit";
+            ITestObjectRepository repo = GetTestObjectRepository();
+
+            TestObject obj1 = new() {
+                Title = $"{category}1",
+                Description = category,
+                StatusID = Status.Active,
+                InputOn = DateTime.Now,
+                InputByID = 1,
+                IsActive = true
+            };
+            repo.Add(obj1);
+
+            TestObject obj2 = new() {
+                Title = $"{category}2",
+                Description = category,
+                StatusID = Status.Active,
+                InputOn = DateTime.Now,
+                InputByID = 1,
+                IsActive = true
+            };
+            repo.Add(obj2);
+
+            GetUnitOfWork().BeginTransaction();
+            try {
+                obj1.Title = $"{category}3";
+                repo.Update(obj1);
+                obj1.Title = $"{category}4";
+                repo.Update(obj2);
+
+                GetUnitOfWork().CommitTransaction();
+            } catch (Exception) {
+                throw;
+            }
+
+            List<TestObject> objs = repo.GetByDescription(category);
+            Assert.HasCount(2, objs);
+
+            GetTestObjectRepository().GetAll();
+        }
+
+        [TestMethod]
+        public void TransactionUpdate_Rollback_ShouldRollback() {
+            string category = "UpdateTransactionRollback";
+            GetUnitOfWork().BeginTransaction();
+            ITestObjectRepository repo = GetTestObjectRepository();
+            try {
+                TestObject obj1 = new() {
+                    Title = $"{category}1",
+                    Description = category,
+                    StatusID = Status.Active,
+                    InputOn = DateTime.Now,
+                    InputByID = 1,
+                    IsActive = true
+                };
+                repo.Add(obj1);
+
+                TestObject obj2 = new() {
+                    Title = $"{category}2",
+                    Description = category,
+                    StatusID = Status.Active,
+                    InputOn = DateTime.Now,
+                    InputByID = 1,
+                    IsActive = true
+                };
+                repo.Add(obj2);
+
+                GetUnitOfWork().RollbackTransaction();
+            } catch (Exception) {
+                throw;
+            }
+
+            List<TestObject> objs = repo.GetByDescription(category);
+            Assert.HasCount(0, objs);
+
+            GetTestObjectRepository().GetAll();
+        }
+
+
+        #endregion
     }
 }
