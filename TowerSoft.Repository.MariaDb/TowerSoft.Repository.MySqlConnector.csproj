@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<RootNamespace>TowerSoft.Repository.MySqlConnector</RootNamespace>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<Version>4.1.0</Version>
+		<Version>4.2.0</Version>
 		<Authors>StrutTower</Authors>
 		<Company>TowerSoft</Company>
 		<Product>TowerSoft.Repository</Product>
@@ -34,7 +34,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MySqlConnector" Version="2.4.0" />
+		<PackageReference Include="MySqlConnector" Version="2.6.2" />
 	</ItemGroup>
 
 	<ItemGroup>

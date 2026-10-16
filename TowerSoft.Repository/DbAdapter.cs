@@ -74,6 +74,7 @@ namespace TowerSoft.Repository {
         public void CommitTransaction() {
             DbTransaction.Commit();
             DbTransaction.Dispose();
+            DbTransaction = null;
         }
 
         /// <summary>
@@ -82,6 +83,7 @@ namespace TowerSoft.Repository {
         public void RollbackTransaction() {
             DbTransaction.Rollback();
             DbTransaction.Dispose();
+            DbTransaction = null;
         }
 
         /// <summary>

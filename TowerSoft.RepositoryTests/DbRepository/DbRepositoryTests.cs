@@ -476,7 +476,8 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
             TestObject expected = new() {
                 Title = "DbRepositoryIDKey_GetByID",
-                Description = "DbRepositoryIDKey_GetByID"
+                Description = "DbRepositoryIDKey_GetByID",
+                InputOn = DateTime.Now
             };
 
             repo.Add(expected);
@@ -496,7 +497,8 @@ namespace TowerSoft.RepositoryTests.DbRepository {
             for (int i = 0; i < 10; i++) {
                 TestObject testObject = new() {
                     Title = "DbRepositoryIDKey_GetByIDs_" + i,
-                    Description = "DbRepositoryIDKey_GetByIDs_" + i
+                    Description = "DbRepositoryIDKey_GetByIDs_" + i,
+                    InputOn = DateTime.Now
                 };
 
                 repo.Add(testObject);
@@ -514,7 +516,8 @@ namespace TowerSoft.RepositoryTests.DbRepository {
 
             for (int i = 1; i < 6; i++) {
                 TestObject expected = new() {
-                    Title = "DbRepositoryIDKey_GetAllDictionary_" + i
+                    Title = "DbRepositoryIDKey_GetAllDictionary_" + i,
+                    InputOn = DateTime.Now
                 };
 
                 repo.Add(expected);
